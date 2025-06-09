@@ -1,0 +1,20 @@
+Common Guidelines
+-----------------
+- Use Java (Maven-based Spring Boot application)
+- PostgreSQL as the primary database
+- Flyway for schema versioning
+- No Lombok (incompatible with Java 21+/24) — explicitly generate all boilerplate code
+- No Mockito — use only standard Spring Boot testing tools and JUnit 5
+- Follow best practices for:
+  - Immutability of key data
+  - Validation (field-level, format-specific)
+  - Audit-ready logging with masked PII
+  - Graceful error handling with standardized messages
+  - Data privacy and retention
+- Include:
+  - Entity classes with explicit accessors and mutators
+  - DTOs, Enums
+  - Repositories, Services, Controllers
+  - Comprehensive testing: Unit, Integration, Regression
+  - Unique reference numbers for tracking/logging
+

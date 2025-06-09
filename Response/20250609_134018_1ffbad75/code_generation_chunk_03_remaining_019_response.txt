@@ -1,0 +1,145 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:47:16
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_019
+# ==================================================
+
+package com.ekyc.service.dto;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.Objects;
+
+/**
+ * Data Transfer Object for UIDAI OTP initiation request.
+ * This class encapsulates the data required to initiate an OTP verification process with UIDAI.
+ */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class UidaiOtpInitiateRequestDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @NotBlank(message = "Aadhaar number is required")
+    @Size(min = 12, max = 12, message = "Aadhaar number must be 12 digits")
+    @Pattern(regexp = "^[0-9]{12}$", message = "Aadhaar number must contain only digits")
+    @JsonProperty("uid")
+    private String aadhaarNumber;
+
+    @NotNull(message = "Transaction ID is required")
+    @NotBlank(message = "Transaction ID cannot be blank")
+    @JsonProperty("txnId")
+    private String transactionId;
+
+    @NotNull(message = "OTP channel is required")
+    @NotBlank(message = "OTP channel cannot be blank")
+    @Pattern(regexp = "^(EMAIL|SMS|BOTH)$", message = "OTP channel must be EMAIL, SMS, or BOTH")
+    @JsonProperty("otpChannel")
+    private String otpChannel;
+
+    /**
+     * Default constructor for UidaiOtpInitiateRequestDto.
+     */
+    public UidaiOtpInitiateRequestDto() {
+    }
+
+    /**
+     * Parameterized constructor for UidaiOtpInitiateRequestDto.
+     *
+     * @param aadhaarNumber The 12-digit Aadhaar number
+     * @param transactionId The unique transaction ID for this OTP request
+     * @param otpChannel    The channel for OTP delivery (EMAIL, SMS, or BOTH)
+     */
+    public UidaiOtpInitiateRequestDto(String aadhaarNumber, String transactionId, String otpChannel) {
+        this.aadhaarNumber = aadhaarNumber;
+        this.transactionId = transactionId;
+        this.otpChannel = otpChannel;
+    }
+
+    /**
+     * Gets the Aadhaar number.
+     *
+     * @return The 12-digit Aadhaar number
+     */
+    public String getAadhaarNumber() {
+        return aadhaarNumber;
+    }
+
+    /**
+     * Sets the Aadhaar number.
+     *
+     * @param aadhaarNumber The 12-digit Aadhaar number
+     */
+    public void setAadhaarNumber(String aadhaarNumber) {
+        this.aadhaarNumber = aadhaarNumber;
+    }
+
+    /**
+     * Gets the transaction ID.
+     *
+     * @return The transaction ID for this OTP request
+     */
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    /**
+     * Sets the transaction ID.
+     *
+     * @param transactionId The transaction ID for this OTP request
+     */
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    /**
+     * Gets the OTP channel.
+     *
+     * @return The channel for OTP delivery (EMAIL, SMS, or BOTH)
+     */
+    public String getOtpChannel() {
+        return otpChannel;
+    }
+
+    /**
+     * Sets the OTP channel.
+     *
+     * @param otpChannel The channel for OTP delivery (EMAIL, SMS, or BOTH)
+     */
+    public void setOtpChannel(String otpChannel) {
+        this.otpChannel = otpChannel;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UidaiOtpInitiateRequestDto that = (UidaiOtpInitiateRequestDto) o;
+        return Objects.equals(aadhaarNumber, that.aadhaarNumber) &&
+                Objects.equals(transactionId, that.transactionId) &&
+                Objects.equals(otpChannel, that.otpChannel);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(aadhaarNumber, transactionId, otpChannel);
+    }
+
+    @Override
+    public String toString() {
+        // Masking Aadhaar number for security
+        String maskedAadhaar = aadhaarNumber != null ? 
+                "XXXX-XXXX-" + aadhaarNumber.substring(8) : null;
+                
+        return "UidaiOtpInitiateRequestDto{" +
+                "aadhaarNumber='" + maskedAadhaar + '\'' +
+                ", transactionId='" + transactionId + '\'' +
+                ", otpChannel='" + otpChannel + '\'' +
+                '}';
+    }
+}

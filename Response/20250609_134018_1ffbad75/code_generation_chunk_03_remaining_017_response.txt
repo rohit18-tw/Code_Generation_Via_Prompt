@@ -1,0 +1,133 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:46:31
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_017
+# ==================================================
+
+package com.ekyc.service.dto;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.Objects;
+
+/**
+ * Data Transfer Object for OTP verification.
+ * This class encapsulates the data required for verifying an OTP (One-Time Password)
+ * during the eKYC process.
+ */
+public class OtpVerificationDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @NotBlank(message = "Reference ID cannot be empty")
+    private String referenceId;
+
+    @NotBlank(message = "OTP cannot be empty")
+    @Size(min = 4, max = 8, message = "OTP must be between 4 and 8 characters")
+    @Pattern(regexp = "^[0-9]+$", message = "OTP must contain only digits")
+    private String otp;
+
+    @NotNull(message = "Channel ID cannot be null")
+    private String channelId;
+
+    /**
+     * Default constructor for OtpVerificationDto.
+     */
+    public OtpVerificationDto() {
+    }
+
+    /**
+     * Parameterized constructor for OtpVerificationDto.
+     *
+     * @param referenceId the reference ID associated with the OTP request
+     * @param otp the one-time password to verify
+     * @param channelId the channel through which the verification is being performed
+     */
+    public OtpVerificationDto(String referenceId, String otp, String channelId) {
+        this.referenceId = referenceId;
+        this.otp = otp;
+        this.channelId = channelId;
+    }
+
+    /**
+     * Gets the reference ID.
+     *
+     * @return the reference ID
+     */
+    public String getReferenceId() {
+        return referenceId;
+    }
+
+    /**
+     * Sets the reference ID.
+     *
+     * @param referenceId the reference ID to set
+     */
+    public void setReferenceId(String referenceId) {
+        this.referenceId = referenceId;
+    }
+
+    /**
+     * Gets the OTP.
+     *
+     * @return the OTP
+     */
+    public String getOtp() {
+        return otp;
+    }
+
+    /**
+     * Sets the OTP.
+     *
+     * @param otp the OTP to set
+     */
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
+
+    /**
+     * Gets the channel ID.
+     *
+     * @return the channel ID
+     */
+    public String getChannelId() {
+        return channelId;
+    }
+
+    /**
+     * Sets the channel ID.
+     *
+     * @param channelId the channel ID to set
+     */
+    public void setChannelId(String channelId) {
+        this.channelId = channelId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OtpVerificationDto that = (OtpVerificationDto) o;
+        return Objects.equals(referenceId, that.referenceId) &&
+                Objects.equals(otp, that.otp) &&
+                Objects.equals(channelId, that.channelId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(referenceId, otp, channelId);
+    }
+
+    @Override
+    public String toString() {
+        // Masking OTP for security reasons
+        return "OtpVerificationDto{" +
+                "referenceId='" + referenceId + '\'' +
+                ", otp='****'" +
+                ", channelId='" + channelId + '\'' +
+                '}';
+    }
+}

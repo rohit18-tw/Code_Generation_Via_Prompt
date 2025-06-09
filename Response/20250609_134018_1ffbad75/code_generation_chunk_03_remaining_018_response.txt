@@ -1,0 +1,321 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:46:59
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_018
+# ==================================================
+
+package com.ekyc.service.dto;
+
+import com.ekyc.service.enums.VerificationStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Objects;
+
+/**
+ * Data Transfer Object for eKYC response data.
+ * This class encapsulates the response data returned from eKYC verification processes.
+ */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class EkycResponseDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    private String requestId;
+    private String customerId;
+    private VerificationStatus status;
+    private String message;
+    private String verificationToken;
+    
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime expiryTime;
+    
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime verificationTime;
+    
+    private String redirectUrl;
+    private Boolean requiresAdditionalVerification;
+    private String additionalVerificationType;
+    private Integer remainingAttempts;
+
+    /**
+     * Default constructor
+     */
+    public EkycResponseDto() {
+    }
+
+    /**
+     * Constructor with essential fields
+     * 
+     * @param requestId the unique identifier for the eKYC request
+     * @param status the verification status
+     * @param message the response message
+     */
+    public EkycResponseDto(String requestId, VerificationStatus status, String message) {
+        this.requestId = requestId;
+        this.status = status;
+        this.message = message;
+    }
+
+    /**
+     * Full constructor with all fields
+     * 
+     * @param requestId the unique identifier for the eKYC request
+     * @param customerId the customer identifier
+     * @param status the verification status
+     * @param message the response message
+     * @param verificationToken the token for verification
+     * @param expiryTime the expiry time of the verification
+     * @param verificationTime the time when verification occurred
+     * @param redirectUrl the URL to redirect after verification
+     * @param requiresAdditionalVerification flag indicating if additional verification is needed
+     * @param additionalVerificationType the type of additional verification required
+     * @param remainingAttempts the number of remaining verification attempts
+     */
+    public EkycResponseDto(String requestId, String customerId, VerificationStatus status, 
+                          String message, String verificationToken, LocalDateTime expiryTime, 
+                          LocalDateTime verificationTime, String redirectUrl, 
+                          Boolean requiresAdditionalVerification, String additionalVerificationType,
+                          Integer remainingAttempts) {
+        this.requestId = requestId;
+        this.customerId = customerId;
+        this.status = status;
+        this.message = message;
+        this.verificationToken = verificationToken;
+        this.expiryTime = expiryTime;
+        this.verificationTime = verificationTime;
+        this.redirectUrl = redirectUrl;
+        this.requiresAdditionalVerification = requiresAdditionalVerification;
+        this.additionalVerificationType = additionalVerificationType;
+        this.remainingAttempts = remainingAttempts;
+    }
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
+    public VerificationStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(VerificationStatus status) {
+        this.status = status;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getVerificationToken() {
+        return verificationToken;
+    }
+
+    public void setVerificationToken(String verificationToken) {
+        this.verificationToken = verificationToken;
+    }
+
+    public LocalDateTime getExpiryTime() {
+        return expiryTime;
+    }
+
+    public void setExpiryTime(LocalDateTime expiryTime) {
+        this.expiryTime = expiryTime;
+    }
+
+    public LocalDateTime getVerificationTime() {
+        return verificationTime;
+    }
+
+    public void setVerificationTime(LocalDateTime verificationTime) {
+        this.verificationTime = verificationTime;
+    }
+
+    public String getRedirectUrl() {
+        return redirectUrl;
+    }
+
+    public void setRedirectUrl(String redirectUrl) {
+        this.redirectUrl = redirectUrl;
+    }
+
+    public Boolean getRequiresAdditionalVerification() {
+        return requiresAdditionalVerification;
+    }
+
+    public void setRequiresAdditionalVerification(Boolean requiresAdditionalVerification) {
+        this.requiresAdditionalVerification = requiresAdditionalVerification;
+    }
+
+    public String getAdditionalVerificationType() {
+        return additionalVerificationType;
+    }
+
+    public void setAdditionalVerificationType(String additionalVerificationType) {
+        this.additionalVerificationType = additionalVerificationType;
+    }
+
+    public Integer getRemainingAttempts() {
+        return remainingAttempts;
+    }
+
+    public void setRemainingAttempts(Integer remainingAttempts) {
+        this.remainingAttempts = remainingAttempts;
+    }
+
+    /**
+     * Builder pattern implementation for EkycResponseDto
+     */
+    public static class Builder {
+        private String requestId;
+        private String customerId;
+        private VerificationStatus status;
+        private String message;
+        private String verificationToken;
+        private LocalDateTime expiryTime;
+        private LocalDateTime verificationTime;
+        private String redirectUrl;
+        private Boolean requiresAdditionalVerification;
+        private String additionalVerificationType;
+        private Integer remainingAttempts;
+
+        public Builder requestId(String requestId) {
+            this.requestId = requestId;
+            return this;
+        }
+
+        public Builder customerId(String customerId) {
+            this.customerId = customerId;
+            return this;
+        }
+
+        public Builder status(VerificationStatus status) {
+            this.status = status;
+            return this;
+        }
+
+        public Builder message(String message) {
+            this.message = message;
+            return this;
+        }
+
+        public Builder verificationToken(String verificationToken) {
+            this.verificationToken = verificationToken;
+            return this;
+        }
+
+        public Builder expiryTime(LocalDateTime expiryTime) {
+            this.expiryTime = expiryTime;
+            return this;
+        }
+
+        public Builder verificationTime(LocalDateTime verificationTime) {
+            this.verificationTime = verificationTime;
+            return this;
+        }
+
+        public Builder redirectUrl(String redirectUrl) {
+            this.redirectUrl = redirectUrl;
+            return this;
+        }
+
+        public Builder requiresAdditionalVerification(Boolean requiresAdditionalVerification) {
+            this.requiresAdditionalVerification = requiresAdditionalVerification;
+            return this;
+        }
+
+        public Builder additionalVerificationType(String additionalVerificationType) {
+            this.additionalVerificationType = additionalVerificationType;
+            return this;
+        }
+
+        public Builder remainingAttempts(Integer remainingAttempts) {
+            this.remainingAttempts = remainingAttempts;
+            return this;
+        }
+
+        public EkycResponseDto build() {
+            return new EkycResponseDto(
+                    requestId, 
+                    customerId, 
+                    status, 
+                    message, 
+                    verificationToken, 
+                    expiryTime, 
+                    verificationTime, 
+                    redirectUrl, 
+                    requiresAdditionalVerification, 
+                    additionalVerificationType,
+                    remainingAttempts
+            );
+        }
+    }
+
+    /**
+     * Creates a new builder instance
+     * 
+     * @return a new Builder instance
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EkycResponseDto that = (EkycResponseDto) o;
+        return Objects.equals(requestId, that.requestId) &&
+                Objects.equals(customerId, that.customerId) &&
+                status == that.status &&
+                Objects.equals(message, that.message) &&
+                Objects.equals(verificationToken, that.verificationToken) &&
+                Objects.equals(expiryTime, that.expiryTime) &&
+                Objects.equals(verificationTime, that.verificationTime) &&
+                Objects.equals(redirectUrl, that.redirectUrl) &&
+                Objects.equals(requiresAdditionalVerification, that.requiresAdditionalVerification) &&
+                Objects.equals(additionalVerificationType, that.additionalVerificationType) &&
+                Objects.equals(remainingAttempts, that.remainingAttempts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(requestId, customerId, status, message, verificationToken, expiryTime, 
+                verificationTime, redirectUrl, requiresAdditionalVerification, 
+                additionalVerificationType, remainingAttempts);
+    }
+
+    @Override
+    public String toString() {
+        return "EkycResponseDto{" +
+                "requestId='" + requestId + '\'' +
+                ", customerId='" + customerId + '\'' +
+                ", status=" + status +
+                ", message='" + message + '\'' +
+                ", verificationToken='" + (verificationToken != null ? "[MASKED]" : null) + '\'' +
+                ", expiryTime=" + expiryTime +
+                ", verificationTime=" + verificationTime +
+                ", redirectUrl='" + redirectUrl + '\'' +
+                ", requiresAdditionalVerification=" + requiresAdditionalVerification +
+                ", additionalVerificationType='" + additionalVerificationType + '\'' +
+                ", remainingAttempts=" + remainingAttempts +
+                '}';
+    }
+}

@@ -1,0 +1,154 @@
+package com.ekyc.service.dto;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.Objects;
+
+/**
+* Data Transfer Object for UIDAI OTP verification request.
+* This class encapsulates the data required to verify an OTP with the UIDAI system.
+*/
+public class UidaiOtpVerifyRequestDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+    * The transaction ID received from the UIDAI OTP generation request.
+    * This is required to link the verification request with the original OTP generation.
+    */
+    @NotBlank(message = "Transaction ID cannot be blank")
+    private String txnId;
+
+    /**
+    * The OTP entered by the user for verification.
+    * Must be a 6-digit numeric value.
+    */
+    @NotBlank(message = "OTP cannot be blank")
+    @Size(min = 6, max = 6, message = "OTP must be exactly 6 digits")
+    @Pattern(regexp = "^[0-9]{6}$", message = "OTP must contain only digits")
+    private String otp;
+
+    /**
+    * The Aadhaar number of the user.
+    * Must be a 12-digit numeric value.
+    */
+    @NotBlank(message = "UID cannot be blank")
+    @Size(min = 12, max = 12, message = "UID must be exactly 12 digits")
+    @Pattern(regexp = "^[0-9]{12}$", message = "UID must contain only digits")
+    private String uid;
+
+    /**
+    * Default constructor for UidaiOtpVerifyRequestDto.
+    */
+    public UidaiOtpVerifyRequestDto() {
+    }
+
+    /**
+    * Parameterized constructor for UidaiOtpVerifyRequestDto.
+    *
+    * @param txnId The transaction ID
+    * @param otp   The OTP entered by the user
+    * @param uid   The Aadhaar number
+    */
+    public UidaiOtpVerifyRequestDto(String txnId, String otp, String uid) {
+        this.txnId = txnId;
+        this.otp = otp;
+        this.uid = uid;
+    }
+
+    /**
+    * Gets the transaction ID.
+    *
+    * @return The transaction ID
+    */
+    public String getTxnId() {
+        return txnId;
+    }
+
+    /**
+    * Sets the transaction ID.
+    *
+    * @param txnId The transaction ID to set
+    */
+    public void setTxnId(String txnId) {
+        this.txnId = txnId;
+    }
+
+    /**
+    * Gets the OTP.
+    *
+    * @return The OTP
+    */
+    public String getOtp() {
+        return otp;
+    }
+
+    /**
+    * Sets the OTP.
+    *
+    * @param otp The OTP to set
+    */
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
+
+    /**
+    * Gets the UID (Aadhaar number).
+    *
+    * @return The UID
+    */
+    public String getUid() {
+        return uid;
+    }
+
+    /**
+    * Sets the UID (Aadhaar number).
+    *
+    * @param uid The UID to set
+    */
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    /**
+    * Returns a string representation of the UidaiOtpVerifyRequestDto with sensitive data masked.
+    *
+    * @return A string representation of the object with sensitive data masked
+    */
+    @Override
+    public String toString() {
+        return "UidaiOtpVerifyRequestDto{" +
+        "txnId='" + txnId + '\'' +
+        ", otp='******'" +
+        ", uid='XXXX" + (uid != null && uid.length() > 4 ? uid.substring(uid.length() - 4) : "") + '\'' +
+        '}';
+    }
+
+    /**
+    * Compares this UidaiOtpVerifyRequestDto with another object for equality.
+    *
+    * @param o The object to compare with
+    * @return true if the objects are equal, false otherwise
+    */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UidaiOtpVerifyRequestDto that = (UidaiOtpVerifyRequestDto) o;
+        return Objects.equals(txnId, that.txnId) &&
+        Objects.equals(otp, that.otp) &&
+        Objects.equals(uid, that.uid);
+    }
+
+    /**
+    * Generates a hash code for this UidaiOtpVerifyRequestDto.
+    *
+    * @return A hash code value for this object
+    */
+    @Override
+    public int hashCode() {
+        return Objects.hash(txnId, otp, uid);
+    }
+}

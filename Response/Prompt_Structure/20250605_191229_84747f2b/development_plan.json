@@ -1,0 +1,180 @@
+{
+  "project_overview": {
+    "title": "eKYC Verification System with Mock UIDAI Service",
+    "description": "A Spring Boot-based eKYC verification system with a companion mock UIDAI service for testing and development. The system handles Aadhaar/VID verification, OTP processing, and maintains audit-ready logging with privacy considerations.",
+    "type": "api",
+    "estimated_complexity": "complex"
+  },
+  "technology_stack": {
+    "primary_language": "java",
+    "frameworks": [
+      "spring-boot-3.2.3",
+      "spring-data-jpa",
+      "spring-security",
+      "flyway"
+    ],
+    "databases": [
+      "postgresql"
+    ],
+    "tools": [
+      "maven",
+      "junit5",
+      "openapi-generator",
+      "jacoco"
+    ],
+    "deployment": "docker"
+  },
+  "file_structure": {
+    "directories": [
+      "src/main/java/com/ekyc/core",
+      "src/main/java/com/ekyc/core/config",
+      "src/main/java/com/ekyc/core/controller",
+      "src/main/java/com/ekyc/core/dto",
+      "src/main/java/com/ekyc/core/entity",
+      "src/main/java/com/ekyc/core/repository",
+      "src/main/java/com/ekyc/core/service",
+      "src/main/java/com/ekyc/core/util",
+      "src/main/resources/db/migration",
+      "src/test/java/com/ekyc/core",
+      "mock-uidai/src/main/java/com/ekyc/mock"
+    ],
+    "files": [
+      {
+        "path": "src/main/java/com/ekyc/core/entity/EkycRequest.java",
+        "purpose": "Entity for eKYC request details",
+        "priority": "high"
+      },
+      {
+        "path": "src/main/java/com/ekyc/core/entity/OtpVerification.java",
+        "purpose": "Entity for OTP verification records",
+        "priority": "high"
+      },
+      {
+        "path": "src/main/java/com/ekyc/core/service/EkycService.java",
+        "purpose": "Core business logic for eKYC processing",
+        "priority": "high"
+      },
+      {
+        "path": "src/main/resources/db/migration/V1__initial_schema.sql",
+        "purpose": "Initial database schema",
+        "priority": "high"
+      },
+      {
+        "path": "mock-uidai/src/main/java/com/ekyc/mock/controller/MockUidaiController.java",
+        "purpose": "Mock UIDAI API endpoints",
+        "priority": "medium"
+      }
+    ]
+  },
+  "implementation_steps": [
+    {
+      "step": 1,
+      "title": "Project Setup and Configuration",
+      "description": "Initialize Spring Boot projects for both core and mock services",
+      "files_to_create": [
+        "pom.xml",
+        "application.yml",
+        "docker-compose.yml"
+      ],
+      "dependencies": [
+        "spring-boot-starter-web",
+        "spring-boot-starter-data-jpa",
+        "postgresql"
+      ],
+      "estimated_time": "4 hours"
+    },
+    {
+      "step": 2,
+      "title": "Database Schema and Entities",
+      "description": "Create database schema and entity classes",
+      "files_to_create": [
+        "V1__initial_schema.sql",
+        "EkycRequest.java",
+        "OtpVerification.java"
+      ],
+      "dependencies": [
+        "flyway-core"
+      ],
+      "estimated_time": "6 hours"
+    },
+    {
+      "step": 3,
+      "title": "Core eKYC Service Implementation",
+      "description": "Implement core business logic and API endpoints",
+      "files_to_create": [
+        "EkycService.java",
+        "EkycController.java",
+        "EkycRepository.java"
+      ],
+      "dependencies": [],
+      "estimated_time": "8 hours"
+    },
+    {
+      "step": 4,
+      "title": "Mock UIDAI Service Implementation",
+      "description": "Create mock service for UIDAI API simulation",
+      "files_to_create": [
+        "MockUidaiController.java",
+        "MockUidaiService.java"
+      ],
+      "dependencies": [],
+      "estimated_time": "6 hours"
+    }
+  ],
+  "dependencies": {
+    "production": [
+      "spring-boot-starter-web",
+      "spring-boot-starter-data-jpa",
+      "spring-boot-starter-validation",
+      "postgresql",
+      "flyway-core",
+      "springdoc-openapi-starter-webmvc-ui"
+    ],
+    "development": [
+      "spring-boot-starter-test",
+      "junit-jupiter-api",
+      "junit-jupiter-engine"
+    ],
+    "system": [
+      "java>=21",
+      "maven>=3.8",
+      "docker>=20.10"
+    ]
+  },
+  "testing_strategy": {
+    "unit_tests": "JUnit 5 tests for all service classes with Spring Boot Test",
+    "integration_tests": "End-to-end flow testing using TestContainers for PostgreSQL",
+    "test_files": [
+      "EkycServiceTest.java",
+      "EkycControllerTest.java",
+      "MockUidaiServiceTest.java"
+    ]
+  },
+  "validation_criteria": [
+    "All API endpoints return expected responses for valid and invalid inputs",
+    "PII data is properly masked in logs",
+    "Database schema migrations work correctly",
+    "Mock UIDAI service simulates all specified scenarios",
+    "Audit logs contain required transaction tracing information"
+  ],
+  "potential_challenges": [
+    {
+      "challenge": "Maintaining data privacy and PII masking",
+      "solution": "Implement custom Jackson serializers and logging filters"
+    },
+    {
+      "challenge": "Complex state management for eKYC verification flow",
+      "solution": "Use state machine pattern and explicit status transitions"
+    },
+    {
+      "challenge": "Testing without Mockito",
+      "solution": "Leverage Spring Boot Test contexts and TestContainers"
+    }
+  ],
+  "metadata": {
+    "generated_by": "claude_plan_generator",
+    "version": "1.0",
+    "total_steps": 4,
+    "total_files": 5
+  }
+}

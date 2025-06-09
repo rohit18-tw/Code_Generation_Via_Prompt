@@ -1,0 +1,773 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 14:02:31
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_055
+# ==================================================
+
+package com.ekyc.service.service;
+
+import com.ekyc.service.dto.UidaiOtpInitiateRequestDto;
+import com.ekyc.service.dto.UidaiOtpInitiateResponseDto;
+import com.ekyc.service.dto.UidaiOtpVerifyRequestDto;
+import com.ekyc.service.dto.UidaiOtpVerifyResponseDto;
+import com.ekyc.service.exception.EkycException;
+import com.ekyc.service.service.impl.UidaiApiServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
+
+import java.util.function.Predicate;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
+public class UidaiApiServiceImplTest {
+
+    private UidaiApiServiceImpl uidaiApiService;
+    private RestTemplate restTemplate;
+    private WebClient webClient;
+    private WebClient.Builder webClientBuilder;
+
+    @BeforeEach
+    public void setUp() {
+        uidaiApiService = new UidaiApiServiceImpl();
+        restTemplate = new CustomRestTemplate();
+        webClientBuilder = WebClient.builder();
+        webClient = webClientBuilder.build();
+        
+        ReflectionTestUtils.setField(uidaiApiService, "restTemplate", restTemplate);
+        ReflectionTestUtils.setField(uidaiApiService, "webClient", webClient);
+        ReflectionTestUtils.setField(uidaiApiService, "uidaiOtpInitiateUrl", "http://localhost:8080/uidai/otp/initiate");
+        ReflectionTestUtils.setField(uidaiApiService, "uidaiOtpVerifyUrl", "http://localhost:8080/uidai/otp/verify");
+        ReflectionTestUtils.setField(uidaiApiService, "maxRetryAttempts", 3);
+        ReflectionTestUtils.setField(uidaiApiService, "initialBackoffInterval", 1000L);
+    }
+
+    @Test
+    @DisplayName("Test initiateOtp with successful response")
+    public void testInitiateOtpSuccess() {
+        // Given
+        UidaiOtpInitiateRequestDto requestDto = new UidaiOtpInitiateRequestDto();
+        requestDto.setUid("123456789012");
+        requestDto.setTxnId("txn123");
+        
+        UidaiOtpInitiateResponseDto expectedResponse = new UidaiOtpInitiateResponseDto();
+        expectedResponse.setStatus("Success");
+        expectedResponse.setTxnId("txn123");
+        expectedResponse.setRespCode("00");
+        
+        // When
+        ReflectionTestUtils.setField(uidaiApiService, "restTemplate", new SuccessRestTemplate(expectedResponse));
+        UidaiOtpInitiateResponseDto actualResponse = uidaiApiService.initiateOtp(requestDto);
+        
+        // Then
+        assertNotNull(actualResponse);
+        assertEquals(expectedResponse.getStatus(), actualResponse.getStatus());
+        assertEquals(expectedResponse.getTxnId(), actualResponse.getTxnId());
+        assertEquals(expectedResponse.getRespCode(), actualResponse.getRespCode());
+    }
+
+    @Test
+    @DisplayName("Test initiateOtp with client error")
+    public void testInitiateOtpClientError() {
+        // Given
+        UidaiOtpInitiateRequestDto requestDto = new UidaiOtpInitiateRequestDto();
+        requestDto.setUid("123456789012");
+        requestDto.setTxnId("txn123");
+        
+        // When
+        ReflectionTestUtils.setField(uidaiApiService, "restTemplate", new ClientErrorRestTemplate());
+        
+        // Then
+        Exception exception = assertThrows(EkycException.class, () -> {
+            uidaiApiService.initiateOtp(requestDto);
+        });
+        
+        assertTrue(exception.getMessage().contains("Failed to initiate OTP"));
+    }
+
+    @Test
+    @DisplayName("Test initiateOtp with server error and retry")
+    public void testInitiateOtpServerErrorWithRetry() {
+        // Given
+        UidaiOtpInitiateRequestDto requestDto = new UidaiOtpInitiateRequestDto();
+        requestDto.setUid("123456789012");
+        requestDto.setTxnId("txn123");
+        
+        // When
+        ReflectionTestUtils.setField(uidaiApiService, "restTemplate", new ServerErrorRestTemplate());
+        ReflectionTestUtils.setField(uidaiApiService, "maxRetryAttempts", 2);
+        
+        // Then
+        Exception exception = assertThrows(EkycException.class, () -> {
+            uidaiApiService.initiateOtp(requestDto);
+        });
+        
+        assertTrue(exception.getMessage().contains("Failed to initiate OTP after retries"));
+    }
+
+    @Test
+    @DisplayName("Test verifyOtp with successful response")
+    public void testVerifyOtpSuccess() {
+        // Given
+        UidaiOtpVerifyRequestDto requestDto = new UidaiOtpVerifyRequestDto();
+        requestDto.setUid("123456789012");
+        requestDto.setTxnId("txn123");
+        requestDto.setOtp("123456");
+        
+        UidaiOtpVerifyResponseDto expectedResponse = new UidaiOtpVerifyResponseDto();
+        expectedResponse.setStatus("Success");
+        expectedResponse.setTxnId("txn123");
+        expectedResponse.setRespCode("00");
+        
+        // When
+        ReflectionTestUtils.setField(uidaiApiService, "webClient", new SuccessWebClient(expectedResponse).build());
+        UidaiOtpVerifyResponseDto actualResponse = uidaiApiService.verifyOtp(requestDto);
+        
+        // Then
+        assertNotNull(actualResponse);
+        assertEquals(expectedResponse.getStatus(), actualResponse.getStatus());
+        assertEquals(expectedResponse.getTxnId(), actualResponse.getTxnId());
+        assertEquals(expectedResponse.getRespCode(), actualResponse.getRespCode());
+    }
+
+    @Test
+    @DisplayName("Test verifyOtp with client error")
+    public void testVerifyOtpClientError() {
+        // Given
+        UidaiOtpVerifyRequestDto requestDto = new UidaiOtpVerifyRequestDto();
+        requestDto.setUid("123456789012");
+        requestDto.setTxnId("txn123");
+        requestDto.setOtp("123456");
+        
+        // When
+        ReflectionTestUtils.setField(uidaiApiService, "webClient", new ClientErrorWebClient().build());
+        
+        // Then
+        Exception exception = assertThrows(EkycException.class, () -> {
+            uidaiApiService.verifyOtp(requestDto);
+        });
+        
+        assertTrue(exception.getMessage().contains("Failed to verify OTP"));
+    }
+
+    @Test
+    @DisplayName("Test verifyOtp with server error and retry")
+    public void testVerifyOtpServerErrorWithRetry() {
+        // Given
+        UidaiOtpVerifyRequestDto requestDto = new UidaiOtpVerifyRequestDto();
+        requestDto.setUid("123456789012");
+        requestDto.setTxnId("txn123");
+        requestDto.setOtp("123456");
+        
+        // When
+        ReflectionTestUtils.setField(uidaiApiService, "webClient", new ServerErrorWebClient().build());
+        ReflectionTestUtils.setField(uidaiApiService, "maxRetryAttempts", 2);
+        
+        // Then
+        Exception exception = assertThrows(EkycException.class, () -> {
+            uidaiApiService.verifyOtp(requestDto);
+        });
+        
+        assertTrue(exception.getMessage().contains("Failed to verify OTP after retries"));
+    }
+
+    @Test
+    @DisplayName("Test shouldRetry method with 5xx error")
+    public void testShouldRetryWith5xxError() {
+        // Given
+        WebClientResponseException exception = WebClientResponseException.create(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "Internal Server Error",
+                null, null, null
+        );
+        
+        // When
+        Predicate<Throwable> retryPredicate = (Predicate<Throwable>) ReflectionTestUtils.getField(uidaiApiService, "retryPredicate");
+        
+        // Then
+        assertTrue(retryPredicate.test(exception));
+    }
+
+    @Test
+    @DisplayName("Test shouldRetry method with 4xx error")
+    public void testShouldRetryWith4xxError() {
+        // Given
+        WebClientResponseException exception = WebClientResponseException.create(
+                HttpStatus.BAD_REQUEST.value(),
+                "Bad Request",
+                null, null, null
+        );
+        
+        // When
+        Predicate<Throwable> retryPredicate = (Predicate<Throwable>) ReflectionTestUtils.getField(uidaiApiService, "retryPredicate");
+        
+        // Then
+        assertFalse(retryPredicate.test(exception));
+    }
+
+    @Test
+    @DisplayName("Test shouldRetry method with non-WebClientResponseException")
+    public void testShouldRetryWithNonWebClientResponseException() {
+        // Given
+        RuntimeException exception = new RuntimeException("Network error");
+        
+        // When
+        Predicate<Throwable> retryPredicate = (Predicate<Throwable>) ReflectionTestUtils.getField(uidaiApiService, "retryPredicate");
+        
+        // Then
+        assertTrue(retryPredicate.test(exception));
+    }
+
+    // Custom classes for testing
+    
+    private static class CustomRestTemplate extends RestTemplate {
+        // Empty implementation for base class
+    }
+    
+    private static class SuccessRestTemplate extends RestTemplate {
+        private final UidaiOtpInitiateResponseDto response;
+        
+        public SuccessRestTemplate(UidaiOtpInitiateResponseDto response) {
+            this.response = response;
+        }
+        
+        @Override
+        public <T> ResponseEntity<T> postForEntity(String url, Object request, Class<T> responseType, Object... uriVariables) {
+            return (ResponseEntity<T>) ResponseEntity.ok(response);
+        }
+    }
+    
+    private static class ClientErrorRestTemplate extends RestTemplate {
+        @Override
+        public <T> ResponseEntity<T> postForEntity(String url, Object request, Class<T> responseType, Object... uriVariables) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Bad Request");
+        }
+    }
+    
+    private static class ServerErrorRestTemplate extends RestTemplate {
+        @Override
+        public <T> ResponseEntity<T> postForEntity(String url, Object request, Class<T> responseType, Object... uriVariables) {
+            throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error");
+        }
+    }
+    
+    private static class SuccessWebClient {
+        private final UidaiOtpVerifyResponseDto response;
+        
+        public SuccessWebClient(UidaiOtpVerifyResponseDto response) {
+            this.response = response;
+        }
+        
+        public WebClient build() {
+            return new MockWebClient(response);
+        }
+    }
+    
+    private static class MockWebClient extends WebClient {
+        private final UidaiOtpVerifyResponseDto response;
+        
+        public MockWebClient(UidaiOtpVerifyResponseDto response) {
+            this.response = response;
+        }
+        
+        @Override
+        public RequestHeadersUriSpec<?> post() {
+            return new MockRequestHeadersUriSpec(response);
+        }
+    }
+    
+    private static class MockRequestHeadersUriSpec implements WebClient.RequestHeadersUriSpec<WebClient.RequestBodySpec> {
+        private final UidaiOtpVerifyResponseDto response;
+        
+        public MockRequestHeadersUriSpec(UidaiOtpVerifyResponseDto response) {
+            this.response = response;
+        }
+        
+        @Override
+        public RequestBodySpec uri(String uri) {
+            return new MockRequestBodySpec(response);
+        }
+        
+        // Other methods not needed for the test
+        @Override
+        public RequestBodySpec uri(java.net.URI uri) { return null; }
+        
+        @Override
+        public RequestBodySpec uri(java.util.function.Function<org.springframework.web.util.UriBuilder, java.net.URI> uriFunction) { return null; }
+    }
+    
+    private static class MockRequestBodySpec implements WebClient.RequestBodySpec {
+        private final UidaiOtpVerifyResponseDto response;
+        
+        public MockRequestBodySpec(UidaiOtpVerifyResponseDto response) {
+            this.response = response;
+        }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> bodyValue(Object body) {
+            return new MockRequestHeadersSpec(response);
+        }
+        
+        // Other methods not needed for the test
+        @Override
+        public WebClient.RequestHeadersSpec<?> body(org.reactivestreams.Publisher<?> publisher, Class<?> elementClass) { return null; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> body(org.reactivestreams.Publisher<?> publisher, org.springframework.core.ParameterizedTypeReference<?> elementTypeRef) { return null; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> bodyValue(Object body) { return new MockRequestHeadersSpec(response); }
+        
+        @Override
+        public <T, P extends org.reactivestreams.Publisher<T>> WebClient.RequestHeadersSpec<?> body(P publisher, java.lang.Class<T> elementClass) { return null; }
+        
+        @Override
+        public <T, P extends org.reactivestreams.Publisher<T>> WebClient.RequestHeadersSpec<?> body(P publisher, org.springframework.core.ParameterizedTypeReference<T> elementTypeRef) { return null; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> syncBody(Object body) { return null; }
+        
+        @Override
+        public WebClient.RequestBodySpec contentType(org.springframework.http.MediaType contentType) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec contentType(String contentType) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec accept(org.springframework.http.MediaType... acceptableMediaTypes) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec accept(String... acceptableMediaTypes) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec acceptCharset(java.nio.charset.Charset... acceptableCharsets) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec cookie(String name, String value) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec cookies(java.util.function.Consumer<org.springframework.web.reactive.function.client.ClientRequest.Cookie> cookiesConsumer) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec ifModifiedSince(java.time.ZonedDateTime ifModifiedSince) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec ifNoneMatch(String... ifNoneMatches) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec header(String headerName, String... headerValues) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec headers(java.util.function.Consumer<org.springframework.web.reactive.function.client.ClientRequest.Headers> headersConsumer) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec attribute(String name, Object value) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec attributes(java.util.function.Consumer<java.util.Map<String, Object>> attributesConsumer) { return this; }
+    }
+    
+    private static class MockRequestHeadersSpec implements WebClient.RequestHeadersSpec<WebClient.RequestHeadersSpec<?>> {
+        private final UidaiOtpVerifyResponseDto response;
+        
+        public MockRequestHeadersSpec(UidaiOtpVerifyResponseDto response) {
+            this.response = response;
+        }
+        
+        @Override
+        public WebClient.ResponseSpec retrieve() {
+            return new MockResponseSpec(response);
+        }
+        
+        // Other methods not needed for the test
+        @Override
+        public WebClient.RequestHeadersSpec<?> accept(org.springframework.http.MediaType... acceptableMediaTypes) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> accept(String... acceptableMediaTypes) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> acceptCharset(java.nio.charset.Charset... acceptableCharsets) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> cookie(String name, String value) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> cookies(java.util.function.Consumer<org.springframework.web.reactive.function.client.ClientRequest.Cookie> cookiesConsumer) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> ifModifiedSince(java.time.ZonedDateTime ifModifiedSince) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> ifNoneMatch(String... ifNoneMatches) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> header(String headerName, String... headerValues) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> headers(java.util.function.Consumer<org.springframework.web.reactive.function.client.ClientRequest.Headers> headersConsumer) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> attribute(String name, Object value) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> attributes(java.util.function.Consumer<java.util.Map<String, Object>> attributesConsumer) { return this; }
+        
+        @Override
+        public <V> Mono<V> exchange(java.util.function.Function<org.springframework.web.reactive.function.client.ClientResponse, Mono<V>> responseHandler) { return null; }
+    }
+    
+    private static class MockResponseSpec implements WebClient.ResponseSpec {
+        private final UidaiOtpVerifyResponseDto response;
+        
+        public MockResponseSpec(UidaiOtpVerifyResponseDto response) {
+            this.response = response;
+        }
+        
+        @Override
+        public <T> Mono<T> bodyToMono(Class<T> elementClass) {
+            return (Mono<T>) Mono.just(response);
+        }
+        
+        // Other methods not needed for the test
+        @Override
+        public <T> Mono<T> bodyToMono(org.springframework.core.ParameterizedTypeReference<T> elementTypeRef) { return null; }
+        
+        @Override
+        public <T> reactor.core.publisher.Flux<T> bodyToFlux(Class<T> elementClass) { return null; }
+        
+        @Override
+        public <T> reactor.core.publisher.Flux<T> bodyToFlux(org.springframework.core.ParameterizedTypeReference<T> elementTypeRef) { return null; }
+        
+        @Override
+        public WebClient.ResponseSpec onStatus(java.util.function.Predicate<org.springframework.http.HttpStatus> statusPredicate, java.util.function.Function<org.springframework.web.reactive.function.client.ClientResponse, Mono<? extends Throwable>> exceptionFunction) { return this; }
+    }
+    
+    private static class ClientErrorWebClient {
+        public WebClient build() {
+            return new ClientErrorMockWebClient();
+        }
+    }
+    
+    private static class ClientErrorMockWebClient extends WebClient {
+        @Override
+        public RequestHeadersUriSpec<?> post() {
+            return new ClientErrorMockRequestHeadersUriSpec();
+        }
+    }
+    
+    private static class ClientErrorMockRequestHeadersUriSpec implements WebClient.RequestHeadersUriSpec<WebClient.RequestBodySpec> {
+        @Override
+        public RequestBodySpec uri(String uri) {
+            return new ClientErrorMockRequestBodySpec();
+        }
+        
+        // Other methods not needed for the test
+        @Override
+        public RequestBodySpec uri(java.net.URI uri) { return null; }
+        
+        @Override
+        public RequestBodySpec uri(java.util.function.Function<org.springframework.web.util.UriBuilder, java.net.URI> uriFunction) { return null; }
+    }
+    
+    private static class ClientErrorMockRequestBodySpec implements WebClient.RequestBodySpec {
+        @Override
+        public WebClient.RequestHeadersSpec<?> bodyValue(Object body) {
+            return new ClientErrorMockRequestHeadersSpec();
+        }
+        
+        // Other methods not needed for the test
+        @Override
+        public WebClient.RequestHeadersSpec<?> body(org.reactivestreams.Publisher<?> publisher, Class<?> elementClass) { return null; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> body(org.reactivestreams.Publisher<?> publisher, org.springframework.core.ParameterizedTypeReference<?> elementTypeRef) { return null; }
+        
+        @Override
+        public <T, P extends org.reactivestreams.Publisher<T>> WebClient.RequestHeadersSpec<?> body(P publisher, java.lang.Class<T> elementClass) { return null; }
+        
+        @Override
+        public <T, P extends org.reactivestreams.Publisher<T>> WebClient.RequestHeadersSpec<?> body(P publisher, org.springframework.core.ParameterizedTypeReference<T> elementTypeRef) { return null; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> syncBody(Object body) { return null; }
+        
+        @Override
+        public WebClient.RequestBodySpec contentType(org.springframework.http.MediaType contentType) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec contentType(String contentType) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec accept(org.springframework.http.MediaType... acceptableMediaTypes) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec accept(String... acceptableMediaTypes) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec acceptCharset(java.nio.charset.Charset... acceptableCharsets) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec cookie(String name, String value) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec cookies(java.util.function.Consumer<org.springframework.web.reactive.function.client.ClientRequest.Cookie> cookiesConsumer) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec ifModifiedSince(java.time.ZonedDateTime ifModifiedSince) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec ifNoneMatch(String... ifNoneMatches) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec header(String headerName, String... headerValues) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec headers(java.util.function.Consumer<org.springframework.web.reactive.function.client.ClientRequest.Headers> headersConsumer) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec attribute(String name, Object value) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec attributes(java.util.function.Consumer<java.util.Map<String, Object>> attributesConsumer) { return this; }
+    }
+    
+    private static class ClientErrorMockRequestHeadersSpec implements WebClient.RequestHeadersSpec<WebClient.RequestHeadersSpec<?>> {
+        @Override
+        public WebClient.ResponseSpec retrieve() {
+            return new ClientErrorMockResponseSpec();
+        }
+        
+        // Other methods not needed for the test
+        @Override
+        public WebClient.RequestHeadersSpec<?> accept(org.springframework.http.MediaType... acceptableMediaTypes) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> accept(String... acceptableMediaTypes) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> acceptCharset(java.nio.charset.Charset... acceptableCharsets) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> cookie(String name, String value) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> cookies(java.util.function.Consumer<org.springframework.web.reactive.function.client.ClientRequest.Cookie> cookiesConsumer) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> ifModifiedSince(java.time.ZonedDateTime ifModifiedSince) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> ifNoneMatch(String... ifNoneMatches) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> header(String headerName, String... headerValues) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> headers(java.util.function.Consumer<org.springframework.web.reactive.function.client.ClientRequest.Headers> headersConsumer) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> attribute(String name, Object value) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> attributes(java.util.function.Consumer<java.util.Map<String, Object>> attributesConsumer) { return this; }
+        
+        @Override
+        public <V> Mono<V> exchange(java.util.function.Function<org.springframework.web.reactive.function.client.ClientResponse, Mono<V>> responseHandler) { return null; }
+    }
+    
+    private static class ClientErrorMockResponseSpec implements WebClient.ResponseSpec {
+        @Override
+        public <T> Mono<T> bodyToMono(Class<T> elementClass) {
+            return Mono.error(WebClientResponseException.create(
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Bad Request",
+                    null, null, null
+            ));
+        }
+        
+        // Other methods not needed for the test
+        @Override
+        public <T> Mono<T> bodyToMono(org.springframework.core.ParameterizedTypeReference<T> elementTypeRef) { return null; }
+        
+        @Override
+        public <T> reactor.core.publisher.Flux<T> bodyToFlux(Class<T> elementClass) { return null; }
+        
+        @Override
+        public <T> reactor.core.publisher.Flux<T> bodyToFlux(org.springframework.core.ParameterizedTypeReference<T> elementTypeRef) { return null; }
+        
+        @Override
+        public WebClient.ResponseSpec onStatus(java.util.function.Predicate<org.springframework.http.HttpStatus> statusPredicate, java.util.function.Function<org.springframework.web.reactive.function.client.ClientResponse, Mono<? extends Throwable>> exceptionFunction) { return this; }
+    }
+    
+    private static class ServerErrorWebClient {
+        public WebClient build() {
+            return new ServerErrorMockWebClient();
+        }
+    }
+    
+    private static class ServerErrorMockWebClient extends WebClient {
+        @Override
+        public RequestHeadersUriSpec<?> post() {
+            return new ServerErrorMockRequestHeadersUriSpec();
+        }
+    }
+    
+    private static class ServerErrorMockRequestHeadersUriSpec implements WebClient.RequestHeadersUriSpec<WebClient.RequestBodySpec> {
+        @Override
+        public RequestBodySpec uri(String uri) {
+            return new ServerErrorMockRequestBodySpec();
+        }
+        
+        // Other methods not needed for the test
+        @Override
+        public RequestBodySpec uri(java.net.URI uri) { return null; }
+        
+        @Override
+        public RequestBodySpec uri(java.util.function.Function<org.springframework.web.util.UriBuilder, java.net.URI> uriFunction) { return null; }
+    }
+    
+    private static class ServerErrorMockRequestBodySpec implements WebClient.RequestBodySpec {
+        @Override
+        public WebClient.RequestHeadersSpec<?> bodyValue(Object body) {
+            return new ServerErrorMockRequestHeadersSpec();
+        }
+        
+        // Other methods not needed for the test
+        @Override
+        public WebClient.RequestHeadersSpec<?> body(org.reactivestreams.Publisher<?> publisher, Class<?> elementClass) { return null; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> body(org.reactivestreams.Publisher<?> publisher, org.springframework.core.ParameterizedTypeReference<?> elementTypeRef) { return null; }
+        
+        @Override
+        public <T, P extends org.reactivestreams.Publisher<T>> WebClient.RequestHeadersSpec<?> body(P publisher, java.lang.Class<T> elementClass) { return null; }
+        
+        @Override
+        public <T, P extends org.reactivestreams.Publisher<T>> WebClient.RequestHeadersSpec<?> body(P publisher, org.springframework.core.ParameterizedTypeReference<T> elementTypeRef) { return null; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> syncBody(Object body) { return null; }
+        
+        @Override
+        public WebClient.RequestBodySpec contentType(org.springframework.http.MediaType contentType) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec contentType(String contentType) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec accept(org.springframework.http.MediaType... acceptableMediaTypes) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec accept(String... acceptableMediaTypes) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec acceptCharset(java.nio.charset.Charset... acceptableCharsets) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec cookie(String name, String value) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec cookies(java.util.function.Consumer<org.springframework.web.reactive.function.client.ClientRequest.Cookie> cookiesConsumer) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec ifModifiedSince(java.time.ZonedDateTime ifModifiedSince) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec ifNoneMatch(String... ifNoneMatches) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec header(String headerName, String... headerValues) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec headers(java.util.function.Consumer<org.springframework.web.reactive.function.client.ClientRequest.Headers> headersConsumer) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec attribute(String name, Object value) { return this; }
+        
+        @Override
+        public WebClient.RequestBodySpec attributes(java.util.function.Consumer<java.util.Map<String, Object>> attributesConsumer) { return this; }
+    }
+    
+    private static class ServerErrorMockRequestHeadersSpec implements WebClient.RequestHeadersSpec<WebClient.RequestHeadersSpec<?>> {
+        @Override
+        public WebClient.ResponseSpec retrieve() {
+            return new ServerErrorMockResponseSpec();
+        }
+        
+        // Other methods not needed for the test
+        @Override
+        public WebClient.RequestHeadersSpec<?> accept(org.springframework.http.MediaType... acceptableMediaTypes) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> accept(String... acceptableMediaTypes) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> acceptCharset(java.nio.charset.Charset... acceptableCharsets) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> cookie(String name, String value) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> cookies(java.util.function.Consumer<org.springframework.web.reactive.function.client.ClientRequest.Cookie> cookiesConsumer) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> ifModifiedSince(java.time.ZonedDateTime ifModifiedSince) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> ifNoneMatch(String... ifNoneMatches) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> header(String headerName, String... headerValues) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> headers(java.util.function.Consumer<org.springframework.web.reactive.function.client.ClientRequest.Headers> headersConsumer) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> attribute(String name, Object value) { return this; }
+        
+        @Override
+        public WebClient.RequestHeadersSpec<?> attributes(java.util.function.Consumer<java.util.Map<String, Object>> attributesConsumer) { return this; }
+        
+        @Override
+        public <V> Mono<V> exchange(java.util.function.Function<org.springframework.web.reactive.function.client.ClientResponse, Mono<V>> responseHandler) { return null; }
+    }
+    
+    private static class ServerErrorMockResponseSpec implements WebClient.ResponseSpec {
+        @Override
+        public <T> Mono<T> bodyToMono(Class<T> elementClass) {
+            return Mono.error(WebClientResponseException.create(
+                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                    "Internal Server Error",
+                    null, null, null
+            ));
+        }
+        
+        // Other methods not needed for the test
+        @Override
+        public <T> Mono<T> bodyToMono(org.springframework.core.ParameterizedTypeReference<T> elementTypeRef) { return null; }
+        
+        @Override
+        public <T> reactor.core.publisher.Flux<T> bodyToFlux(Class<T> elementClass) { return null; }
+        
+        @Override
+        public <T> reactor.core.publisher.Flux<T> bodyToFlux(org.springframework.core.ParameterizedTypeReference<T> elementTypeRef) { return null; }
+        
+        @Override
+        public WebClient.ResponseSpec onStatus(java.util.function.Predicate<org.springframework.http.HttpStatus> statusPredicate, java.util.function.Function<org.springframework.web.reactive.function.client.ClientResponse, Mono<? extends Throwable>> exceptionFunction) { return this; }
+    }
+}

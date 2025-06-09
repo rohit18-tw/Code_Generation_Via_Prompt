@@ -1,0 +1,436 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 14:00:20
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_053
+# ==================================================
+
+package com.ekyc.service.service;
+
+import com.ekyc.service.dto.*;
+import com.ekyc.service.entity.EkycRequest;
+import com.ekyc.service.entity.EkycVerification;
+import com.ekyc.service.enums.EkycStatus;
+import com.ekyc.service.enums.VerificationStatus;
+import com.ekyc.service.exception.EkycException;
+import com.ekyc.service.exception.InvalidRequestException;
+import com.ekyc.service.exception.ResourceNotFoundException;
+import com.ekyc.service.repository.EkycRequestRepository;
+import com.ekyc.service.repository.EkycVerificationRepository;
+import com.ekyc.service.service.impl.EkycServiceImpl;
+import com.ekyc.service.util.AadhaarValidator;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
+public class EkycServiceImplTest {
+
+    private EkycServiceImpl ekycService;
+    private EkycRequestRepository ekycRequestRepository;
+    private EkycVerificationRepository ekycVerificationRepository;
+    private WebClient webClient;
+    private UidaiService uidaiService;
+    private AadhaarValidator aadhaarValidator;
+
+    @BeforeEach
+    public void setUp() {
+        // Create custom test implementations of dependencies
+        ekycRequestRepository = new TestEkycRequestRepository();
+        ekycVerificationRepository = new TestEkycVerificationRepository();
+        webClient = createTestWebClient();
+        uidaiService = new TestUidaiService();
+        aadhaarValidator = new TestAadhaarValidator();
+        
+        // Initialize the service with test dependencies
+        ekycService = new EkycServiceImpl(
+                ekycRequestRepository,
+                ekycVerificationRepository,
+                webClient,
+                uidaiService,
+                aadhaarValidator
+        );
+    }
+
+    @Test
+    @DisplayName("Should initiate eKYC process successfully")
+    public void testInitiateEkycProcess_Success() {
+        // Arrange
+        EkycRequestDto requestDto = new EkycRequestDto();
+        requestDto.setAadhaarNumber("123456789012");
+        requestDto.setMobileNumber("9876543210");
+        requestDto.setName("Test User");
+        
+        // Act
+        EkycResponseDto responseDto = ekycService.initiateEkycProcess(requestDto);
+        
+        // Assert
+        assertNotNull(responseDto);
+        assertNotNull(responseDto.getRequestId());
+        assertEquals(EkycStatus.INITIATED, responseDto.getStatus());
+    }
+
+    @Test
+    @DisplayName("Should throw exception when initiating eKYC with invalid Aadhaar")
+    public void testInitiateEkycProcess_InvalidAadhaar() {
+        // Arrange
+        EkycRequestDto requestDto = new EkycRequestDto();
+        requestDto.setAadhaarNumber("123456"); // Invalid Aadhaar
+        requestDto.setMobileNumber("9876543210");
+        requestDto.setName("Test User");
+        
+        // Act & Assert
+        assertThrows(InvalidRequestException.class, () -> {
+            ekycService.initiateEkycProcess(requestDto);
+        });
+    }
+
+    @Test
+    @DisplayName("Should verify OTP successfully")
+    public void testVerifyOtp_Success() {
+        // Arrange
+        String requestId = UUID.randomUUID().toString();
+        String otp = "123456";
+        
+        // Create a test request in the repository
+        EkycRequest ekycRequest = new EkycRequest();
+        ekycRequest.setId(requestId);
+        ekycRequest.setAadhaarNumber("123456789012");
+        ekycRequest.setMobileNumber("9876543210");
+        ekycRequest.setName("Test User");
+        ekycRequest.setStatus(EkycStatus.INITIATED);
+        ekycRequest.setCreatedAt(LocalDateTime.now());
+        ((TestEkycRequestRepository) ekycRequestRepository).addTestRequest(ekycRequest);
+        
+        // Act
+        EkycResponseDto responseDto = ekycService.verifyOtp(requestId, otp);
+        
+        // Assert
+        assertNotNull(responseDto);
+        assertEquals(requestId, responseDto.getRequestId());
+        assertEquals(EkycStatus.COMPLETED, responseDto.getStatus());
+    }
+
+    @Test
+    @DisplayName("Should throw exception when verifying OTP with invalid request ID")
+    public void testVerifyOtp_InvalidRequestId() {
+        // Arrange
+        String requestId = "non-existent-id";
+        String otp = "123456";
+        
+        // Act & Assert
+        assertThrows(ResourceNotFoundException.class, () -> {
+            ekycService.verifyOtp(requestId, otp);
+        });
+    }
+
+    @Test
+    @DisplayName("Should throw exception when verifying OTP with invalid OTP")
+    public void testVerifyOtp_InvalidOtp() {
+        // Arrange
+        String requestId = UUID.randomUUID().toString();
+        String otp = "invalid"; // Invalid OTP
+        
+        // Create a test request in the repository
+        EkycRequest ekycRequest = new EkycRequest();
+        ekycRequest.setId(requestId);
+        ekycRequest.setAadhaarNumber("123456789012");
+        ekycRequest.setMobileNumber("9876543210");
+        ekycRequest.setName("Test User");
+        ekycRequest.setStatus(EkycStatus.INITIATED);
+        ekycRequest.setCreatedAt(LocalDateTime.now());
+        ((TestEkycRequestRepository) ekycRequestRepository).addTestRequest(ekycRequest);
+        
+        // Configure test UIDAI service to fail OTP validation
+        ((TestUidaiService) uidaiService).setShouldFailOtpValidation(true);
+        
+        // Act & Assert
+        assertThrows(EkycException.class, () -> {
+            ekycService.verifyOtp(requestId, otp);
+        });
+    }
+
+    @Test
+    @DisplayName("Should get eKYC status successfully")
+    public void testGetEkycStatus_Success() {
+        // Arrange
+        String requestId = UUID.randomUUID().toString();
+        
+        // Create a test request in the repository
+        EkycRequest ekycRequest = new EkycRequest();
+        ekycRequest.setId(requestId);
+        ekycRequest.setAadhaarNumber("123456789012");
+        ekycRequest.setMobileNumber("9876543210");
+        ekycRequest.setName("Test User");
+        ekycRequest.setStatus(EkycStatus.INITIATED);
+        ekycRequest.setCreatedAt(LocalDateTime.now());
+        ((TestEkycRequestRepository) ekycRequestRepository).addTestRequest(ekycRequest);
+        
+        // Act
+        EkycStatusResponseDto responseDto = ekycService.getEkycStatus(requestId);
+        
+        // Assert
+        assertNotNull(responseDto);
+        assertEquals(requestId, responseDto.getRequestId());
+        assertEquals(EkycStatus.INITIATED, responseDto.getStatus());
+    }
+
+    @Test
+    @DisplayName("Should throw exception when getting eKYC status with invalid request ID")
+    public void testGetEkycStatus_InvalidRequestId() {
+        // Arrange
+        String requestId = "non-existent-id";
+        
+        // Act & Assert
+        assertThrows(ResourceNotFoundException.class, () -> {
+            ekycService.getEkycStatus(requestId);
+        });
+    }
+
+    @Test
+    @DisplayName("Should clean up expired requests successfully")
+    public void testCleanupExpiredRequests() {
+        // Arrange
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime oldDate = now.minusDays(10);
+        
+        // Create some expired requests
+        EkycRequest expiredRequest1 = new EkycRequest();
+        expiredRequest1.setId(UUID.randomUUID().toString());
+        expiredRequest1.setStatus(EkycStatus.EXPIRED);
+        expiredRequest1.setCreatedAt(oldDate);
+        
+        EkycRequest expiredRequest2 = new EkycRequest();
+        expiredRequest2.setId(UUID.randomUUID().toString());
+        expiredRequest2.setStatus(EkycStatus.EXPIRED);
+        expiredRequest2.setCreatedAt(oldDate);
+        
+        ((TestEkycRequestRepository) ekycRequestRepository).addTestRequest(expiredRequest1);
+        ((TestEkycRequestRepository) ekycRequestRepository).addTestRequest(expiredRequest2);
+        
+        // Act
+        ekycService.cleanupExpiredRequests();
+        
+        // Assert
+        // Verification is done inside the TestEkycRequestRepository implementation
+        assertEquals(2, ((TestEkycRequestRepository) ekycRequestRepository).getDeletedCount());
+    }
+
+    // Test helper classes
+
+    private static class TestEkycRequestRepository implements EkycRequestRepository {
+        private final java.util.Map<String, EkycRequest> requests = new java.util.HashMap<>();
+        private int deletedCount = 0;
+
+        public void addTestRequest(EkycRequest request) {
+            requests.put(request.getId(), request);
+        }
+
+        public int getDeletedCount() {
+            return deletedCount;
+        }
+
+        @Override
+        public <S extends EkycRequest> S save(S entity) {
+            requests.put(entity.getId(), entity);
+            return entity;
+        }
+
+        @Override
+        public Optional<EkycRequest> findById(String id) {
+            return Optional.ofNullable(requests.get(id));
+        }
+
+        @Override
+        public int deleteExpiredRequestsOlderThan(LocalDateTime date) {
+            int count = 0;
+            for (EkycRequest request : new java.util.ArrayList<>(requests.values())) {
+                if (request.getStatus() == EkycStatus.EXPIRED && request.getCreatedAt().isBefore(date)) {
+                    requests.remove(request.getId());
+                    count++;
+                }
+            }
+            deletedCount = count;
+            return count;
+        }
+
+        // Implement other required methods with minimal functionality for tests
+        @Override
+        public boolean existsById(String s) {
+            return requests.containsKey(s);
+        }
+
+        @Override
+        public java.util.List<EkycRequest> findAll() {
+            return new java.util.ArrayList<>(requests.values());
+        }
+
+        @Override
+        public java.util.List<EkycRequest> findAllById(Iterable<String> strings) {
+            return null;
+        }
+
+        @Override
+        public long count() {
+            return requests.size();
+        }
+
+        @Override
+        public void deleteById(String s) {
+            requests.remove(s);
+        }
+
+        @Override
+        public void delete(EkycRequest entity) {
+            requests.remove(entity.getId());
+        }
+
+        @Override
+        public void deleteAllById(Iterable<? extends String> strings) {
+        }
+
+        @Override
+        public void deleteAll(Iterable<? extends EkycRequest> entities) {
+        }
+
+        @Override
+        public void deleteAll() {
+            requests.clear();
+        }
+
+        @Override
+        public <S extends EkycRequest> java.util.List<S> saveAll(Iterable<S> entities) {
+            return null;
+        }
+    }
+
+    private static class TestEkycVerificationRepository implements EkycVerificationRepository {
+        private final java.util.Map<String, EkycVerification> verifications = new java.util.HashMap<>();
+
+        @Override
+        public <S extends EkycVerification> S save(S entity) {
+            verifications.put(entity.getId(), entity);
+            return entity;
+        }
+
+        @Override
+        public Optional<EkycVerification> findByRequestId(String requestId) {
+            return verifications.values().stream()
+                    .filter(v -> v.getRequestId().equals(requestId))
+                    .findFirst();
+        }
+
+        // Implement other required methods with minimal functionality for tests
+        @Override
+        public Optional<EkycVerification> findById(String s) {
+            return Optional.ofNullable(verifications.get(s));
+        }
+
+        @Override
+        public boolean existsById(String s) {
+            return verifications.containsKey(s);
+        }
+
+        @Override
+        public java.util.List<EkycVerification> findAll() {
+            return new java.util.ArrayList<>(verifications.values());
+        }
+
+        @Override
+        public java.util.List<EkycVerification> findAllById(Iterable<String> strings) {
+            return null;
+        }
+
+        @Override
+        public long count() {
+            return verifications.size();
+        }
+
+        @Override
+        public void deleteById(String s) {
+            verifications.remove(s);
+        }
+
+        @Override
+        public void delete(EkycVerification entity) {
+            verifications.remove(entity.getId());
+        }
+
+        @Override
+        public void deleteAllById(Iterable<? extends String> strings) {
+        }
+
+        @Override
+        public void deleteAll(Iterable<? extends EkycVerification> entities) {
+        }
+
+        @Override
+        public void deleteAll() {
+            verifications.clear();
+        }
+
+        @Override
+        public <S extends EkycVerification> java.util.List<S> saveAll(Iterable<S> entities) {
+            return null;
+        }
+    }
+
+    private static class TestUidaiService implements UidaiService {
+        private boolean shouldFailOtpValidation = false;
+
+        public void setShouldFailOtpValidation(boolean shouldFailOtpValidation) {
+            this.shouldFailOtpValidation = shouldFailOtpValidation;
+        }
+
+        @Override
+        public UidaiOtpResponseDto initiateOtp(UidaiOtpInitiateRequestDto requestDto) {
+            UidaiOtpResponseDto responseDto = new UidaiOtpResponseDto();
+            responseDto.setTxnId(UUID.randomUUID().toString());
+            responseDto.setStatus("SUCCESS");
+            return responseDto;
+        }
+
+        @Override
+        public UidaiVerifyOtpResponseDto verifyOtp(UidaiVerifyOtpRequestDto requestDto) {
+            if (shouldFailOtpValidation) {
+                throw new EkycException("OTP validation failed");
+            }
+            
+            UidaiVerifyOtpResponseDto responseDto = new UidaiVerifyOtpResponseDto();
+            responseDto.setStatus("SUCCESS");
+            
+            UidaiKycResponseDto kycData = new UidaiKycResponseDto();
+            kycData.setName("Test User");
+            kycData.setDob("01-01-1990");
+            kycData.setGender("M");
+            kycData.setAddress("Test Address");
+            responseDto.setKycData(kycData);
+            
+            return responseDto;
+        }
+    }
+
+    private static class TestAadhaarValidator extends AadhaarValidator {
+        @Override
+        public boolean isValid(String aadhaarNumber) {
+            return aadhaarNumber != null && aadhaarNumber.length() == 12;
+        }
+    }
+
+    private WebClient createTestWebClient() {
+        // Create a minimal WebClient implementation for testing
+        return WebClient.builder().build();
+    }
+}

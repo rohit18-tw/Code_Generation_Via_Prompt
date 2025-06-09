@@ -1,0 +1,1516 @@
+{
+  "total_files": 61,
+  "files_by_type": {
+    "config": [
+      {
+        "path": "ekyc-service/pom.xml",
+        "purpose": "Maven project configuration for eKYC service",
+        "type": "config",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/config/WebClientConfig.java",
+        "purpose": "Configuration for WebClient to call external APIs",
+        "type": "config",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/config/AppConfig.java",
+        "purpose": "Application configuration",
+        "type": "config",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/resources/application.yml",
+        "purpose": "Application configuration properties",
+        "type": "config",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/resources/db/migration/V1__init_schema.sql",
+        "purpose": "Initial database schema migration",
+        "type": "config",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/pom.xml",
+        "purpose": "Maven project configuration for mock UIDAI service",
+        "type": "config",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/config/OpenApiConfig.java",
+        "purpose": "Configuration for OpenAPI/Swagger documentation",
+        "type": "config",
+        "priority": "medium",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/resources/application.yml",
+        "purpose": "Application configuration properties for mock service",
+        "type": "config",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/README.md",
+        "purpose": "Documentation for mock UIDAI service",
+        "type": "config",
+        "priority": "medium",
+        "dependencies": []
+      }
+    ],
+    "main": [
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/EkycServiceApplication.java",
+        "purpose": "Main application entry point",
+        "type": "main",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/MockUidaiServiceApplication.java",
+        "purpose": "Main application entry point for mock UIDAI service",
+        "type": "main",
+        "priority": "high",
+        "dependencies": []
+      }
+    ],
+    "entity": [
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/entity/EkycRequest.java",
+        "purpose": "Entity for storing eKYC request details",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/entity/OtpVerification.java",
+        "purpose": "Entity for storing OTP verification details",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/enums/IdType.java",
+        "purpose": "Enum for ID types (AADHAAR or VID)",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/enums/VerificationStatus.java",
+        "purpose": "Enum for verification status values",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/EkycRequestDto.java",
+        "purpose": "DTO for eKYC request payload",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/OtpVerificationDto.java",
+        "purpose": "DTO for OTP verification request",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/EkycResponseDto.java",
+        "purpose": "DTO for eKYC response",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateRequestDto.java",
+        "purpose": "DTO for UIDAI OTP initiation request",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateResponseDto.java",
+        "purpose": "DTO for UIDAI OTP initiation response",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpVerifyRequestDto.java",
+        "purpose": "DTO for UIDAI OTP verification request",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpVerifyResponseDto.java",
+        "purpose": "DTO for UIDAI OTP verification response",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/ErrorResponseDto.java",
+        "purpose": "Standardized error response DTO",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/exception/EkycException.java",
+        "purpose": "Custom exception for eKYC service",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateRequestDto.java",
+        "purpose": "DTO for OTP initiation request in mock service",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateResponseDto.java",
+        "purpose": "DTO for OTP initiation response in mock service",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyRequestDto.java",
+        "purpose": "DTO for OTP verification request in mock service",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyResponseDto.java",
+        "purpose": "DTO for OTP verification response in mock service",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/KycDataDto.java",
+        "purpose": "DTO for KYC data in mock service",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/ErrorResponseDto.java",
+        "purpose": "DTO for error response in mock service",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/ConfigRequestDto.java",
+        "purpose": "DTO for configuration request in mock service",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      }
+    ],
+    "repository": [
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/repository/EkycRequestRepository.java",
+        "purpose": "Repository for eKYC request entity",
+        "type": "repository",
+        "priority": "high",
+        "dependencies": [
+          "EkycRequest.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/repository/OtpVerificationRepository.java",
+        "purpose": "Repository for OTP verification entity",
+        "type": "repository",
+        "priority": "high",
+        "dependencies": [
+          "OtpVerification.java"
+        ]
+      }
+    ],
+    "service": [
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/service/EkycService.java",
+        "purpose": "Service interface for eKYC operations",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "EkycRequestDto.java",
+          "EkycResponseDto.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/service/impl/EkycServiceImpl.java",
+        "purpose": "Implementation of eKYC service",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "EkycService.java",
+          "EkycRequestRepository.java",
+          "UidaiApiService.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/service/OtpVerificationService.java",
+        "purpose": "Service interface for OTP verification",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "OtpVerificationDto.java",
+          "EkycResponseDto.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/service/impl/OtpVerificationServiceImpl.java",
+        "purpose": "Implementation of OTP verification service",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "OtpVerificationService.java",
+          "OtpVerificationRepository.java",
+          "UidaiApiService.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/service/UidaiApiService.java",
+        "purpose": "Service interface for UIDAI API integration",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "UidaiOtpInitiateRequestDto.java",
+          "UidaiOtpInitiateResponseDto.java",
+          "UidaiOtpVerifyRequestDto.java",
+          "UidaiOtpVerifyResponseDto.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/service/impl/UidaiApiServiceImpl.java",
+        "purpose": "Implementation of UIDAI API service",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "UidaiApiService.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/util/LoggingUtil.java",
+        "purpose": "Utility for audit-ready logging with PII masking",
+        "type": "service",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/util/ValidationUtil.java",
+        "purpose": "Utility for input validation",
+        "type": "service",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/exception/GlobalExceptionHandler.java",
+        "purpose": "Global exception handler for standardized error responses",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "ErrorResponseDto.java"
+        ]
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/service/MockUidaiService.java",
+        "purpose": "Service interface for mock UIDAI operations",
+        "type": "service",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/service/impl/MockUidaiServiceImpl.java",
+        "purpose": "Implementation of mock UIDAI service",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "MockUidaiService.java"
+        ]
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/service/MockConfigService.java",
+        "purpose": "Service interface for mock configuration",
+        "type": "service",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/service/impl/MockConfigServiceImpl.java",
+        "purpose": "Implementation of mock configuration service",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "MockConfigService.java"
+        ]
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/service/TraceLoggerService.java",
+        "purpose": "Service for trace logging with PII masking",
+        "type": "service",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/service/impl/TraceLoggerServiceImpl.java",
+        "purpose": "Implementation of trace logger service",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "TraceLoggerService.java"
+        ]
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/util/PiiMaskingUtil.java",
+        "purpose": "Utility for masking PII in logs",
+        "type": "service",
+        "priority": "high",
+        "dependencies": []
+      }
+    ],
+    "controller": [
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/controller/EkycController.java",
+        "purpose": "REST controller for eKYC operations",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "EkycService.java",
+          "EkycRequestDto.java",
+          "EkycResponseDto.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/controller/OtpVerificationController.java",
+        "purpose": "REST controller for OTP verification",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "OtpVerificationService.java",
+          "OtpVerificationDto.java",
+          "EkycResponseDto.java"
+        ]
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/controller/MockUidaiController.java",
+        "purpose": "Controller for mock UIDAI API endpoints",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "MockUidaiService.java"
+        ]
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/controller/MockAdminController.java",
+        "purpose": "Controller for mock admin operations",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "MockConfigService.java",
+          "TraceLoggerService.java"
+        ]
+      }
+    ],
+    "test": [
+      {
+        "path": "ekyc-service/src/test/java/com/ekyc/service/controller/EkycControllerTest.java",
+        "purpose": "Unit tests for eKYC controller",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": [
+          "EkycController.java",
+          "EkycService.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/test/java/com/ekyc/service/controller/OtpVerificationControllerTest.java",
+        "purpose": "Unit tests for OTP verification controller",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": [
+          "OtpVerificationController.java",
+          "OtpVerificationService.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/test/java/com/ekyc/service/service/EkycServiceImplTest.java",
+        "purpose": "Unit tests for eKYC service implementation",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": [
+          "EkycServiceImpl.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/test/java/com/ekyc/service/service/OtpVerificationServiceImplTest.java",
+        "purpose": "Unit tests for OTP verification service implementation",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": [
+          "OtpVerificationServiceImpl.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/test/java/com/ekyc/service/service/UidaiApiServiceImplTest.java",
+        "purpose": "Unit tests for UIDAI API service implementation",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": [
+          "UidaiApiServiceImpl.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/test/java/com/ekyc/service/integration/EkycIntegrationTest.java",
+        "purpose": "Integration tests for eKYC flow",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/test/java/com/mock/uidai/controller/MockUidaiControllerTest.java",
+        "purpose": "Unit tests for mock UIDAI controller",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": [
+          "MockUidaiController.java"
+        ]
+      },
+      {
+        "path": "mock-uidai-service/src/test/java/com/mock/uidai/service/MockUidaiServiceImplTest.java",
+        "purpose": "Unit tests for mock UIDAI service implementation",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": [
+          "MockUidaiServiceImpl.java"
+        ]
+      }
+    ]
+  },
+  "files_by_priority": {
+    "high": [
+      {
+        "path": "ekyc-service/pom.xml",
+        "purpose": "Maven project configuration for eKYC service",
+        "type": "config",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/EkycServiceApplication.java",
+        "purpose": "Main application entry point",
+        "type": "main",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/entity/EkycRequest.java",
+        "purpose": "Entity for storing eKYC request details",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/entity/OtpVerification.java",
+        "purpose": "Entity for storing OTP verification details",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/enums/IdType.java",
+        "purpose": "Enum for ID types (AADHAAR or VID)",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/enums/VerificationStatus.java",
+        "purpose": "Enum for verification status values",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/EkycRequestDto.java",
+        "purpose": "DTO for eKYC request payload",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/OtpVerificationDto.java",
+        "purpose": "DTO for OTP verification request",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/EkycResponseDto.java",
+        "purpose": "DTO for eKYC response",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateRequestDto.java",
+        "purpose": "DTO for UIDAI OTP initiation request",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateResponseDto.java",
+        "purpose": "DTO for UIDAI OTP initiation response",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpVerifyRequestDto.java",
+        "purpose": "DTO for UIDAI OTP verification request",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpVerifyResponseDto.java",
+        "purpose": "DTO for UIDAI OTP verification response",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/ErrorResponseDto.java",
+        "purpose": "Standardized error response DTO",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/repository/EkycRequestRepository.java",
+        "purpose": "Repository for eKYC request entity",
+        "type": "repository",
+        "priority": "high",
+        "dependencies": [
+          "EkycRequest.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/repository/OtpVerificationRepository.java",
+        "purpose": "Repository for OTP verification entity",
+        "type": "repository",
+        "priority": "high",
+        "dependencies": [
+          "OtpVerification.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/service/EkycService.java",
+        "purpose": "Service interface for eKYC operations",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "EkycRequestDto.java",
+          "EkycResponseDto.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/service/impl/EkycServiceImpl.java",
+        "purpose": "Implementation of eKYC service",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "EkycService.java",
+          "EkycRequestRepository.java",
+          "UidaiApiService.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/service/OtpVerificationService.java",
+        "purpose": "Service interface for OTP verification",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "OtpVerificationDto.java",
+          "EkycResponseDto.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/service/impl/OtpVerificationServiceImpl.java",
+        "purpose": "Implementation of OTP verification service",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "OtpVerificationService.java",
+          "OtpVerificationRepository.java",
+          "UidaiApiService.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/service/UidaiApiService.java",
+        "purpose": "Service interface for UIDAI API integration",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "UidaiOtpInitiateRequestDto.java",
+          "UidaiOtpInitiateResponseDto.java",
+          "UidaiOtpVerifyRequestDto.java",
+          "UidaiOtpVerifyResponseDto.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/service/impl/UidaiApiServiceImpl.java",
+        "purpose": "Implementation of UIDAI API service",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "UidaiApiService.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/controller/EkycController.java",
+        "purpose": "REST controller for eKYC operations",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "EkycService.java",
+          "EkycRequestDto.java",
+          "EkycResponseDto.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/controller/OtpVerificationController.java",
+        "purpose": "REST controller for OTP verification",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "OtpVerificationService.java",
+          "OtpVerificationDto.java",
+          "EkycResponseDto.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/util/LoggingUtil.java",
+        "purpose": "Utility for audit-ready logging with PII masking",
+        "type": "service",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/util/ValidationUtil.java",
+        "purpose": "Utility for input validation",
+        "type": "service",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/config/WebClientConfig.java",
+        "purpose": "Configuration for WebClient to call external APIs",
+        "type": "config",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/config/AppConfig.java",
+        "purpose": "Application configuration",
+        "type": "config",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/exception/GlobalExceptionHandler.java",
+        "purpose": "Global exception handler for standardized error responses",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "ErrorResponseDto.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/exception/EkycException.java",
+        "purpose": "Custom exception for eKYC service",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/resources/application.yml",
+        "purpose": "Application configuration properties",
+        "type": "config",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "ekyc-service/src/main/resources/db/migration/V1__init_schema.sql",
+        "purpose": "Initial database schema migration",
+        "type": "config",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/pom.xml",
+        "purpose": "Maven project configuration for mock UIDAI service",
+        "type": "config",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/MockUidaiServiceApplication.java",
+        "purpose": "Main application entry point for mock UIDAI service",
+        "type": "main",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateRequestDto.java",
+        "purpose": "DTO for OTP initiation request in mock service",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateResponseDto.java",
+        "purpose": "DTO for OTP initiation response in mock service",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyRequestDto.java",
+        "purpose": "DTO for OTP verification request in mock service",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyResponseDto.java",
+        "purpose": "DTO for OTP verification response in mock service",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/KycDataDto.java",
+        "purpose": "DTO for KYC data in mock service",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/ErrorResponseDto.java",
+        "purpose": "DTO for error response in mock service",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/ConfigRequestDto.java",
+        "purpose": "DTO for configuration request in mock service",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/service/MockUidaiService.java",
+        "purpose": "Service interface for mock UIDAI operations",
+        "type": "service",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/service/impl/MockUidaiServiceImpl.java",
+        "purpose": "Implementation of mock UIDAI service",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "MockUidaiService.java"
+        ]
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/service/MockConfigService.java",
+        "purpose": "Service interface for mock configuration",
+        "type": "service",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/service/impl/MockConfigServiceImpl.java",
+        "purpose": "Implementation of mock configuration service",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "MockConfigService.java"
+        ]
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/service/TraceLoggerService.java",
+        "purpose": "Service for trace logging with PII masking",
+        "type": "service",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/service/impl/TraceLoggerServiceImpl.java",
+        "purpose": "Implementation of trace logger service",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "TraceLoggerService.java"
+        ]
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/controller/MockUidaiController.java",
+        "purpose": "Controller for mock UIDAI API endpoints",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "MockUidaiService.java"
+        ]
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/controller/MockAdminController.java",
+        "purpose": "Controller for mock admin operations",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "MockConfigService.java",
+          "TraceLoggerService.java"
+        ]
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/util/PiiMaskingUtil.java",
+        "purpose": "Utility for masking PII in logs",
+        "type": "service",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/resources/application.yml",
+        "purpose": "Application configuration properties for mock service",
+        "type": "config",
+        "priority": "high",
+        "dependencies": []
+      }
+    ],
+    "medium": [
+      {
+        "path": "ekyc-service/src/test/java/com/ekyc/service/controller/EkycControllerTest.java",
+        "purpose": "Unit tests for eKYC controller",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": [
+          "EkycController.java",
+          "EkycService.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/test/java/com/ekyc/service/controller/OtpVerificationControllerTest.java",
+        "purpose": "Unit tests for OTP verification controller",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": [
+          "OtpVerificationController.java",
+          "OtpVerificationService.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/test/java/com/ekyc/service/service/EkycServiceImplTest.java",
+        "purpose": "Unit tests for eKYC service implementation",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": [
+          "EkycServiceImpl.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/test/java/com/ekyc/service/service/OtpVerificationServiceImplTest.java",
+        "purpose": "Unit tests for OTP verification service implementation",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": [
+          "OtpVerificationServiceImpl.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/test/java/com/ekyc/service/service/UidaiApiServiceImplTest.java",
+        "purpose": "Unit tests for UIDAI API service implementation",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": [
+          "UidaiApiServiceImpl.java"
+        ]
+      },
+      {
+        "path": "ekyc-service/src/test/java/com/ekyc/service/integration/EkycIntegrationTest.java",
+        "purpose": "Integration tests for eKYC flow",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/config/OpenApiConfig.java",
+        "purpose": "Configuration for OpenAPI/Swagger documentation",
+        "type": "config",
+        "priority": "medium",
+        "dependencies": []
+      },
+      {
+        "path": "mock-uidai-service/src/test/java/com/mock/uidai/controller/MockUidaiControllerTest.java",
+        "purpose": "Unit tests for mock UIDAI controller",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": [
+          "MockUidaiController.java"
+        ]
+      },
+      {
+        "path": "mock-uidai-service/src/test/java/com/mock/uidai/service/MockUidaiServiceImplTest.java",
+        "purpose": "Unit tests for mock UIDAI service implementation",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": [
+          "MockUidaiServiceImpl.java"
+        ]
+      },
+      {
+        "path": "mock-uidai-service/README.md",
+        "purpose": "Documentation for mock UIDAI service",
+        "type": "config",
+        "priority": "medium",
+        "dependencies": []
+      }
+    ],
+    "low": []
+  },
+  "generation_order": [
+    "config",
+    "entities",
+    "repositories",
+    "services",
+    "controllers",
+    "tests"
+  ],
+  "ordered_files": [
+    {
+      "path": "ekyc-service/pom.xml",
+      "purpose": "Maven project configuration for eKYC service",
+      "type": "config",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/config/WebClientConfig.java",
+      "purpose": "Configuration for WebClient to call external APIs",
+      "type": "config",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/config/AppConfig.java",
+      "purpose": "Application configuration",
+      "type": "config",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "ekyc-service/src/main/resources/application.yml",
+      "purpose": "Application configuration properties",
+      "type": "config",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "ekyc-service/src/main/resources/db/migration/V1__init_schema.sql",
+      "purpose": "Initial database schema migration",
+      "type": "config",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "mock-uidai-service/pom.xml",
+      "purpose": "Maven project configuration for mock UIDAI service",
+      "type": "config",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "mock-uidai-service/src/main/java/com/mock/uidai/config/OpenApiConfig.java",
+      "purpose": "Configuration for OpenAPI/Swagger documentation",
+      "type": "config",
+      "priority": "medium",
+      "dependencies": []
+    },
+    {
+      "path": "mock-uidai-service/src/main/resources/application.yml",
+      "purpose": "Application configuration properties for mock service",
+      "type": "config",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "mock-uidai-service/README.md",
+      "purpose": "Documentation for mock UIDAI service",
+      "type": "config",
+      "priority": "medium",
+      "dependencies": []
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/EkycServiceApplication.java",
+      "purpose": "Main application entry point",
+      "type": "main",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "mock-uidai-service/src/main/java/com/mock/uidai/MockUidaiServiceApplication.java",
+      "purpose": "Main application entry point for mock UIDAI service",
+      "type": "main",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/entity/EkycRequest.java",
+      "purpose": "Entity for storing eKYC request details",
+      "type": "entity",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/entity/OtpVerification.java",
+      "purpose": "Entity for storing OTP verification details",
+      "type": "entity",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/enums/IdType.java",
+      "purpose": "Enum for ID types (AADHAAR or VID)",
+      "type": "entity",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/enums/VerificationStatus.java",
+      "purpose": "Enum for verification status values",
+      "type": "entity",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/dto/EkycRequestDto.java",
+      "purpose": "DTO for eKYC request payload",
+      "type": "entity",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/dto/OtpVerificationDto.java",
+      "purpose": "DTO for OTP verification request",
+      "type": "entity",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/dto/EkycResponseDto.java",
+      "purpose": "DTO for eKYC response",
+      "type": "entity",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateRequestDto.java",
+      "purpose": "DTO for UIDAI OTP initiation request",
+      "type": "entity",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateResponseDto.java",
+      "purpose": "DTO for UIDAI OTP initiation response",
+      "type": "entity",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpVerifyRequestDto.java",
+      "purpose": "DTO for UIDAI OTP verification request",
+      "type": "entity",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpVerifyResponseDto.java",
+      "purpose": "DTO for UIDAI OTP verification response",
+      "type": "entity",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/dto/ErrorResponseDto.java",
+      "purpose": "Standardized error response DTO",
+      "type": "entity",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/exception/EkycException.java",
+      "purpose": "Custom exception for eKYC service",
+      "type": "entity",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateRequestDto.java",
+      "purpose": "DTO for OTP initiation request in mock service",
+      "type": "entity",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateResponseDto.java",
+      "purpose": "DTO for OTP initiation response in mock service",
+      "type": "entity",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyRequestDto.java",
+      "purpose": "DTO for OTP verification request in mock service",
+      "type": "entity",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyResponseDto.java",
+      "purpose": "DTO for OTP verification response in mock service",
+      "type": "entity",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/KycDataDto.java",
+      "purpose": "DTO for KYC data in mock service",
+      "type": "entity",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/ErrorResponseDto.java",
+      "purpose": "DTO for error response in mock service",
+      "type": "entity",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/ConfigRequestDto.java",
+      "purpose": "DTO for configuration request in mock service",
+      "type": "entity",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/repository/EkycRequestRepository.java",
+      "purpose": "Repository for eKYC request entity",
+      "type": "repository",
+      "priority": "high",
+      "dependencies": [
+        "EkycRequest.java"
+      ]
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/repository/OtpVerificationRepository.java",
+      "purpose": "Repository for OTP verification entity",
+      "type": "repository",
+      "priority": "high",
+      "dependencies": [
+        "OtpVerification.java"
+      ]
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/service/EkycService.java",
+      "purpose": "Service interface for eKYC operations",
+      "type": "service",
+      "priority": "high",
+      "dependencies": [
+        "EkycRequestDto.java",
+        "EkycResponseDto.java"
+      ]
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/service/impl/EkycServiceImpl.java",
+      "purpose": "Implementation of eKYC service",
+      "type": "service",
+      "priority": "high",
+      "dependencies": [
+        "EkycService.java",
+        "EkycRequestRepository.java",
+        "UidaiApiService.java"
+      ]
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/service/OtpVerificationService.java",
+      "purpose": "Service interface for OTP verification",
+      "type": "service",
+      "priority": "high",
+      "dependencies": [
+        "OtpVerificationDto.java",
+        "EkycResponseDto.java"
+      ]
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/service/impl/OtpVerificationServiceImpl.java",
+      "purpose": "Implementation of OTP verification service",
+      "type": "service",
+      "priority": "high",
+      "dependencies": [
+        "OtpVerificationService.java",
+        "OtpVerificationRepository.java",
+        "UidaiApiService.java"
+      ]
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/service/UidaiApiService.java",
+      "purpose": "Service interface for UIDAI API integration",
+      "type": "service",
+      "priority": "high",
+      "dependencies": [
+        "UidaiOtpInitiateRequestDto.java",
+        "UidaiOtpInitiateResponseDto.java",
+        "UidaiOtpVerifyRequestDto.java",
+        "UidaiOtpVerifyResponseDto.java"
+      ]
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/service/impl/UidaiApiServiceImpl.java",
+      "purpose": "Implementation of UIDAI API service",
+      "type": "service",
+      "priority": "high",
+      "dependencies": [
+        "UidaiApiService.java"
+      ]
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/util/LoggingUtil.java",
+      "purpose": "Utility for audit-ready logging with PII masking",
+      "type": "service",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/util/ValidationUtil.java",
+      "purpose": "Utility for input validation",
+      "type": "service",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/exception/GlobalExceptionHandler.java",
+      "purpose": "Global exception handler for standardized error responses",
+      "type": "service",
+      "priority": "high",
+      "dependencies": [
+        "ErrorResponseDto.java"
+      ]
+    },
+    {
+      "path": "mock-uidai-service/src/main/java/com/mock/uidai/service/MockUidaiService.java",
+      "purpose": "Service interface for mock UIDAI operations",
+      "type": "service",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "mock-uidai-service/src/main/java/com/mock/uidai/service/impl/MockUidaiServiceImpl.java",
+      "purpose": "Implementation of mock UIDAI service",
+      "type": "service",
+      "priority": "high",
+      "dependencies": [
+        "MockUidaiService.java"
+      ]
+    },
+    {
+      "path": "mock-uidai-service/src/main/java/com/mock/uidai/service/MockConfigService.java",
+      "purpose": "Service interface for mock configuration",
+      "type": "service",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "mock-uidai-service/src/main/java/com/mock/uidai/service/impl/MockConfigServiceImpl.java",
+      "purpose": "Implementation of mock configuration service",
+      "type": "service",
+      "priority": "high",
+      "dependencies": [
+        "MockConfigService.java"
+      ]
+    },
+    {
+      "path": "mock-uidai-service/src/main/java/com/mock/uidai/service/TraceLoggerService.java",
+      "purpose": "Service for trace logging with PII masking",
+      "type": "service",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "mock-uidai-service/src/main/java/com/mock/uidai/service/impl/TraceLoggerServiceImpl.java",
+      "purpose": "Implementation of trace logger service",
+      "type": "service",
+      "priority": "high",
+      "dependencies": [
+        "TraceLoggerService.java"
+      ]
+    },
+    {
+      "path": "mock-uidai-service/src/main/java/com/mock/uidai/util/PiiMaskingUtil.java",
+      "purpose": "Utility for masking PII in logs",
+      "type": "service",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/controller/EkycController.java",
+      "purpose": "REST controller for eKYC operations",
+      "type": "controller",
+      "priority": "high",
+      "dependencies": [
+        "EkycService.java",
+        "EkycRequestDto.java",
+        "EkycResponseDto.java"
+      ]
+    },
+    {
+      "path": "ekyc-service/src/main/java/com/ekyc/service/controller/OtpVerificationController.java",
+      "purpose": "REST controller for OTP verification",
+      "type": "controller",
+      "priority": "high",
+      "dependencies": [
+        "OtpVerificationService.java",
+        "OtpVerificationDto.java",
+        "EkycResponseDto.java"
+      ]
+    },
+    {
+      "path": "mock-uidai-service/src/main/java/com/mock/uidai/controller/MockUidaiController.java",
+      "purpose": "Controller for mock UIDAI API endpoints",
+      "type": "controller",
+      "priority": "high",
+      "dependencies": [
+        "MockUidaiService.java"
+      ]
+    },
+    {
+      "path": "mock-uidai-service/src/main/java/com/mock/uidai/controller/MockAdminController.java",
+      "purpose": "Controller for mock admin operations",
+      "type": "controller",
+      "priority": "high",
+      "dependencies": [
+        "MockConfigService.java",
+        "TraceLoggerService.java"
+      ]
+    },
+    {
+      "path": "ekyc-service/src/test/java/com/ekyc/service/controller/EkycControllerTest.java",
+      "purpose": "Unit tests for eKYC controller",
+      "type": "test",
+      "priority": "medium",
+      "dependencies": [
+        "EkycController.java",
+        "EkycService.java"
+      ]
+    },
+    {
+      "path": "ekyc-service/src/test/java/com/ekyc/service/controller/OtpVerificationControllerTest.java",
+      "purpose": "Unit tests for OTP verification controller",
+      "type": "test",
+      "priority": "medium",
+      "dependencies": [
+        "OtpVerificationController.java",
+        "OtpVerificationService.java"
+      ]
+    },
+    {
+      "path": "ekyc-service/src/test/java/com/ekyc/service/service/EkycServiceImplTest.java",
+      "purpose": "Unit tests for eKYC service implementation",
+      "type": "test",
+      "priority": "medium",
+      "dependencies": [
+        "EkycServiceImpl.java"
+      ]
+    },
+    {
+      "path": "ekyc-service/src/test/java/com/ekyc/service/service/OtpVerificationServiceImplTest.java",
+      "purpose": "Unit tests for OTP verification service implementation",
+      "type": "test",
+      "priority": "medium",
+      "dependencies": [
+        "OtpVerificationServiceImpl.java"
+      ]
+    },
+    {
+      "path": "ekyc-service/src/test/java/com/ekyc/service/service/UidaiApiServiceImplTest.java",
+      "purpose": "Unit tests for UIDAI API service implementation",
+      "type": "test",
+      "priority": "medium",
+      "dependencies": [
+        "UidaiApiServiceImpl.java"
+      ]
+    },
+    {
+      "path": "ekyc-service/src/test/java/com/ekyc/service/integration/EkycIntegrationTest.java",
+      "purpose": "Integration tests for eKYC flow",
+      "type": "test",
+      "priority": "medium",
+      "dependencies": []
+    },
+    {
+      "path": "mock-uidai-service/src/test/java/com/mock/uidai/controller/MockUidaiControllerTest.java",
+      "purpose": "Unit tests for mock UIDAI controller",
+      "type": "test",
+      "priority": "medium",
+      "dependencies": [
+        "MockUidaiController.java"
+      ]
+    },
+    {
+      "path": "mock-uidai-service/src/test/java/com/mock/uidai/service/MockUidaiServiceImplTest.java",
+      "purpose": "Unit tests for mock UIDAI service implementation",
+      "type": "test",
+      "priority": "medium",
+      "dependencies": [
+        "MockUidaiServiceImpl.java"
+      ]
+    }
+  ],
+  "implementation_strategy": "file_by_file",
+  "validation_rules": [
+    "syntax_check",
+    "dependency_check",
+    "style_check"
+  ],
+  "file_templates": {
+    "entity": "Java class with explicit getters/setters and validation annotations",
+    "controller": "REST controller with request mapping and response handling",
+    "service": "Service interface and implementation with business logic",
+    "repository": "Spring Data JPA repository interface",
+    "config": "Configuration class with beans and properties"
+  }
+}

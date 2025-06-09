@@ -1,0 +1,210 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 14:03:33
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_057
+# ==================================================
+
+package com.mock.uidai.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mock.uidai.dto.KycDataDto;
+import com.mock.uidai.dto.OtpInitiateRequestDto;
+import com.mock.uidai.dto.OtpInitiateResponseDto;
+import com.mock.uidai.dto.OtpValidateRequestDto;
+import com.mock.uidai.dto.OtpValidateResponseDto;
+import com.mock.uidai.service.MockUidaiService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@WebMvcTest(MockUidaiController.class)
+class MockUidaiControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private MockUidaiService mockUidaiService;
+
+    private OtpInitiateRequestDto otpInitiateRequestDto;
+    private OtpValidateRequestDto otpValidateRequestDto;
+    private String aadhaarNumber;
+    private String txnId;
+    private String otp;
+
+    @TestConfiguration
+    static class TestConfig {
+        @Bean
+        public MockUidaiService mockUidaiService() {
+            return new MockUidaiService() {
+                @Override
+                public OtpInitiateResponseDto initiateOtp(OtpInitiateRequestDto otpInitiateRequestDto) {
+                    OtpInitiateResponseDto response = new OtpInitiateResponseDto();
+                    response.setStatus("Success");
+                    response.setTxnId(UUID.randomUUID().toString());
+                    response.setMessage("OTP sent successfully");
+                    return response;
+                }
+
+                @Override
+                public OtpValidateResponseDto validateOtp(OtpValidateRequestDto otpValidateRequestDto) {
+                    OtpValidateResponseDto response = new OtpValidateResponseDto();
+                    response.setStatus("Success");
+                    response.setMessage("OTP validated successfully");
+                    response.setAadhaarNumber(otpValidateRequestDto.getAadhaarNumber());
+                    return response;
+                }
+
+                @Override
+                public KycDataDto getKycData(String aadhaarNumber) {
+                    KycDataDto kycDataDto = new KycDataDto();
+                    kycDataDto.setAadhaarNumber(aadhaarNumber);
+                    kycDataDto.setName("Test User");
+                    kycDataDto.setDob("01-01-1990");
+                    kycDataDto.setGender("M");
+                    kycDataDto.setAddress("123 Test Street, Test City, Test State - 123456");
+                    kycDataDto.setEmail("test@example.com");
+                    kycDataDto.setMobile("9999999999");
+                    kycDataDto.setPhoto("base64encodedphoto");
+                    return kycDataDto;
+                }
+            };
+        }
+    }
+
+    @BeforeEach
+    void setUp() {
+        aadhaarNumber = "123456789012";
+        txnId = UUID.randomUUID().toString();
+        otp = "123456";
+
+        otpInitiateRequestDto = new OtpInitiateRequestDto();
+        otpInitiateRequestDto.setAadhaarNumber(aadhaarNumber);
+
+        otpValidateRequestDto = new OtpValidateRequestDto();
+        otpValidateRequestDto.setAadhaarNumber(aadhaarNumber);
+        otpValidateRequestDto.setTxnId(txnId);
+        otpValidateRequestDto.setOtp(otp);
+    }
+
+    @Test
+    void testInitiateOtp() throws Exception {
+        // Given
+        String requestJson = objectMapper.writeValueAsString(otpInitiateRequestDto);
+
+        // When
+        MvcResult result = mockMvc.perform(post("/api/v1/uidai/otp/initiate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // Then
+        String responseJson = result.getResponse().getContentAsString();
+        OtpInitiateResponseDto responseDto = objectMapper.readValue(responseJson, OtpInitiateResponseDto.class);
+        
+        assertNotNull(responseDto);
+        assertEquals("Success", responseDto.getStatus());
+        assertNotNull(responseDto.getTxnId());
+        assertEquals("OTP sent successfully", responseDto.getMessage());
+    }
+
+    @Test
+    void testValidateOtp() throws Exception {
+        // Given
+        String requestJson = objectMapper.writeValueAsString(otpValidateRequestDto);
+
+        // When
+        MvcResult result = mockMvc.perform(post("/api/v1/uidai/otp/validate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // Then
+        String responseJson = result.getResponse().getContentAsString();
+        OtpValidateResponseDto responseDto = objectMapper.readValue(responseJson, OtpValidateResponseDto.class);
+        
+        assertNotNull(responseDto);
+        assertEquals("Success", responseDto.getStatus());
+        assertEquals("OTP validated successfully", responseDto.getMessage());
+        assertEquals(aadhaarNumber, responseDto.getAadhaarNumber());
+    }
+
+    @Test
+    void testGetKycData() throws Exception {
+        // When
+        MvcResult result = mockMvc.perform(post("/api/v1/uidai/kyc/{aadhaarNumber}", aadhaarNumber)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // Then
+        String responseJson = result.getResponse().getContentAsString();
+        KycDataDto responseDto = objectMapper.readValue(responseJson, KycDataDto.class);
+        
+        assertNotNull(responseDto);
+        assertEquals(aadhaarNumber, responseDto.getAadhaarNumber());
+        assertEquals("Test User", responseDto.getName());
+        assertEquals("01-01-1990", responseDto.getDob());
+        assertEquals("M", responseDto.getGender());
+        assertEquals("123 Test Street, Test City, Test State - 123456", responseDto.getAddress());
+        assertEquals("test@example.com", responseDto.getEmail());
+        assertEquals("9999999999", responseDto.getMobile());
+        assertEquals("base64encodedphoto", responseDto.getPhoto());
+    }
+
+    @Test
+    void testInitiateOtpWithInvalidAadhaarNumber() throws Exception {
+        // Given
+        OtpInitiateRequestDto invalidRequest = new OtpInitiateRequestDto();
+        invalidRequest.setAadhaarNumber("12345"); // Invalid Aadhaar number (too short)
+        String requestJson = objectMapper.writeValueAsString(invalidRequest);
+
+        // When & Then
+        mockMvc.perform(post("/api/v1/uidai/otp/initiate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testValidateOtpWithInvalidOtp() throws Exception {
+        // Given
+        OtpValidateRequestDto invalidRequest = new OtpValidateRequestDto();
+        invalidRequest.setAadhaarNumber(aadhaarNumber);
+        invalidRequest.setTxnId(txnId);
+        invalidRequest.setOtp("123"); // Invalid OTP (too short)
+        String requestJson = objectMapper.writeValueAsString(invalidRequest);
+
+        // When & Then
+        mockMvc.perform(post("/api/v1/uidai/otp/validate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testGetKycDataWithInvalidAadhaarNumber() throws Exception {
+        // When & Then
+        mockMvc.perform(post("/api/v1/uidai/kyc/{aadhaarNumber}", "12345") // Invalid Aadhaar number (too short)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+}

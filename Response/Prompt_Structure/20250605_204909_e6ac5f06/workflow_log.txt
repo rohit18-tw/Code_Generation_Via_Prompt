@@ -1,0 +1,84 @@
+[2025-06-05 20:49:09] [INFO] 🚀 Session started: 20250605_204909_e6ac5f06
+[2025-06-05 20:49:09] [INFO] 📁 Session directory: Response/20250605_204909_e6ac5f06
+[2025-06-05 20:49:09] [INFO] 🚀 Starting Agentic Workflow
+[2025-06-05 20:49:09] [INFO]    Input: ./Prompts/
+[2025-06-05 20:49:09] [INFO]    Max iterations: 5
+[2025-06-05 20:49:09] [INFO]    Session ID: 20250605_204909_e6ac5f06
+[2025-06-05 20:49:09] [INFO] --------------------------------------------------
+[2025-06-05 20:49:09] [INFO] 🔍 Processing input: ./Prompts/
+[2025-06-05 20:49:09] [SUCCESS] ✅ SUCCESS in input_processing: Input processed - Type: folder, Source: Prompts
+[2025-06-05 20:49:09] [INFO] 🎯 Starting development plan generation...
+[2025-06-05 20:49:09] [INFO] 🎯 Sending plan generation request to Claude...
+[2025-06-05 20:49:50] [INFO] 💬 LLM Interaction: plan_generation -> plan_generation_001_response.txt
+[2025-06-05 20:49:50] [INFO] 📝 Plan generation response saved to: plan_generation_001_response.txt
+[2025-06-05 20:49:50] [SUCCESS] ✅ SUCCESS in plan_generation: Plan successfully parsed and structured
+[2025-06-05 20:49:50] [INFO] 🌳 Project tree structure saved to: project_structure.txt
+[2025-06-05 20:49:50] [INFO] 📊 Code generation analysis saved to: code_generation_analysis.json
+[2025-06-05 20:49:50] [INFO] 📋 Code Generation Insights:
+[2025-06-05 20:49:50] [INFO]    Strategy: file_by_file
+[2025-06-05 20:49:50] [INFO]    Total Files: 25
+[2025-06-05 20:49:50] [INFO]    Generation Order: config → entities → utilities → repositories → services → middleware → controllers → tests
+[2025-06-05 20:49:50] [INFO]    High Priority Files: 19
+[2025-06-05 20:49:50] [INFO] 📋 Plan Summary:
+[2025-06-05 20:49:50] [INFO]    🎯 **Enhanced Project Plan Generated**
+[2025-06-05 20:49:50] [INFO]    **Title**: eKYC Verification System with UIDAI Mock Service
+[2025-06-05 20:49:50] [INFO]    **Language**: go
+[2025-06-05 20:49:50] [INFO]    **Framework**: native-http
+[2025-06-05 20:49:50] [INFO]    **Type**: api
+[2025-06-05 20:49:50] [INFO]    **Code Generation Strategy**: file_by_file
+[2025-06-05 20:49:50] [INFO]    **Generation Order**: config → entities → utilities → repositories → services → middleware → controllers → tests
+[2025-06-05 20:49:50] [INFO]    **Implementation Steps**: 14 steps planned
+[2025-06-05 20:49:50] [INFO]    **Files to Create**: 25 files
+[2025-06-05 20:49:50] [INFO]    Ready for enhanced code generation!
+[2025-06-05 20:49:50] [INFO] 
+🌳 Project Structure:
+[2025-06-05 20:49:50] [INFO]    ekyc-verification-system-with-uidai-mock-service/
+[2025-06-05 20:49:50] [INFO]    ├── README.md
+[2025-06-05 20:49:50] [INFO]    ├── cmd/
+[2025-06-05 20:49:50] [INFO]    │   ├── ekyc/
+[2025-06-05 20:49:50] [INFO]    │   │   └── main.go
+[2025-06-05 20:49:50] [INFO]    │   └── mock-uidai/
+[2025-06-05 20:49:50] [INFO]    │       └── main.go
+[2025-06-05 20:49:50] [INFO]    ├── docs/
+[2025-06-05 20:49:50] [INFO]    │   └── swagger.yaml
+[2025-06-05 20:49:50] [INFO]    ├── go.mod
+[2025-06-05 20:49:50] [INFO]    ├── internal/
+[2025-06-05 20:49:50] [INFO]    │   ├── api/
+[2025-06-05 20:49:50] [INFO]    │   │   └── router.go
+[2025-06-05 20:49:50] [INFO]    │   ├── config/
+[2025-06-05 20:49:50] [INFO]    │   │   └── config.go
+[2025-06-05 20:49:50] [INFO]    │   ├── domain/
+[2025-06-05 20:49:50] [INFO]    │   │   ├── ekyc.go
+[2025-06-05 20:49:50] [INFO]    │   │   └── errors.go
+[2025-06-05 20:49:50] [INFO]    │   ├── handler/
+[2025-06-05 20:49:50] [INFO]    │   │   └── ekyc_handler.go
+[2025-06-05 20:49:50] [INFO]    │   ├── middleware/
+[2025-06-05 20:49:50] [INFO]    │   │   ├── logging.go
+[2025-06-05 20:49:50] [INFO]    │   │   ├── tracing.go
+[2025-06-05 20:49:50] [INFO]    │   │   └── validation.go
+[2025-06-05 20:49:50] [INFO]    │   ├── repository/
+[2025-06-05 20:49:50] [INFO]    │   │   └── ekyc_repository.go
+[2025-06-05 20:49:50] [INFO]    │   ├── service/
+[2025-06-05 20:49:50] [INFO]    │   │   ├── ekyc_service.go
+[2025-06-05 20:49:50] [INFO]    │   │   └── uidai_client.go
+[2025-06-05 20:49:50] [INFO]    │   └── util/
+[2025-06-05 20:49:50] [INFO]    │       ├── logger.go
+[2025-06-05 20:49:50] [INFO]    │       └── trace.go
+[2025-06-05 20:49:50] [INFO]    ├── mock/
+[2025-06-05 20:49:50] [INFO]    │   ├── api/
+[2025-06-05 20:49:50] [INFO]    │   │   └── router.go
+[2025-06-05 20:49:50] [INFO]    │   ├── handler/
+[2025-06-05 20:49:50] [INFO]    │   │   ├── admin_handler.go
+[2025-06-05 20:49:50] [INFO]    │   │   └── uidai_handler.go
+[2025-06-05 20:49:50] [INFO]    │   └── service/
+[2025-06-05 20:49:50] [INFO]    │       ├── config_service.go
+[2025-06-05 20:49:50] [INFO]    │       └── mock_uidai_service.go
+[2025-06-05 20:49:50] [INFO]    └── test/
+[2025-06-05 20:49:50] [INFO]        ├── ekyc_integration_test.go
+[2025-06-05 20:49:50] [INFO]        └── mock_uidai_test.go
+[2025-06-05 20:49:50] [SUCCESS] ✅ SUCCESS in plan_generation: Development plan generated and saved to development_plan.json
+[2025-06-05 20:49:50] [INFO] --------------------------------------------------
+[2025-06-05 20:49:50] [SUCCESS] ✅ SUCCESS in workflow: Workflow completed!
+[2025-06-05 20:49:50] [INFO]    Final step: git_complete
+[2025-06-05 20:49:50] [INFO]    Iterations: 0
+[2025-06-05 20:49:50] [INFO]    Errors: 0

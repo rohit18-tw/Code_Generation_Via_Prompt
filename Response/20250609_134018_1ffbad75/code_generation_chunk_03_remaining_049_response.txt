@@ -1,0 +1,318 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:58:09
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_049
+# ==================================================
+
+package com.ekyc.service.util;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+/**
+ * Utility class for input validation operations.
+ * Provides methods to validate different types of inputs like strings, collections, maps, etc.
+ * Also includes specific validation for common formats like email, phone numbers, etc.
+ */
+@Component
+public class ValidationUtil {
+    
+    private static final Logger logger = LoggerFactory.getLogger(ValidationUtil.class);
+    
+    // Regular expression patterns for common validations
+    private static final Pattern EMAIL_PATTERN = 
+            Pattern.compile("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
+    
+    private static final Pattern PHONE_PATTERN = 
+            Pattern.compile("^\\+?[0-9]{10,15}$");
+    
+    private static final Pattern ALPHANUMERIC_PATTERN = 
+            Pattern.compile("^[a-zA-Z0-9]*$");
+    
+    private static final Pattern NAME_PATTERN = 
+            Pattern.compile("^[a-zA-Z\\s'-]{2,50}$");
+    
+    private static final Pattern DATE_PATTERN = 
+            Pattern.compile("^\\d{4}-\\d{2}-\\d{2}$"); // YYYY-MM-DD format
+    
+    private static final Pattern UUID_PATTERN = 
+            Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
+    
+    /**
+     * Validates if a string is not null and not empty.
+     *
+     * @param input the string to validate
+     * @return true if the string is not null and not empty, false otherwise
+     */
+    public boolean isValidString(String input) {
+        return StringUtils.hasText(input);
+    }
+    
+    /**
+     * Validates if a string is not null, not empty, and has a length within specified bounds.
+     *
+     * @param input the string to validate
+     * @param minLength the minimum allowed length
+     * @param maxLength the maximum allowed length
+     * @return true if the string is valid according to the criteria, false otherwise
+     */
+    public boolean isValidString(String input, int minLength, int maxLength) {
+        if (!isValidString(input)) {
+            return false;
+        }
+        
+        int length = input.trim().length();
+        return length >= minLength && length <= maxLength;
+    }
+    
+    /**
+     * Validates if a collection is not null and not empty.
+     *
+     * @param collection the collection to validate
+     * @return true if the collection is not null and not empty, false otherwise
+     */
+    public boolean isValidCollection(Collection<?> collection) {
+        return collection != null && !collection.isEmpty();
+    }
+    
+    /**
+     * Validates if a map is not null and not empty.
+     *
+     * @param map the map to validate
+     * @return true if the map is not null and not empty, false otherwise
+     */
+    public boolean isValidMap(Map<?, ?> map) {
+        return map != null && !map.isEmpty();
+    }
+    
+    /**
+     * Validates if an object is not null.
+     *
+     * @param object the object to validate
+     * @return true if the object is not null, false otherwise
+     */
+    public boolean isNotNull(Object object) {
+        return object != null;
+    }
+    
+    /**
+     * Validates if a number is within specified bounds.
+     *
+     * @param number the number to validate
+     * @param min the minimum allowed value
+     * @param max the maximum allowed value
+     * @return true if the number is within the specified bounds, false otherwise
+     */
+    public boolean isInRange(int number, int min, int max) {
+        return number >= min && number <= max;
+    }
+    
+    /**
+     * Validates if a number is within specified bounds.
+     *
+     * @param number the number to validate
+     * @param min the minimum allowed value
+     * @param max the maximum allowed value
+     * @return true if the number is within the specified bounds, false otherwise
+     */
+    public boolean isInRange(long number, long min, long max) {
+        return number >= min && number <= max;
+    }
+    
+    /**
+     * Validates if a number is within specified bounds.
+     *
+     * @param number the number to validate
+     * @param min the minimum allowed value
+     * @param max the maximum allowed value
+     * @return true if the number is within the specified bounds, false otherwise
+     */
+    public boolean isInRange(double number, double min, double max) {
+        return number >= min && number <= max;
+    }
+    
+    /**
+     * Validates if a string is a valid email address.
+     *
+     * @param email the email address to validate
+     * @return true if the email is valid, false otherwise
+     */
+    public boolean isValidEmail(String email) {
+        if (!isValidString(email)) {
+            return false;
+        }
+        
+        return EMAIL_PATTERN.matcher(email).matches();
+    }
+    
+    /**
+     * Validates if a string is a valid phone number.
+     *
+     * @param phoneNumber the phone number to validate
+     * @return true if the phone number is valid, false otherwise
+     */
+    public boolean isValidPhoneNumber(String phoneNumber) {
+        if (!isValidString(phoneNumber)) {
+            return false;
+        }
+        
+        return PHONE_PATTERN.matcher(phoneNumber).matches();
+    }
+    
+    /**
+     * Validates if a string contains only alphanumeric characters.
+     *
+     * @param input the string to validate
+     * @return true if the string contains only alphanumeric characters, false otherwise
+     */
+    public boolean isAlphanumeric(String input) {
+        if (!isValidString(input)) {
+            return false;
+        }
+        
+        return ALPHANUMERIC_PATTERN.matcher(input).matches();
+    }
+    
+    /**
+     * Validates if a string is a valid name (contains only letters, spaces, hyphens, and apostrophes).
+     *
+     * @param name the name to validate
+     * @return true if the name is valid, false otherwise
+     */
+    public boolean isValidName(String name) {
+        if (!isValidString(name)) {
+            return false;
+        }
+        
+        return NAME_PATTERN.matcher(name).matches();
+    }
+    
+    /**
+     * Validates if a string is a valid date in YYYY-MM-DD format.
+     *
+     * @param date the date string to validate
+     * @return true if the date is valid, false otherwise
+     */
+    public boolean isValidDate(String date) {
+        if (!isValidString(date)) {
+            return false;
+        }
+        
+        return DATE_PATTERN.matcher(date).matches();
+    }
+    
+    /**
+     * Validates if a string is a valid UUID.
+     *
+     * @param uuid the UUID string to validate
+     * @return true if the UUID is valid, false otherwise
+     */
+    public boolean isValidUUID(String uuid) {
+        if (!isValidString(uuid)) {
+            return false;
+        }
+        
+        return UUID_PATTERN.matcher(uuid).matches();
+    }
+    
+    /**
+     * Validates if all strings in an array are valid.
+     *
+     * @param strings the array of strings to validate
+     * @return true if all strings are valid, false otherwise
+     */
+    public boolean areAllStringsValid(String... strings) {
+        if (strings == null || strings.length == 0) {
+            return false;
+        }
+        
+        for (String str : strings) {
+            if (!isValidString(str)) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Validates if a string matches a specific pattern.
+     *
+     * @param input the string to validate
+     * @param pattern the pattern to match against
+     * @return true if the string matches the pattern, false otherwise
+     */
+    public boolean matchesPattern(String input, Pattern pattern) {
+        if (!isValidString(input) || pattern == null) {
+            return false;
+        }
+        
+        return pattern.matcher(input).matches();
+    }
+    
+    /**
+     * Validates if a string matches a specific regular expression.
+     *
+     * @param input the string to validate
+     * @param regex the regular expression to match against
+     * @return true if the string matches the regular expression, false otherwise
+     */
+    public boolean matchesRegex(String input, String regex) {
+        if (!isValidString(input) || !isValidString(regex)) {
+            return false;
+        }
+        
+        try {
+            return Pattern.compile(regex).matcher(input).matches();
+        } catch (Exception e) {
+            logger.error("Error validating regex pattern: {}", e.getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * Validates if a string contains only digits.
+     *
+     * @param input the string to validate
+     * @return true if the string contains only digits, false otherwise
+     */
+    public boolean isNumeric(String input) {
+        if (!isValidString(input)) {
+            return false;
+        }
+        
+        for (char c : input.toCharArray()) {
+            if (!Character.isDigit(c)) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Validates if a string contains only letters.
+     *
+     * @param input the string to validate
+     * @return true if the string contains only letters, false otherwise
+     */
+    public boolean isAlphabetic(String input) {
+        if (!isValidString(input)) {
+            return false;
+        }
+        
+        for (char c : input.toCharArray()) {
+            if (!Character.isLetter(c)) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+}

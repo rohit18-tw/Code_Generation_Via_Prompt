@@ -1,0 +1,135 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:49:10
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_026
+# ==================================================
+
+package com.mock.uidai.dto;
+
+import java.io.Serializable;
+import java.util.Objects;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Data Transfer Object for OTP verification request.
+ * This class represents the request payload for verifying an OTP sent to a user.
+ */
+public class OtpVerifyRequestDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * The transaction ID received during OTP initiation.
+     * This field is required and must not be blank.
+     */
+    @NotBlank(message = "Transaction ID is required")
+    @JsonProperty("txnId")
+    private String transactionId;
+
+    /**
+     * The OTP entered by the user for verification.
+     * This field is required, must not be blank, and should contain only digits.
+     */
+    @NotBlank(message = "OTP is required")
+    @Pattern(regexp = "^[0-9]+$", message = "OTP must contain only digits")
+    @Size(min = 6, max = 6, message = "OTP must be 6 digits")
+    @JsonProperty("otp")
+    private String otp;
+
+    /**
+     * Default constructor for OtpVerifyRequestDto.
+     */
+    public OtpVerifyRequestDto() {
+    }
+
+    /**
+     * Parameterized constructor for OtpVerifyRequestDto.
+     *
+     * @param transactionId the transaction ID
+     * @param otp the one-time password
+     */
+    public OtpVerifyRequestDto(String transactionId, String otp) {
+        this.transactionId = transactionId;
+        this.otp = otp;
+    }
+
+    /**
+     * Gets the transaction ID.
+     *
+     * @return the transaction ID
+     */
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    /**
+     * Sets the transaction ID.
+     *
+     * @param transactionId the transaction ID to set
+     */
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    /**
+     * Gets the OTP.
+     *
+     * @return the OTP
+     */
+    public String getOtp() {
+        return otp;
+    }
+
+    /**
+     * Sets the OTP.
+     *
+     * @param otp the OTP to set
+     */
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
+
+    /**
+     * Returns a string representation of the OtpVerifyRequestDto.
+     * The OTP is masked for security reasons.
+     *
+     * @return a string representation of the object
+     */
+    @Override
+    public String toString() {
+        return "OtpVerifyRequestDto{" +
+                "transactionId='" + transactionId + '\'' +
+                ", otp='******'" +
+                '}';
+    }
+
+    /**
+     * Indicates whether some other object is "equal to" this one.
+     *
+     * @param o the reference object with which to compare
+     * @return true if this object is the same as the o argument; false otherwise
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OtpVerifyRequestDto that = (OtpVerifyRequestDto) o;
+        return Objects.equals(transactionId, that.transactionId) &&
+                Objects.equals(otp, that.otp);
+    }
+
+    /**
+     * Returns a hash code value for the object.
+     *
+     * @return a hash code value for this object
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(transactionId, otp);
+    }
+}

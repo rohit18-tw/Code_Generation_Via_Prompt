@@ -1,0 +1,34 @@
+Audit-Ready Logging (All Services)
+----------------------------------
+Each service must log:
+    - Request initiation
+    - Masked request/response data
+    - Failures and retries (with attempt count)
+    - Final outcome
+    - Reference number for full traceability
+
+Graceful Error Management
+-------------------------
+- Standardized error response structure across services
+- Detailed error logs (with masked data) for debugging
+- Fallback flows for all external integration points
+- Retention policy enforcement verified through tests
+
+Business Scenario Coverage (All Services)
+-----------------------------------------
+Test cases must cover:
+    - No Mockito — use only standard Spring Boot testing tools and JUnit 5
+    - Valid and invalid inputs
+    - Successful and failed verifications
+    - Edge-case scenarios (e.g., pattern-based triggers)
+    - Retry and fallback logic
+    - Retention rule applications
+
+Audit & Error Logging Checks
+----------------------------
+Ensure:
+    - All logs use masked sensitive data
+    - Unique identifiers trace each transaction
+    - Failures log correct predefined error codes
+    - Logging validated via tests
+

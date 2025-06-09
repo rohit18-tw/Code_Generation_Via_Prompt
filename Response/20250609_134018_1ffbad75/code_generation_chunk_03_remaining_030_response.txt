@@ -1,0 +1,298 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:50:25
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_030
+# ==================================================
+
+package com.mock.uidai.dto;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Objects;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Data Transfer Object for logging API requests to the mock UIDAI service.
+ * This class captures essential information about incoming requests for auditing,
+ * monitoring, and debugging purposes.
+ */
+public class RequestLogDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @JsonProperty("request_id")
+    @NotBlank(message = "Request ID cannot be blank")
+    private String requestId;
+
+    @JsonProperty("client_id")
+    private String clientId;
+
+    @JsonProperty("request_type")
+    @NotBlank(message = "Request type cannot be blank")
+    private String requestType;
+
+    @JsonProperty("request_payload")
+    private String requestPayload;
+
+    @JsonProperty("request_timestamp")
+    @NotNull(message = "Request timestamp cannot be null")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+    private LocalDateTime requestTimestamp;
+
+    @JsonProperty("response_payload")
+    private String responsePayload;
+
+    @JsonProperty("response_timestamp")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+    private LocalDateTime responseTimestamp;
+
+    @JsonProperty("status")
+    private String status;
+
+    @JsonProperty("error_message")
+    private String errorMessage;
+
+    @JsonProperty("ip_address")
+    private String ipAddress;
+
+    @JsonProperty("user_agent")
+    private String userAgent;
+
+    /**
+     * Default constructor for RequestLogDto.
+     */
+    public RequestLogDto() {
+    }
+
+    /**
+     * Parameterized constructor for RequestLogDto.
+     *
+     * @param requestId         Unique identifier for the request
+     * @param clientId          Client identifier
+     * @param requestType       Type of request (e.g., OTP, KYC)
+     * @param requestPayload    Request payload (may be masked for sensitive data)
+     * @param requestTimestamp  Timestamp when request was received
+     * @param responsePayload   Response payload (may be masked for sensitive data)
+     * @param responseTimestamp Timestamp when response was sent
+     * @param status            Status of the request (e.g., SUCCESS, FAILED)
+     * @param errorMessage      Error message if request failed
+     * @param ipAddress         IP address of the client
+     * @param userAgent         User agent of the client
+     */
+    public RequestLogDto(String requestId, String clientId, String requestType, String requestPayload,
+                         LocalDateTime requestTimestamp, String responsePayload, LocalDateTime responseTimestamp,
+                         String status, String errorMessage, String ipAddress, String userAgent) {
+        this.requestId = requestId;
+        this.clientId = clientId;
+        this.requestType = requestType;
+        this.requestPayload = requestPayload;
+        this.requestTimestamp = requestTimestamp;
+        this.responsePayload = responsePayload;
+        this.responseTimestamp = responseTimestamp;
+        this.status = status;
+        this.errorMessage = errorMessage;
+        this.ipAddress = ipAddress;
+        this.userAgent = userAgent;
+    }
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
+    public String getRequestType() {
+        return requestType;
+    }
+
+    public void setRequestType(String requestType) {
+        this.requestType = requestType;
+    }
+
+    public String getRequestPayload() {
+        return requestPayload;
+    }
+
+    public void setRequestPayload(String requestPayload) {
+        this.requestPayload = requestPayload;
+    }
+
+    public LocalDateTime getRequestTimestamp() {
+        return requestTimestamp;
+    }
+
+    public void setRequestTimestamp(LocalDateTime requestTimestamp) {
+        this.requestTimestamp = requestTimestamp;
+    }
+
+    public String getResponsePayload() {
+        return responsePayload;
+    }
+
+    public void setResponsePayload(String responsePayload) {
+        this.responsePayload = responsePayload;
+    }
+
+    public LocalDateTime getResponseTimestamp() {
+        return responseTimestamp;
+    }
+
+    public void setResponseTimestamp(LocalDateTime responseTimestamp) {
+        this.responseTimestamp = responseTimestamp;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RequestLogDto that = (RequestLogDto) o;
+        return Objects.equals(requestId, that.requestId) &&
+                Objects.equals(clientId, that.clientId) &&
+                Objects.equals(requestType, that.requestType) &&
+                Objects.equals(requestTimestamp, that.requestTimestamp);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(requestId, clientId, requestType, requestTimestamp);
+    }
+
+    @Override
+    public String toString() {
+        return "RequestLogDto{" +
+                "requestId='" + requestId + '\'' +
+                ", clientId='" + clientId + '\'' +
+                ", requestType='" + requestType + '\'' +
+                ", requestTimestamp=" + requestTimestamp +
+                ", responseTimestamp=" + responseTimestamp +
+                ", status='" + status + '\'' +
+                ", ipAddress='" + ipAddress + '\'' +
+                '}';
+    }
+
+    /**
+     * Builder class for RequestLogDto to facilitate creating instances with a fluent API.
+     */
+    public static class Builder {
+        private String requestId;
+        private String clientId;
+        private String requestType;
+        private String requestPayload;
+        private LocalDateTime requestTimestamp;
+        private String responsePayload;
+        private LocalDateTime responseTimestamp;
+        private String status;
+        private String errorMessage;
+        private String ipAddress;
+        private String userAgent;
+
+        public Builder requestId(String requestId) {
+            this.requestId = requestId;
+            return this;
+        }
+
+        public Builder clientId(String clientId) {
+            this.clientId = clientId;
+            return this;
+        }
+
+        public Builder requestType(String requestType) {
+            this.requestType = requestType;
+            return this;
+        }
+
+        public Builder requestPayload(String requestPayload) {
+            this.requestPayload = requestPayload;
+            return this;
+        }
+
+        public Builder requestTimestamp(LocalDateTime requestTimestamp) {
+            this.requestTimestamp = requestTimestamp;
+            return this;
+        }
+
+        public Builder responsePayload(String responsePayload) {
+            this.responsePayload = responsePayload;
+            return this;
+        }
+
+        public Builder responseTimestamp(LocalDateTime responseTimestamp) {
+            this.responseTimestamp = responseTimestamp;
+            return this;
+        }
+
+        public Builder status(String status) {
+            this.status = status;
+            return this;
+        }
+
+        public Builder errorMessage(String errorMessage) {
+            this.errorMessage = errorMessage;
+            return this;
+        }
+
+        public Builder ipAddress(String ipAddress) {
+            this.ipAddress = ipAddress;
+            return this;
+        }
+
+        public Builder userAgent(String userAgent) {
+            this.userAgent = userAgent;
+            return this;
+        }
+
+        public RequestLogDto build() {
+            return new RequestLogDto(
+                    requestId, clientId, requestType, requestPayload, requestTimestamp,
+                    responsePayload, responseTimestamp, status, errorMessage, ipAddress, userAgent
+            );
+        }
+    }
+}

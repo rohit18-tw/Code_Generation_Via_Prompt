@@ -1,0 +1,106 @@
+ekyc-verification-system-with-mock-uidai-api/
+├── ekyc-service/
+│   ├── pom.xml
+│   └── src/
+│       ├── main/
+│       │   ├── java/
+│       │   │   └── com/
+│       │   │       └── ekyc/
+│       │   │           └── service/
+│       │   │               ├── EkycServiceApplication.java
+│       │   │               ├── config/
+│       │   │               │   └── WebClientConfig.java
+│       │   │               ├── controller/
+│       │   │               │   ├── EkycController.java
+│       │   │               │   └── OtpVerificationController.java
+│       │   │               ├── dto/
+│       │   │               │   ├── EkycRequestDto.java
+│       │   │               │   ├── EkycResponseDto.java
+│       │   │               │   ├── ErrorResponseDto.java
+│       │   │               │   ├── OtpVerificationDto.java
+│       │   │               │   ├── UidaiOtpInitiateRequestDto.java
+│       │   │               │   ├── UidaiOtpInitiateResponseDto.java
+│       │   │               │   ├── UidaiOtpVerifyRequestDto.java
+│       │   │               │   └── UidaiOtpVerifyResponseDto.java
+│       │   │               ├── entity/
+│       │   │               │   ├── EkycRequest.java
+│       │   │               │   └── OtpVerification.java
+│       │   │               ├── enums/
+│       │   │               │   ├── ConsentType.java
+│       │   │               │   ├── IdType.java
+│       │   │               │   └── VerificationStatus.java
+│       │   │               ├── exception/
+│       │   │               │   └── GlobalExceptionHandler.java
+│       │   │               ├── repository/
+│       │   │               │   ├── EkycRequestRepository.java
+│       │   │               │   └── OtpVerificationRepository.java
+│       │   │               ├── service/
+│       │   │               │   ├── EkycService.java
+│       │   │               │   ├── OtpVerificationService.java
+│       │   │               │   ├── UidaiApiService.java
+│       │   │               │   └── impl/
+│       │   │               │       ├── EkycServiceImpl.java
+│       │   │               │       ├── OtpVerificationServiceImpl.java
+│       │   │               │       └── UidaiApiServiceImpl.java
+│       │   │               └── util/
+│       │   │                   ├── LoggingUtil.java
+│       │   │                   └── ValidationUtil.java
+│       │   └── resources/
+│       │       ├── application.yml
+│       │       └── db/
+│       │           └── migration/
+│       │               └── V1__init_schema.sql
+│       └── test/
+│           └── java/
+│               └── com/
+│                   └── ekyc/
+│                       └── service/
+│                           ├── controller/
+│                           │   ├── EkycControllerTest.java
+│                           │   └── OtpVerificationControllerTest.java
+│                           ├── integration/
+│                           │   └── EkycIntegrationTest.java
+│                           └── service/
+│                               ├── EkycServiceImplTest.java
+│                               ├── OtpVerificationServiceImplTest.java
+│                               └── UidaiApiServiceImplTest.java
+└── mock-uidai-service/
+    ├── pom.xml
+    └── src/
+        ├── main/
+        │   ├── java/
+        │   │   └── com/
+        │   │       └── mock/
+        │   │           └── uidai/
+        │   │               ├── MockUidaiServiceApplication.java
+        │   │               ├── config/
+        │   │               │   └── OpenApiConfig.java
+        │   │               ├── controller/
+        │   │               │   ├── MockAdminController.java
+        │   │               │   └── MockUidaiController.java
+        │   │               ├── dto/
+        │   │               │   ├── ConfigOverrideDto.java
+        │   │               │   ├── ErrorResponseDto.java
+        │   │               │   ├── KycDataDto.java
+        │   │               │   ├── OtpInitiateRequestDto.java
+        │   │               │   ├── OtpInitiateResponseDto.java
+        │   │               │   ├── OtpVerifyRequestDto.java
+        │   │               │   ├── OtpVerifyResponseDto.java
+        │   │               │   └── RequestLogDto.java
+        │   │               ├── service/
+        │   │               │   ├── MockConfigService.java
+        │   │               │   ├── MockUidaiService.java
+        │   │               │   └── TraceLoggerService.java
+        │   │               └── util/
+        │   │                   └── PiiMaskingUtil.java
+        │   └── resources/
+        │       └── application.yml
+        └── test/
+            └── java/
+                └── com/
+                    └── mock/
+                        └── uidai/
+                            ├── controller/
+                            │   └── MockUidaiControllerTest.java
+                            └── service/
+                                └── MockUidaiServiceTest.java

@@ -1,0 +1,231 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 14:04:01
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_058
+# ==================================================
+
+package com.mock.uidai.service;
+
+import com.mock.uidai.dto.KycDataDto;
+import com.mock.uidai.dto.OtpInitiateRequestDto;
+import com.mock.uidai.dto.OtpInitiateResponseDto;
+import com.mock.uidai.dto.OtpValidateRequestDto;
+import com.mock.uidai.dto.OtpValidateResponseDto;
+import com.mock.uidai.entity.AadhaarData;
+import com.mock.uidai.entity.OtpTransaction;
+import com.mock.uidai.exception.InvalidAadhaarException;
+import com.mock.uidai.exception.InvalidOtpException;
+import com.mock.uidai.exception.OtpExpiredException;
+import com.mock.uidai.repository.AadhaarDataRepository;
+import com.mock.uidai.repository.OtpTransactionRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
+class MockUidaiServiceTest {
+
+    private MockUidaiService mockUidaiService;
+    private AadhaarDataRepository aadhaarDataRepository;
+    private OtpTransactionRepository otpTransactionRepository;
+
+    @BeforeEach
+    void setUp() {
+        // Create custom test implementations of repositories
+        aadhaarDataRepository = new TestAadhaarDataRepository();
+        otpTransactionRepository = new TestOtpTransactionRepository();
+        
+        // Initialize the service with test repositories
+        mockUidaiService = new MockUidaiService(aadhaarDataRepository, otpTransactionRepository);
+    }
+
+    @Test
+    void testInitiateOtp_ValidAadhaar_ReturnsSuccess() {
+        // Arrange
+        OtpInitiateRequestDto requestDto = new OtpInitiateRequestDto();
+        requestDto.setUid("999999999999"); // Valid test Aadhaar
+        
+        // Act
+        OtpInitiateResponseDto responseDto = mockUidaiService.initiateOtp(requestDto);
+        
+        // Assert
+        assertNotNull(responseDto);
+        assertEquals("Success", responseDto.getStatus());
+        assertNotNull(responseDto.getTxnId());
+    }
+
+    @Test
+    void testInitiateOtp_InvalidAadhaar_ThrowsException() {
+        // Arrange
+        OtpInitiateRequestDto requestDto = new OtpInitiateRequestDto();
+        requestDto.setUid("123456789012"); // Invalid test Aadhaar
+        
+        // Act & Assert
+        assertThrows(InvalidAadhaarException.class, () -> mockUidaiService.initiateOtp(requestDto));
+    }
+
+    @Test
+    void testValidateOtp_ValidOtp_ReturnsSuccess() {
+        // Arrange
+        String validAadhaar = "999999999999";
+        String txnId = UUID.randomUUID().toString();
+        String otp = "123456";
+        
+        // Create and save a valid OTP transaction
+        OtpTransaction otpTransaction = new OtpTransaction();
+        otpTransaction.setTxnId(txnId);
+        otpTransaction.setUid(validAadhaar);
+        otpTransaction.setOtp(otp);
+        otpTransaction.setCreatedAt(LocalDateTime.now());
+        otpTransaction.setExpiresAt(LocalDateTime.now().plusMinutes(10));
+        ((TestOtpTransactionRepository) otpTransactionRepository).save(otpTransaction);
+        
+        OtpValidateRequestDto requestDto = new OtpValidateRequestDto();
+        requestDto.setTxnId(txnId);
+        requestDto.setOtp(otp);
+        
+        // Act
+        OtpValidateResponseDto responseDto = mockUidaiService.validateOtp(requestDto);
+        
+        // Assert
+        assertNotNull(responseDto);
+        assertEquals("Success", responseDto.getStatus());
+    }
+
+    @Test
+    void testValidateOtp_InvalidOtp_ThrowsException() {
+        // Arrange
+        String validAadhaar = "999999999999";
+        String txnId = UUID.randomUUID().toString();
+        String correctOtp = "123456";
+        String wrongOtp = "654321";
+        
+        // Create and save a valid OTP transaction
+        OtpTransaction otpTransaction = new OtpTransaction();
+        otpTransaction.setTxnId(txnId);
+        otpTransaction.setUid(validAadhaar);
+        otpTransaction.setOtp(correctOtp);
+        otpTransaction.setCreatedAt(LocalDateTime.now());
+        otpTransaction.setExpiresAt(LocalDateTime.now().plusMinutes(10));
+        ((TestOtpTransactionRepository) otpTransactionRepository).save(otpTransaction);
+        
+        OtpValidateRequestDto requestDto = new OtpValidateRequestDto();
+        requestDto.setTxnId(txnId);
+        requestDto.setOtp(wrongOtp);
+        
+        // Act & Assert
+        assertThrows(InvalidOtpException.class, () -> mockUidaiService.validateOtp(requestDto));
+    }
+
+    @Test
+    void testValidateOtp_ExpiredOtp_ThrowsException() {
+        // Arrange
+        String validAadhaar = "999999999999";
+        String txnId = UUID.randomUUID().toString();
+        String otp = "123456";
+        
+        // Create and save an expired OTP transaction
+        OtpTransaction otpTransaction = new OtpTransaction();
+        otpTransaction.setTxnId(txnId);
+        otpTransaction.setUid(validAadhaar);
+        otpTransaction.setOtp(otp);
+        otpTransaction.setCreatedAt(LocalDateTime.now().minusMinutes(15));
+        otpTransaction.setExpiresAt(LocalDateTime.now().minusMinutes(5));
+        ((TestOtpTransactionRepository) otpTransactionRepository).save(otpTransaction);
+        
+        OtpValidateRequestDto requestDto = new OtpValidateRequestDto();
+        requestDto.setTxnId(txnId);
+        requestDto.setOtp(otp);
+        
+        // Act & Assert
+        assertThrows(OtpExpiredException.class, () -> mockUidaiService.validateOtp(requestDto));
+    }
+
+    @Test
+    void testGetKycData_ValidAadhaar_ReturnsKycData() {
+        // Arrange
+        String validAadhaar = "999999999999";
+        
+        // Create and save a valid Aadhaar record
+        AadhaarData aadhaarData = new AadhaarData();
+        aadhaarData.setUid(validAadhaar);
+        aadhaarData.setName("Test User");
+        aadhaarData.setDob("1990-01-01");
+        aadhaarData.setGender("M");
+        aadhaarData.setAddress("123 Test Street, Test City, Test State - 123456");
+        aadhaarData.setPhone("9999999999");
+        aadhaarData.setEmail("test@example.com");
+        ((TestAadhaarDataRepository) aadhaarDataRepository).save(aadhaarData);
+        
+        // Act
+        KycDataDto kycDataDto = mockUidaiService.getKycData(validAadhaar);
+        
+        // Assert
+        assertNotNull(kycDataDto);
+        assertEquals("Test User", kycDataDto.getName());
+        assertEquals("1990-01-01", kycDataDto.getDob());
+        assertEquals("M", kycDataDto.getGender());
+        assertEquals("123 Test Street, Test City, Test State - 123456", kycDataDto.getAddress());
+        assertEquals("9999999999", kycDataDto.getPhone());
+        assertEquals("test@example.com", kycDataDto.getEmail());
+        assertNotNull(kycDataDto.getPhoto());
+    }
+
+    @Test
+    void testGetKycData_InvalidAadhaar_ThrowsException() {
+        // Arrange
+        String invalidAadhaar = "123456789012";
+        
+        // Act & Assert
+        assertThrows(InvalidAadhaarException.class, () -> mockUidaiService.getKycData(invalidAadhaar));
+    }
+
+    /**
+     * Test implementation of AadhaarDataRepository for unit testing
+     */
+    private static class TestAadhaarDataRepository implements AadhaarDataRepository {
+        private AadhaarData aadhaarData;
+
+        @Override
+        public Optional<AadhaarData> findByUid(String uid) {
+            if (aadhaarData != null && aadhaarData.getUid().equals(uid)) {
+                return Optional.of(aadhaarData);
+            }
+            return Optional.empty();
+        }
+
+        public void save(AadhaarData data) {
+            this.aadhaarData = data;
+        }
+    }
+
+    /**
+     * Test implementation of OtpTransactionRepository for unit testing
+     */
+    private static class TestOtpTransactionRepository implements OtpTransactionRepository {
+        private OtpTransaction otpTransaction;
+
+        @Override
+        public Optional<OtpTransaction> findByTxnId(String txnId) {
+            if (otpTransaction != null && otpTransaction.getTxnId().equals(txnId)) {
+                return Optional.of(otpTransaction);
+            }
+            return Optional.empty();
+        }
+
+        @Override
+        public OtpTransaction save(OtpTransaction otpTransaction) {
+            this.otpTransaction = otpTransaction;
+            return otpTransaction;
+        }
+    }
+}

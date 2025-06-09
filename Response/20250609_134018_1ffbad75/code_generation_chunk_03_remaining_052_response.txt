@@ -1,0 +1,240 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:59:35
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_052
+# ==================================================
+
+package com.ekyc.service.controller;
+
+import com.ekyc.service.dto.EkycResponseDto;
+import com.ekyc.service.dto.ErrorResponseDto;
+import com.ekyc.service.dto.OtpVerificationDto;
+import com.ekyc.service.enums.VerificationStatus;
+import com.ekyc.service.service.OtpVerificationService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@WebMvcTest(OtpVerificationController.class)
+public class OtpVerificationControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private OtpVerificationService otpVerificationService;
+
+    private UUID userId;
+    private String otp;
+    private String channelId;
+    private OtpVerificationDto otpVerificationDto;
+
+    @TestConfiguration
+    static class TestConfig {
+        @Bean
+        public OtpVerificationService otpVerificationService() {
+            return new MockOtpVerificationService();
+        }
+    }
+
+    static class MockOtpVerificationService implements OtpVerificationService {
+        @Override
+        public EkycResponseDto verifyOtp(OtpVerificationDto otpVerificationDto) {
+            if (otpVerificationDto.getOtp().equals("123456")) {
+                return new EkycResponseDto(
+                        otpVerificationDto.getUserId(),
+                        VerificationStatus.VERIFIED,
+                        "OTP verification successful"
+                );
+            } else if (otpVerificationDto.getOtp().equals("999999")) {
+                throw new RuntimeException("Simulated server error");
+            } else {
+                return new EkycResponseDto(
+                        otpVerificationDto.getUserId(),
+                        VerificationStatus.FAILED,
+                        "Invalid OTP"
+                );
+            }
+        }
+
+        @Override
+        public EkycResponseDto resendOtp(UUID userId, String channelId) {
+            if (userId != null && channelId != null && channelId.equals("EMAIL")) {
+                return new EkycResponseDto(
+                        userId,
+                        VerificationStatus.PENDING,
+                        "OTP resent successfully"
+                );
+            } else if (userId != null && channelId != null && channelId.equals("ERROR")) {
+                throw new RuntimeException("Simulated server error");
+            } else {
+                return new EkycResponseDto(
+                        userId,
+                        VerificationStatus.FAILED,
+                        "Failed to resend OTP"
+                );
+            }
+        }
+    }
+
+    @BeforeEach
+    void setUp() {
+        userId = UUID.randomUUID();
+        otp = "123456";
+        channelId = "EMAIL";
+        otpVerificationDto = new OtpVerificationDto();
+        otpVerificationDto.setUserId(userId);
+        otpVerificationDto.setOtp(otp);
+    }
+
+    @Test
+    @DisplayName("Should verify OTP successfully")
+    void shouldVerifyOtpSuccessfully() throws Exception {
+        String requestJson = objectMapper.writeValueAsString(otpVerificationDto);
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/otp/verify")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        String responseJson = result.getResponse().getContentAsString();
+        EkycResponseDto responseDto = objectMapper.readValue(responseJson, EkycResponseDto.class);
+
+        assertEquals(userId, responseDto.getUserId());
+        assertEquals(VerificationStatus.VERIFIED, responseDto.getStatus());
+        assertEquals("OTP verification successful", responseDto.getMessage());
+    }
+
+    @Test
+    @DisplayName("Should return failed status for invalid OTP")
+    void shouldReturnFailedStatusForInvalidOtp() throws Exception {
+        otpVerificationDto.setOtp("654321"); // Invalid OTP
+        String requestJson = objectMapper.writeValueAsString(otpVerificationDto);
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/otp/verify")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        String responseJson = result.getResponse().getContentAsString();
+        EkycResponseDto responseDto = objectMapper.readValue(responseJson, EkycResponseDto.class);
+
+        assertEquals(userId, responseDto.getUserId());
+        assertEquals(VerificationStatus.FAILED, responseDto.getStatus());
+        assertEquals("Invalid OTP", responseDto.getMessage());
+    }
+
+    @Test
+    @DisplayName("Should handle server error during OTP verification")
+    void shouldHandleServerErrorDuringOtpVerification() throws Exception {
+        otpVerificationDto.setOtp("999999"); // Trigger server error
+        String requestJson = objectMapper.writeValueAsString(otpVerificationDto);
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/otp/verify")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(MockMvcResultMatchers.status().isInternalServerError())
+                .andReturn();
+
+        String responseJson = result.getResponse().getContentAsString();
+        ErrorResponseDto errorResponseDto = objectMapper.readValue(responseJson, ErrorResponseDto.class);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), errorResponseDto.getStatusCode());
+        assertTrue(errorResponseDto.getMessage().contains("Error verifying OTP"));
+    }
+
+    @Test
+    @DisplayName("Should return bad request for invalid request body")
+    void shouldReturnBadRequestForInvalidRequestBody() throws Exception {
+        String invalidJson = "{\"userId\": \"invalid-uuid\", \"otp\": \"123456\"}";
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/otp/verify")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidJson))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Should resend OTP successfully")
+    void shouldResendOtpSuccessfully() throws Exception {
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/otp/resend/{userId}", userId)
+                        .param("channelId", channelId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        String responseJson = result.getResponse().getContentAsString();
+        EkycResponseDto responseDto = objectMapper.readValue(responseJson, EkycResponseDto.class);
+
+        assertEquals(userId, responseDto.getUserId());
+        assertEquals(VerificationStatus.PENDING, responseDto.getStatus());
+        assertEquals("OTP resent successfully", responseDto.getMessage());
+    }
+
+    @Test
+    @DisplayName("Should return failed status for invalid resend OTP request")
+    void shouldReturnFailedStatusForInvalidResendOtpRequest() throws Exception {
+        channelId = "INVALID_CHANNEL";
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/otp/resend/{userId}", userId)
+                        .param("channelId", channelId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        String responseJson = result.getResponse().getContentAsString();
+        EkycResponseDto responseDto = objectMapper.readValue(responseJson, EkycResponseDto.class);
+
+        assertEquals(userId, responseDto.getUserId());
+        assertEquals(VerificationStatus.FAILED, responseDto.getStatus());
+        assertEquals("Failed to resend OTP", responseDto.getMessage());
+    }
+
+    @Test
+    @DisplayName("Should handle server error during OTP resend")
+    void shouldHandleServerErrorDuringOtpResend() throws Exception {
+        channelId = "ERROR"; // Trigger server error
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/otp/resend/{userId}", userId)
+                        .param("channelId", channelId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isInternalServerError())
+                .andReturn();
+
+        String responseJson = result.getResponse().getContentAsString();
+        ErrorResponseDto errorResponseDto = objectMapper.readValue(responseJson, ErrorResponseDto.class);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), errorResponseDto.getStatusCode());
+        assertTrue(errorResponseDto.getMessage().contains("Error resending OTP"));
+    }
+
+    @Test
+    @DisplayName("Should return bad request for invalid UUID in resend OTP")
+    void shouldReturnBadRequestForInvalidUuidInResendOtp() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/otp/resend/{userId}", "invalid-uuid")
+                        .param("channelId", channelId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+}

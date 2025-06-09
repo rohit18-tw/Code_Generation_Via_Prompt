@@ -1,0 +1,318 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 14:00:56
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_054
+# ==================================================
+
+package com.ekyc.service.service;
+
+import com.ekyc.service.dto.EkycResponseDto;
+import com.ekyc.service.dto.OtpVerificationDto;
+import com.ekyc.service.dto.UidaiOtpInitiateRequestDto;
+import com.ekyc.service.dto.UidaiOtpInitiateResponseDto;
+import com.ekyc.service.dto.UidaiOtpVerifyRequestDto;
+import com.ekyc.service.dto.UidaiOtpVerifyResponseDto;
+import com.ekyc.service.entity.EkycRequest;
+import com.ekyc.service.entity.EkycVerification;
+import com.ekyc.service.enums.EkycStatus;
+import com.ekyc.service.enums.VerificationStatus;
+import com.ekyc.service.exception.EkycException;
+import com.ekyc.service.exception.InvalidRequestException;
+import com.ekyc.service.exception.ResourceNotFoundException;
+import com.ekyc.service.repository.EkycRequestRepository;
+import com.ekyc.service.repository.EkycVerificationRepository;
+import com.ekyc.service.service.impl.OtpVerificationServiceImpl;
+import com.ekyc.service.util.UidaiApiClient;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
+public class OtpVerificationServiceImplTest {
+
+    private OtpVerificationServiceImpl otpVerificationService;
+    
+    private EkycRequestRepository ekycRequestRepository;
+    private EkycVerificationRepository ekycVerificationRepository;
+    private UidaiApiClient uidaiApiClient;
+    
+    @BeforeEach
+    public void setUp() {
+        // Create custom test implementations of the repositories and client
+        ekycRequestRepository = new TestEkycRequestRepository();
+        ekycVerificationRepository = new TestEkycVerificationRepository();
+        uidaiApiClient = new TestUidaiApiClient();
+        
+        // Initialize the service with our test implementations
+        otpVerificationService = new OtpVerificationServiceImpl(
+                ekycRequestRepository,
+                ekycVerificationRepository,
+                uidaiApiClient
+        );
+    }
+    
+    @Test
+    public void testInitiateOtpSuccess() {
+        // Arrange
+        String userId = "user123";
+        String channelId = "channel456";
+        String aadhaarNumber = "123456789012";
+        
+        // Act
+        EkycResponseDto response = otpVerificationService.initiateOtp(userId, channelId, aadhaarNumber);
+        
+        // Assert
+        assertNotNull(response);
+        assertEquals("OTP sent successfully", response.getMessage());
+        assertEquals("SUCCESS", response.getStatus());
+    }
+    
+    @Test
+    public void testInitiateOtpWithInvalidAadhaar() {
+        // Arrange
+        String userId = "user123";
+        String channelId = "channel456";
+        String invalidAadhaarNumber = "1234"; // Too short
+        
+        // Act & Assert
+        Exception exception = assertThrows(InvalidRequestException.class, () -> {
+            otpVerificationService.initiateOtp(userId, channelId, invalidAadhaarNumber);
+        });
+        
+        assertTrue(exception.getMessage().contains("Invalid Aadhaar number"));
+    }
+    
+    @Test
+    public void testInitiateOtpWithUidaiFailure() {
+        // Arrange
+        String userId = "user123";
+        String channelId = "channel456";
+        String failureAadhaar = "999999999999"; // Special number that will trigger failure in our test client
+        
+        // Act & Assert
+        Exception exception = assertThrows(EkycException.class, () -> {
+            otpVerificationService.initiateOtp(userId, channelId, failureAadhaar);
+        });
+        
+        assertTrue(exception.getMessage().contains("Failed to initiate OTP"));
+    }
+    
+    @Test
+    public void testVerifyOtpSuccess() {
+        // Arrange
+        String userId = "user123";
+        String channelId = "channel456";
+        String txnId = "txn789";
+        String otp = "123456";
+        
+        OtpVerificationDto verificationDto = new OtpVerificationDto();
+        verificationDto.setUserId(userId);
+        verificationDto.setChannelId(channelId);
+        verificationDto.setTxnId(txnId);
+        verificationDto.setOtp(otp);
+        
+        // Act
+        EkycResponseDto response = otpVerificationService.verifyOtp(verificationDto);
+        
+        // Assert
+        assertNotNull(response);
+        assertEquals("OTP verified successfully", response.getMessage());
+        assertEquals("SUCCESS", response.getStatus());
+    }
+    
+    @Test
+    public void testVerifyOtpWithInvalidOtp() {
+        // Arrange
+        String userId = "user123";
+        String channelId = "channel456";
+        String txnId = "txn789";
+        String invalidOtp = "999999"; // Special OTP that will trigger failure in our test client
+        
+        OtpVerificationDto verificationDto = new OtpVerificationDto();
+        verificationDto.setUserId(userId);
+        verificationDto.setChannelId(channelId);
+        verificationDto.setTxnId(txnId);
+        verificationDto.setOtp(invalidOtp);
+        
+        // Act & Assert
+        Exception exception = assertThrows(EkycException.class, () -> {
+            otpVerificationService.verifyOtp(verificationDto);
+        });
+        
+        assertTrue(exception.getMessage().contains("OTP verification failed"));
+    }
+    
+    @Test
+    public void testVerifyOtpWithMissingTransaction() {
+        // Arrange
+        String userId = "user123";
+        String channelId = "channel456";
+        String nonExistentTxnId = "nonexistent";
+        String otp = "123456";
+        
+        OtpVerificationDto verificationDto = new OtpVerificationDto();
+        verificationDto.setUserId(userId);
+        verificationDto.setChannelId(channelId);
+        verificationDto.setTxnId(nonExistentTxnId);
+        verificationDto.setOtp(otp);
+        
+        // Act & Assert
+        Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
+            otpVerificationService.verifyOtp(verificationDto);
+        });
+        
+        assertTrue(exception.getMessage().contains("No eKYC request found"));
+    }
+    
+    @Test
+    public void testResendOtpSuccess() {
+        // Arrange
+        String userId = "user123";
+        String channelId = "channel456";
+        
+        // Act
+        EkycResponseDto response = otpVerificationService.resendOtp(userId, channelId);
+        
+        // Assert
+        assertNotNull(response);
+        assertEquals("OTP resent successfully", response.getMessage());
+        assertEquals("SUCCESS", response.getStatus());
+    }
+    
+    @Test
+    public void testResendOtpWithNoExistingRequest() {
+        // Arrange
+        String nonExistentUserId = "nonexistent";
+        String channelId = "channel456";
+        
+        // Act & Assert
+        Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
+            otpVerificationService.resendOtp(nonExistentUserId, channelId);
+        });
+        
+        assertTrue(exception.getMessage().contains("No active eKYC request found"));
+    }
+    
+    // Test repository implementations
+    private class TestEkycRequestRepository implements EkycRequestRepository {
+        @Override
+        public <S extends EkycRequest> S save(S entity) {
+            // Simulate saving by setting ID if not present
+            if (entity.getId() == null) {
+                entity.setId(UUID.randomUUID());
+            }
+            return entity;
+        }
+        
+        @Override
+        public Optional<EkycRequest> findByUserIdAndChannelIdAndStatus(String userId, String channelId, EkycStatus status) {
+            if ("nonexistent".equals(userId)) {
+                return Optional.empty();
+            }
+            
+            EkycRequest request = new EkycRequest();
+            request.setId(UUID.randomUUID());
+            request.setUserId(userId);
+            request.setChannelId(channelId);
+            request.setStatus(status);
+            request.setCreatedAt(LocalDateTime.now());
+            request.setUpdatedAt(LocalDateTime.now());
+            
+            return Optional.of(request);
+        }
+        
+        @Override
+        public Optional<EkycRequest> findByUserIdAndChannelId(String userId, String channelId) {
+            if ("nonexistent".equals(userId)) {
+                return Optional.empty();
+            }
+            
+            EkycRequest request = new EkycRequest();
+            request.setId(UUID.randomUUID());
+            request.setUserId(userId);
+            request.setChannelId(channelId);
+            request.setStatus(EkycStatus.INITIATED);
+            request.setCreatedAt(LocalDateTime.now());
+            request.setUpdatedAt(LocalDateTime.now());
+            
+            return Optional.of(request);
+        }
+        
+        @Override
+        public Optional<EkycRequest> findById(UUID id) {
+            EkycRequest request = new EkycRequest();
+            request.setId(id);
+            request.setUserId("user123");
+            request.setChannelId("channel456");
+            request.setStatus(EkycStatus.INITIATED);
+            request.setCreatedAt(LocalDateTime.now());
+            request.setUpdatedAt(LocalDateTime.now());
+            
+            return Optional.of(request);
+        }
+    }
+    
+    private class TestEkycVerificationRepository implements EkycVerificationRepository {
+        @Override
+        public <S extends EkycVerification> S save(S entity) {
+            // Simulate saving by setting ID if not present
+            if (entity.getId() == null) {
+                entity.setId(UUID.randomUUID());
+            }
+            return entity;
+        }
+        
+        @Override
+        public Optional<EkycVerification> findByEkycRequestIdAndTxnId(UUID ekycRequestId, String txnId) {
+            if ("nonexistent".equals(txnId)) {
+                return Optional.empty();
+            }
+            
+            EkycVerification verification = new EkycVerification();
+            verification.setId(UUID.randomUUID());
+            verification.setEkycRequestId(ekycRequestId);
+            verification.setTxnId(txnId);
+            verification.setStatus(VerificationStatus.INITIATED);
+            verification.setCreatedAt(LocalDateTime.now());
+            verification.setUpdatedAt(LocalDateTime.now());
+            
+            return Optional.of(verification);
+        }
+    }
+    
+    private class TestUidaiApiClient implements UidaiApiClient {
+        @Override
+        public UidaiOtpInitiateResponseDto initiateOtp(UidaiOtpInitiateRequestDto requestDto) {
+            if ("999999999999".equals(requestDto.getUid())) {
+                throw new EkycException("Failed to initiate OTP with UIDAI");
+            }
+            
+            UidaiOtpInitiateResponseDto responseDto = new UidaiOtpInitiateResponseDto();
+            responseDto.setStatus("SUCCESS");
+            responseDto.setTxnId("txn" + System.currentTimeMillis());
+            return responseDto;
+        }
+        
+        @Override
+        public UidaiOtpVerifyResponseDto verifyOtp(UidaiOtpVerifyRequestDto requestDto) {
+            if ("999999".equals(requestDto.getOtp())) {
+                throw new EkycException("OTP verification failed with UIDAI");
+            }
+            
+            UidaiOtpVerifyResponseDto responseDto = new UidaiOtpVerifyResponseDto();
+            responseDto.setStatus("SUCCESS");
+            responseDto.setEKycXML("<xml>Sample eKYC data</xml>");
+            return responseDto;
+        }
+    }
+}

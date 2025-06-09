@@ -1,0 +1,267 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:55:05
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_042
+# ==================================================
+
+package com.mock.uidai.service;
+
+import com.mock.uidai.dto.RequestLogDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
+
+/**
+ * Service for request tracing and logging.
+ * Provides functionality to track API requests, mask sensitive data, and maintain trace context.
+ */
+@Service
+public class TraceLoggerService {
+    private static final Logger logger = LoggerFactory.getLogger(TraceLoggerService.class);
+    
+    private static final String TRACE_ID_HEADER = "X-Trace-ID";
+    private static final String DEFAULT_MASK = "********";
+    
+    // Patterns for masking sensitive information
+    private static final Pattern AADHAAR_PATTERN = Pattern.compile("\\d{4}\\s*\\d{4}\\s*\\d{4}");
+    private static final Pattern PAN_PATTERN = Pattern.compile("[A-Z]{5}\\d{4}[A-Z]{1}");
+    private static final Pattern PHONE_PATTERN = Pattern.compile("\\d{10}");
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}");
+    
+    // Store for in-flight requests
+    private final ConcurrentHashMap<String, RequestLogDto> activeRequests = new ConcurrentHashMap<>();
+    
+    @Value("${trace.logging.enabled:true}")
+    private boolean loggingEnabled;
+    
+    @Value("${trace.pii.masking.enabled:true}")
+    private boolean piiMaskingEnabled;
+    
+    /**
+     * Initializes request tracing and returns a trace ID.
+     * Uses existing trace ID from headers if available, otherwise generates a new one.
+     *
+     * @param endpoint The API endpoint being called
+     * @param requestPayload The request payload (will be masked if contains PII)
+     * @return The trace ID for the request
+     */
+    public String initializeTracing(String endpoint, String requestPayload) {
+        String traceId = getOrCreateTraceId();
+        
+        if (loggingEnabled) {
+            HttpServletRequest request = getCurrentRequest();
+            String ipAddress = request != null ? getClientIp(request) : "unknown";
+            String userAgent = request != null ? request.getHeader("User-Agent") : "unknown";
+            
+            String maskedPayload = piiMaskingEnabled ? maskSensitiveData(requestPayload) : requestPayload;
+            
+            RequestLogDto requestLog = new RequestLogDto(
+                    traceId,
+                    endpoint,
+                    maskedPayload,
+                    LocalDateTime.now(),
+                    null,
+                    null,
+                    "IN_PROGRESS",
+                    null,
+                    ipAddress,
+                    userAgent
+            );
+            
+            activeRequests.put(traceId, requestLog);
+            logger.info("Request initiated: [{}] {} - {}", traceId, endpoint, maskedPayload);
+        }
+        
+        return traceId;
+    }
+    
+    /**
+     * Finalizes request tracing with response details.
+     *
+     * @param traceId The trace ID of the request
+     * @param responsePayload The response payload (will be masked if contains PII)
+     * @param status The status of the response (SUCCESS, ERROR, etc.)
+     * @param errorMessage Optional error message if status is ERROR
+     */
+    public void finalizeTracing(String traceId, String responsePayload, String status, String errorMessage) {
+        if (!loggingEnabled || traceId == null) {
+            return;
+        }
+        
+        RequestLogDto requestLog = activeRequests.get(traceId);
+        if (requestLog != null) {
+            String maskedResponse = piiMaskingEnabled ? maskSensitiveData(responsePayload) : responsePayload;
+            
+            requestLog = new RequestLogDto(
+                    requestLog.getTraceId(),
+                    requestLog.getEndpoint(),
+                    requestLog.getRequestPayload(),
+                    requestLog.getRequestTimestamp(),
+                    maskedResponse,
+                    LocalDateTime.now(),
+                    status,
+                    errorMessage,
+                    requestLog.getIpAddress(),
+                    requestLog.getUserAgent()
+            );
+            
+            // Log completion and remove from active requests
+            if ("ERROR".equals(status)) {
+                logger.error("Request completed with error: [{}] {} - Error: {}", 
+                        traceId, requestLog.getEndpoint(), errorMessage);
+            } else {
+                logger.info("Request completed successfully: [{}] {}", 
+                        traceId, requestLog.getEndpoint());
+            }
+            
+            // Remove from active requests
+            activeRequests.remove(traceId);
+        } else {
+            logger.warn("Attempting to finalize unknown trace ID: {}", traceId);
+        }
+    }
+    
+    /**
+     * Gets the current trace ID from the request context or generates a new one.
+     *
+     * @return The trace ID
+     */
+    public String getOrCreateTraceId() {
+        HttpServletRequest request = getCurrentRequest();
+        String traceId = null;
+        
+        if (request != null) {
+            traceId = request.getHeader(TRACE_ID_HEADER);
+        }
+        
+        if (traceId == null || traceId.trim().isEmpty()) {
+            traceId = UUID.randomUUID().toString();
+        }
+        
+        return traceId;
+    }
+    
+    /**
+     * Masks sensitive data in the provided text.
+     *
+     * @param text The text to mask
+     * @return The masked text
+     */
+    public String maskSensitiveData(String text) {
+        if (text == null || !piiMaskingEnabled) {
+            return text;
+        }
+        
+        // Mask Aadhaar numbers
+        text = AADHAAR_PATTERN.matcher(text).replaceAll(DEFAULT_MASK);
+        
+        // Mask PAN numbers
+        text = PAN_PATTERN.matcher(text).replaceAll(DEFAULT_MASK);
+        
+        // Mask phone numbers
+        text = PHONE_PATTERN.matcher(text).replaceAll(DEFAULT_MASK);
+        
+        // Mask email addresses
+        text = EMAIL_PATTERN.matcher(text).replaceAll(DEFAULT_MASK);
+        
+        return text;
+    }
+    
+    /**
+     * Gets the client IP address from the request.
+     *
+     * @param request The HTTP request
+     * @return The client IP address
+     */
+    private String getClientIp(HttpServletRequest request) {
+        String xForwardedFor = request.getHeader("X-Forwarded-For");
+        if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
+            // Get the first IP in case of multiple proxies
+            return xForwardedFor.split(",")[0].trim();
+        }
+        return request.getRemoteAddr();
+    }
+    
+    /**
+     * Gets the current HTTP request from the request context.
+     *
+     * @return The current HTTP request or null if not available
+     */
+    private HttpServletRequest getCurrentRequest() {
+        try {
+            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            return attributes != null ? attributes.getRequest() : null;
+        } catch (Exception e) {
+            logger.debug("Could not access current request: {}", e.getMessage());
+            return null;
+        }
+    }
+    
+    /**
+     * Logs a debug message with the current trace ID.
+     *
+     * @param message The message to log
+     * @param args The message arguments
+     */
+    public void debug(String message, Object... args) {
+        if (logger.isDebugEnabled()) {
+            String traceId = getOrCreateTraceId();
+            logger.debug("[{}] {}", traceId, String.format(message, args));
+        }
+    }
+    
+    /**
+     * Logs an info message with the current trace ID.
+     *
+     * @param message The message to log
+     * @param args The message arguments
+     */
+    public void info(String message, Object... args) {
+        if (logger.isInfoEnabled()) {
+            String traceId = getOrCreateTraceId();
+            logger.info("[{}] {}", traceId, String.format(message, args));
+        }
+    }
+    
+    /**
+     * Logs a warning message with the current trace ID.
+     *
+     * @param message The message to log
+     * @param args The message arguments
+     */
+    public void warn(String message, Object... args) {
+        String traceId = getOrCreateTraceId();
+        logger.warn("[{}] {}", traceId, String.format(message, args));
+    }
+    
+    /**
+     * Logs an error message with the current trace ID.
+     *
+     * @param message The message to log
+     * @param args The message arguments
+     */
+    public void error(String message, Object... args) {
+        String traceId = getOrCreateTraceId();
+        logger.error("[{}] {}", traceId, String.format(message, args));
+    }
+    
+    /**
+     * Logs an error message with exception and the current trace ID.
+     *
+     * @param message The message to log
+     * @param throwable The exception to log
+     */
+    public void error(String message, Throwable throwable) {
+        String traceId = getOrCreateTraceId();
+        logger.error("[{}] {}", traceId, message, throwable);
+    }
+}

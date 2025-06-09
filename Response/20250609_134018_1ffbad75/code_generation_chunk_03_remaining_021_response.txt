@@ -1,0 +1,141 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:47:44
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_021
+# ==================================================
+
+package com.ekyc.service.dto;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.Objects;
+
+/**
+ * Data Transfer Object for UIDAI OTP verification request.
+ * This class encapsulates the data required to verify an OTP with the UIDAI service.
+ */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class UidaiOtpVerifyRequestDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @NotBlank(message = "UID is required")
+    @Size(min = 12, max = 12, message = "UID must be 12 digits")
+    @Pattern(regexp = "^[0-9]{12}$", message = "UID must contain only digits")
+    @JsonProperty("uid")
+    private String uid;
+
+    @NotBlank(message = "OTP is required")
+    @Size(min = 6, max = 6, message = "OTP must be 6 digits")
+    @Pattern(regexp = "^[0-9]{6}$", message = "OTP must contain only digits")
+    @JsonProperty("otp")
+    private String otp;
+
+    @NotBlank(message = "Transaction ID is required")
+    @JsonProperty("txnId")
+    private String txnId;
+
+    /**
+     * Default constructor for UidaiOtpVerifyRequestDto.
+     */
+    public UidaiOtpVerifyRequestDto() {
+    }
+
+    /**
+     * Parameterized constructor for UidaiOtpVerifyRequestDto.
+     *
+     * @param uid    The 12-digit Aadhaar number
+     * @param otp    The 6-digit OTP received for verification
+     * @param txnId  The transaction ID associated with the OTP request
+     */
+    public UidaiOtpVerifyRequestDto(String uid, String otp, String txnId) {
+        this.uid = uid;
+        this.otp = otp;
+        this.txnId = txnId;
+    }
+
+    /**
+     * Gets the UID (Aadhaar number).
+     *
+     * @return the UID
+     */
+    public String getUid() {
+        return uid;
+    }
+
+    /**
+     * Sets the UID (Aadhaar number).
+     *
+     * @param uid the UID to set
+     */
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    /**
+     * Gets the OTP.
+     *
+     * @return the OTP
+     */
+    public String getOtp() {
+        return otp;
+    }
+
+    /**
+     * Sets the OTP.
+     *
+     * @param otp the OTP to set
+     */
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
+
+    /**
+     * Gets the transaction ID.
+     *
+     * @return the transaction ID
+     */
+    public String getTxnId() {
+        return txnId;
+    }
+
+    /**
+     * Sets the transaction ID.
+     *
+     * @param txnId the transaction ID to set
+     */
+    public void setTxnId(String txnId) {
+        this.txnId = txnId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UidaiOtpVerifyRequestDto that = (UidaiOtpVerifyRequestDto) o;
+        return Objects.equals(uid, that.uid) &&
+                Objects.equals(otp, that.otp) &&
+                Objects.equals(txnId, that.txnId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uid, otp, txnId);
+    }
+
+    @Override
+    public String toString() {
+        // Masking sensitive information for security
+        return "UidaiOtpVerifyRequestDto{" +
+                "uid='" + (uid != null ? uid.replaceAll("\\d(?=\\d{4})", "*") : null) + '\'' +
+                ", otp='" + (otp != null ? "******" : null) + '\'' +
+                ", txnId='" + txnId + '\'' +
+                '}';
+    }
+}

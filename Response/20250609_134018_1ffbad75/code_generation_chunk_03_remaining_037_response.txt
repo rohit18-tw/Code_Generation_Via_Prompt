@@ -1,0 +1,366 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:52:39
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_037
+# ==================================================
+
+package com.ekyc.service.service.impl;
+
+import com.ekyc.service.dto.EkycRequestDto;
+import com.ekyc.service.dto.EkycResponseDto;
+import com.ekyc.service.dto.UidaiOtpInitiateRequestDto;
+import com.ekyc.service.dto.UidaiOtpInitiateResponseDto;
+import com.ekyc.service.dto.UidaiOtpVerifyRequestDto;
+import com.ekyc.service.dto.UidaiOtpVerifyResponseDto;
+import com.ekyc.service.entity.EkycRequest;
+import com.ekyc.service.enums.VerificationStatus;
+import com.ekyc.service.exception.EkycException;
+import com.ekyc.service.exception.ResourceNotFoundException;
+import com.ekyc.service.repository.EkycRequestRepository;
+import com.ekyc.service.service.EkycService;
+import com.ekyc.service.service.UidaiApiService;
+import com.ekyc.service.util.LoggingUtil;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
+/**
+ * Implementation of the eKYC service that handles verification requests
+ * and integrates with the UIDAI API for Aadhaar verification.
+ */
+@Service
+public class EkycServiceImpl implements EkycService {
+
+    private static final Logger logger = LoggerFactory.getLogger(EkycServiceImpl.class);
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    
+    @Value("${ekyc.request.retention.days:90}")
+    private int requestRetentionDays;
+    
+    @Value("${ekyc.request.expiry.minutes:15}")
+    private int requestExpiryMinutes;
+    
+    private final EkycRequestRepository ekycRequestRepository;
+    private final UidaiApiService uidaiApiService;
+
+    @Autowired
+    public EkycServiceImpl(EkycRequestRepository ekycRequestRepository, UidaiApiService uidaiApiService) {
+        this.ekycRequestRepository = ekycRequestRepository;
+        this.uidaiApiService = uidaiApiService;
+    }
+
+    /**
+     * Initiates a new eKYC verification process by sending an OTP to the user's
+     * registered mobile number linked with their Aadhaar.
+     *
+     * @param requestDto The eKYC request containing user information
+     * @return Response with transaction ID and status
+     */
+    @Override
+    @Transactional
+    public EkycResponseDto initiateVerification(EkycRequestDto requestDto) {
+        logger.info("Initiating eKYC verification process");
+        
+        // Validate Aadhaar number format
+        if (!uidaiApiService.isValidAadhaarFormat(requestDto.getAadhaarNumber())) {
+            logger.error("Invalid Aadhaar number format");
+            throw new EkycException("Invalid Aadhaar number format");
+        }
+        
+        // Create a new eKYC request entity
+        EkycRequest ekycRequest = new EkycRequest();
+        ekycRequest.setTransactionId(UUID.randomUUID().toString());
+        ekycRequest.setAadhaarNumber(requestDto.getAadhaarNumber());
+        ekycRequest.setName(requestDto.getName());
+        ekycRequest.setMobileNumber(requestDto.getMobileNumber());
+        ekycRequest.setStatus(VerificationStatus.INITIATED);
+        ekycRequest.setCreatedAt(LocalDateTime.now());
+        ekycRequest.setUpdatedAt(LocalDateTime.now());
+        
+        // Save the request to the database
+        ekycRequest = ekycRequestRepository.save(ekycRequest);
+        
+        // Initiate OTP with UIDAI
+        UidaiOtpInitiateRequestDto uidaiRequest = new UidaiOtpInitiateRequestDto();
+        uidaiRequest.setAadhaarNumber(requestDto.getAadhaarNumber());
+        uidaiRequest.setTransactionId(ekycRequest.getTransactionId());
+        
+        try {
+            UidaiOtpInitiateResponseDto uidaiResponse = uidaiApiService.initiateOtp(uidaiRequest);
+            
+            // Update the request with UIDAI reference
+            ekycRequest.setUidaiReferenceId(uidaiResponse.getReferenceId());
+            ekycRequest = ekycRequestRepository.save(ekycRequest);
+            
+            // Prepare response
+            EkycResponseDto responseDto = new EkycResponseDto();
+            responseDto.setTransactionId(ekycRequest.getTransactionId());
+            responseDto.setStatus(ekycRequest.getStatus());
+            responseDto.setMessage("OTP sent successfully to registered mobile number");
+            
+            LoggingUtil.logInfo("eKYC verification initiated successfully for transaction: {}", 
+                    ekycRequest.getTransactionId());
+            
+            return responseDto;
+        } catch (Exception e) {
+            // Update status to FAILED
+            ekycRequest.setStatus(VerificationStatus.FAILED);
+            ekycRequest.setFailureReason(e.getMessage());
+            ekycRequestRepository.save(ekycRequest);
+            
+            LoggingUtil.logError("Error initiating eKYC verification: {}", e.getMessage());
+            throw new EkycException("Failed to initiate verification: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Verifies the OTP provided by the user against the UIDAI system.
+     *
+     * @param transactionId The transaction ID of the verification request
+     * @param otp The OTP provided by the user
+     * @return Response with verification status and details
+     */
+    @Override
+    @Transactional
+    public EkycResponseDto verifyOtp(String transactionId, String otp) {
+        logger.info("Verifying OTP for transaction: {}", transactionId);
+        
+        // Retrieve the eKYC request
+        EkycRequest ekycRequest = ekycRequestRepository.findByTransactionId(transactionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Transaction not found: " + transactionId));
+        
+        // Check if the request is still valid
+        if (ekycRequest.getStatus() == VerificationStatus.EXPIRED) {
+            throw new EkycException("Verification request has expired");
+        }
+        
+        if (ekycRequest.getStatus() == VerificationStatus.COMPLETED) {
+            throw new EkycException("Verification already completed");
+        }
+        
+        // Verify OTP with UIDAI
+        UidaiOtpVerifyRequestDto uidaiRequest = new UidaiOtpVerifyRequestDto();
+        uidaiRequest.setTransactionId(transactionId);
+        uidaiRequest.setReferenceId(ekycRequest.getUidaiReferenceId());
+        uidaiRequest.setOtp(otp);
+        uidaiRequest.setAadhaarNumber(ekycRequest.getAadhaarNumber());
+        
+        try {
+            UidaiOtpVerifyResponseDto uidaiResponse = uidaiApiService.verifyOtp(uidaiRequest);
+            
+            // Update the request status based on verification result
+            if (uidaiResponse.isVerified()) {
+                ekycRequest.setStatus(VerificationStatus.COMPLETED);
+                ekycRequest.setKycData(uidaiResponse.getKycData());
+            } else {
+                ekycRequest.setStatus(VerificationStatus.FAILED);
+                ekycRequest.setFailureReason("OTP verification failed");
+            }
+            
+            ekycRequest.setUpdatedAt(LocalDateTime.now());
+            ekycRequestRepository.save(ekycRequest);
+            
+            // Prepare response
+            EkycResponseDto responseDto = new EkycResponseDto();
+            responseDto.setTransactionId(transactionId);
+            responseDto.setStatus(ekycRequest.getStatus());
+            
+            if (uidaiResponse.isVerified()) {
+                responseDto.setMessage("Verification completed successfully");
+                responseDto.setKycData(uidaiResponse.getKycData());
+                LoggingUtil.logInfo("OTP verification successful for transaction: {}", transactionId);
+            } else {
+                responseDto.setMessage("OTP verification failed");
+                LoggingUtil.logInfo("OTP verification failed for transaction: {}", transactionId);
+            }
+            
+            return responseDto;
+        } catch (Exception e) {
+            // Update status to FAILED
+            ekycRequest.setStatus(VerificationStatus.FAILED);
+            ekycRequest.setFailureReason(e.getMessage());
+            ekycRequest.setUpdatedAt(LocalDateTime.now());
+            ekycRequestRepository.save(ekycRequest);
+            
+            LoggingUtil.logError("Error verifying OTP: {}", e.getMessage());
+            throw new EkycException("Failed to verify OTP: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Retrieves the current status of a verification request.
+     *
+     * @param transactionId The transaction ID of the verification request
+     * @return Response with current status and details
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public EkycResponseDto getVerificationStatus(String transactionId) {
+        logger.info("Retrieving verification status for transaction: {}", transactionId);
+        
+        // Retrieve the eKYC request
+        EkycRequest ekycRequest = ekycRequestRepository.findByTransactionId(transactionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Transaction not found: " + transactionId));
+        
+        // Check if the request has expired but not marked as such
+        if (ekycRequest.getStatus() == VerificationStatus.INITIATED && 
+                ekycRequest.getCreatedAt().plusMinutes(requestExpiryMinutes).isBefore(LocalDateTime.now())) {
+            ekycRequest.setStatus(VerificationStatus.EXPIRED);
+            ekycRequest.setUpdatedAt(LocalDateTime.now());
+            ekycRequestRepository.save(ekycRequest);
+        }
+        
+        // Prepare response
+        EkycResponseDto responseDto = new EkycResponseDto();
+        responseDto.setTransactionId(transactionId);
+        responseDto.setStatus(ekycRequest.getStatus());
+        
+        switch (ekycRequest.getStatus()) {
+            case INITIATED:
+                responseDto.setMessage("Verification in progress");
+                break;
+            case COMPLETED:
+                responseDto.setMessage("Verification completed successfully");
+                responseDto.setKycData(ekycRequest.getKycData());
+                break;
+            case FAILED:
+                responseDto.setMessage("Verification failed: " + ekycRequest.getFailureReason());
+                break;
+            case EXPIRED:
+                responseDto.setMessage("Verification request has expired");
+                break;
+            default:
+                responseDto.setMessage("Unknown status");
+        }
+        
+        LoggingUtil.logInfo("Retrieved verification status for transaction: {}", transactionId);
+        return responseDto;
+    }
+
+    /**
+     * Retrieves a paginated list of verification requests.
+     *
+     * @param status Optional filter by verification status
+     * @param pageable Pagination parameters
+     * @return Page of verification requests
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Page<EkycRequest> getVerificationRequests(VerificationStatus status, Pageable pageable) {
+        logger.info("Retrieving verification requests with status: {}", status);
+        
+        Page<EkycRequest> requests;
+        if (status != null) {
+            requests = ekycRequestRepository.findByStatus(status, pageable);
+        } else {
+            requests = ekycRequestRepository.findAll(pageable);
+        }
+        
+        LoggingUtil.logInfo("Retrieved {} verification requests", requests.getNumberOfElements());
+        return requests;
+    }
+
+    /**
+     * Retrieves verification metrics for a specified date range.
+     *
+     * @param startDate Start date for the reporting period
+     * @param endDate End date for the reporting period
+     * @return Statistical data about verifications in the specified period
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Object getVerificationMetrics(String startDate, String endDate) {
+        logger.info("Retrieving verification metrics for period: {} to {}", startDate, endDate);
+        
+        LocalDate start;
+        LocalDate end;
+        
+        try {
+            start = LocalDate.parse(startDate, DATE_FORMATTER);
+            end = LocalDate.parse(endDate, DATE_FORMATTER);
+        } catch (DateTimeParseException e) {
+            throw new EkycException("Invalid date format. Use yyyy-MM-dd format.");
+        }
+        
+        if (start.isAfter(end)) {
+            throw new EkycException("Start date cannot be after end date");
+        }
+        
+        LocalDateTime startDateTime = start.atStartOfDay();
+        LocalDateTime endDateTime = end.plusDays(1).atStartOfDay();
+        
+        // Get counts by status
+        long totalRequests = ekycRequestRepository.countByCreatedAtBetween(startDateTime, endDateTime);
+        long completedRequests = ekycRequestRepository.countByStatusAndCreatedAtBetween(
+                VerificationStatus.COMPLETED, startDateTime, endDateTime);
+        long failedRequests = ekycRequestRepository.countByStatusAndCreatedAtBetween(
+                VerificationStatus.FAILED, startDateTime, endDateTime);
+        long expiredRequests = ekycRequestRepository.countByStatusAndCreatedAtBetween(
+                VerificationStatus.EXPIRED, startDateTime, endDateTime);
+        long pendingRequests = ekycRequestRepository.countByStatusAndCreatedAtBetween(
+                VerificationStatus.INITIATED, startDateTime, endDateTime);
+        
+        // Calculate success rate
+        double successRate = totalRequests > 0 ? (double) completedRequests / totalRequests * 100 : 0;
+        
+        // Prepare metrics response
+        Map<String, Object> metrics = new HashMap<>();
+        metrics.put("startDate", startDate);
+        metrics.put("endDate", endDate);
+        metrics.put("totalRequests", totalRequests);
+        metrics.put("completedRequests", completedRequests);
+        metrics.put("failedRequests", failedRequests);
+        metrics.put("expiredRequests", expiredRequests);
+        metrics.put("pendingRequests", pendingRequests);
+        metrics.put("successRate", String.format("%.2f%%", successRate));
+        
+        LoggingUtil.logInfo("Retrieved verification metrics for period: {} to {}", startDate, endDate);
+        return metrics;
+    }
+
+    /**
+     * Scheduled job to mark expired verification requests.
+     * Runs every 15 minutes.
+     */
+    @Scheduled(fixedRate = 900000) // 15 minutes
+    @Transactional
+    public void markExpiredRequests() {
+        logger.info("Running scheduled job to mark expired verification requests");
+        
+        LocalDateTime expiryThreshold = LocalDateTime.now().minusMinutes(requestExpiryMinutes);
+        int updatedCount = ekycRequestRepository.markRequestsAsExpired(expiryThreshold);
+        
+        logger.info("Marked {} verification requests as expired", updatedCount);
+    }
+
+    /**
+     * Scheduled job to clean up old verification data.
+     * Runs once a day at midnight.
+     */
+    @Scheduled(cron = "0 0 0 * * ?")
+    @Transactional
+    public void cleanupOldVerificationData() {
+        logger.info("Running scheduled job to clean up old verification data");
+        
+        LocalDateTime retentionDate = LocalDateTime.now().minusDays(requestRetentionDays);
+        int deletedCount = ekycRequestRepository.deleteExpiredRequestsOlderThan(retentionDate);
+        
+        logger.info("Deleted {} old expired verification requests", deletedCount);
+    }
+}

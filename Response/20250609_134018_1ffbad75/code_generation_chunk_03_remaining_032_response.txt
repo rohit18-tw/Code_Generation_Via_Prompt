@@ -1,0 +1,150 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:51:01
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_032
+# ==================================================
+
+package com.ekyc.service.repository;
+
+import com.ekyc.service.entity.EkycRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+/**
+ * Repository interface for managing EkycRequest entities.
+ * Provides methods for CRUD operations and custom queries related to eKYC requests.
+ */
+@Repository
+public interface EkycRequestRepository extends JpaRepository<EkycRequest, UUID> {
+
+    /**
+     * Find an eKYC request by its unique reference ID.
+     *
+     * @param referenceId the reference ID to search for
+     * @return an Optional containing the eKYC request if found
+     */
+    Optional<EkycRequest> findByReferenceId(String referenceId);
+
+    /**
+     * Find all eKYC requests for a specific customer.
+     *
+     * @param customerId the customer ID to search for
+     * @param pageable pagination information
+     * @return a Page of eKYC requests
+     */
+    Page<EkycRequest> findByCustomerId(String customerId, Pageable pageable);
+
+    /**
+     * Find all eKYC requests with a specific status.
+     *
+     * @param status the status to search for
+     * @param pageable pagination information
+     * @return a Page of eKYC requests
+     */
+    Page<EkycRequest> findByStatus(String status, Pageable pageable);
+
+    /**
+     * Find all eKYC requests for a specific customer with a specific status.
+     *
+     * @param customerId the customer ID to search for
+     * @param status the status to search for
+     * @param pageable pagination information
+     * @return a Page of eKYC requests
+     */
+    Page<EkycRequest> findByCustomerIdAndStatus(String customerId, String status, Pageable pageable);
+
+    /**
+     * Find all eKYC requests created between the specified dates.
+     *
+     * @param startDate the start date
+     * @param endDate the end date
+     * @param pageable pagination information
+     * @return a Page of eKYC requests
+     */
+    Page<EkycRequest> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
+
+    /**
+     * Find all eKYC requests by document type.
+     *
+     * @param documentType the document type to search for
+     * @param pageable pagination information
+     * @return a Page of eKYC requests
+     */
+    Page<EkycRequest> findByDocumentType(String documentType, Pageable pageable);
+
+    /**
+     * Find all eKYC requests that have been pending for longer than the specified time.
+     *
+     * @param timestamp the timestamp to compare against
+     * @return a list of eKYC requests
+     */
+    @Query("SELECT e FROM EkycRequest e WHERE e.status = 'PENDING' AND e.createdAt < :timestamp")
+    List<EkycRequest> findPendingRequestsOlderThan(@Param("timestamp") LocalDateTime timestamp);
+
+    /**
+     * Count the number of eKYC requests by status.
+     *
+     * @param status the status to count
+     * @return the count of eKYC requests
+     */
+    long countByStatus(String status);
+
+    /**
+     * Update the status of an eKYC request.
+     *
+     * @param id the ID of the eKYC request
+     * @param status the new status
+     * @param updatedAt the update timestamp
+     * @return the number of rows affected
+     */
+    @Modifying
+    @Query("UPDATE EkycRequest e SET e.status = :status, e.updatedAt = :updatedAt WHERE e.id = :id")
+    int updateStatus(@Param("id") UUID id, @Param("status") String status, @Param("updatedAt") LocalDateTime updatedAt);
+
+    /**
+     * Find all eKYC requests that need to be expired (status is not COMPLETED or FAILED and expiry date has passed).
+     *
+     * @param currentTime the current time to compare against expiry date
+     * @return a list of eKYC requests that need to be expired
+     */
+    @Query("SELECT e FROM EkycRequest e WHERE e.status NOT IN ('COMPLETED', 'FAILED') AND e.expiryDate < :currentTime")
+    List<EkycRequest> findRequestsToExpire(@Param("currentTime") LocalDateTime currentTime);
+
+    /**
+     * Find all eKYC requests by document number (exact match).
+     * Note: This method should be used with caution as it deals with sensitive information.
+     *
+     * @param documentNumber the document number to search for
+     * @return a list of eKYC requests
+     */
+    List<EkycRequest> findByDocumentNumber(String documentNumber);
+
+    /**
+     * Find the most recent eKYC request for a customer.
+     *
+     * @param customerId the customer ID to search for
+     * @return an Optional containing the most recent eKYC request if found
+     */
+    @Query("SELECT e FROM EkycRequest e WHERE e.customerId = :customerId ORDER BY e.createdAt DESC")
+    List<EkycRequest> findMostRecentByCustomerId(@Param("customerId") String customerId, Pageable pageable);
+
+    /**
+     * Delete all expired eKYC requests older than the specified retention period.
+     *
+     * @param retentionDate the date before which to delete records
+     * @return the number of records deleted
+     */
+    @Modifying
+    @Query("DELETE FROM EkycRequest e WHERE e.status = 'EXPIRED' AND e.updatedAt < :retentionDate")
+    int deleteExpiredRequestsOlderThan(@Param("retentionDate") LocalDateTime retentionDate);
+}

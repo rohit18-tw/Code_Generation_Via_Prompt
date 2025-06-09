@@ -1,0 +1,180 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:47:30
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_020
+# ==================================================
+
+package com.ekyc.service.dto;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.io.Serializable;
+import java.util.Objects;
+
+/**
+ * Data Transfer Object for UIDAI OTP initiation response.
+ * This class represents the response received from the UIDAI service
+ * when initiating an OTP verification process.
+ */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class UidaiOtpInitiateResponseDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @JsonProperty("txnId")
+    private String transactionId;
+
+    @JsonProperty("status")
+    private String status;
+
+    @JsonProperty("message")
+    private String message;
+
+    @JsonProperty("errorCode")
+    private String errorCode;
+
+    @JsonProperty("timestamp")
+    private String timestamp;
+
+    /**
+     * Default constructor for UidaiOtpInitiateResponseDto.
+     */
+    public UidaiOtpInitiateResponseDto() {
+    }
+
+    /**
+     * Parameterized constructor for UidaiOtpInitiateResponseDto.
+     *
+     * @param transactionId The transaction ID for the OTP request
+     * @param status        The status of the OTP initiation request
+     * @param message       The message associated with the response
+     * @param errorCode     The error code if any error occurred
+     * @param timestamp     The timestamp of the response
+     */
+    public UidaiOtpInitiateResponseDto(String transactionId, String status, String message, String errorCode, String timestamp) {
+        this.transactionId = transactionId;
+        this.status = status;
+        this.message = message;
+        this.errorCode = errorCode;
+        this.timestamp = timestamp;
+    }
+
+    /**
+     * Gets the transaction ID.
+     *
+     * @return The transaction ID
+     */
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    /**
+     * Sets the transaction ID.
+     *
+     * @param transactionId The transaction ID to set
+     */
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    /**
+     * Gets the status of the OTP initiation.
+     *
+     * @return The status
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * Sets the status of the OTP initiation.
+     *
+     * @param status The status to set
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    /**
+     * Gets the message associated with the response.
+     *
+     * @return The message
+     */
+    public String getMessage() {
+        return message;
+    }
+
+    /**
+     * Sets the message associated with the response.
+     *
+     * @param message The message to set
+     */
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    /**
+     * Gets the error code if any error occurred.
+     *
+     * @return The error code
+     */
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    /**
+     * Sets the error code.
+     *
+     * @param errorCode The error code to set
+     */
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    /**
+     * Gets the timestamp of the response.
+     *
+     * @return The timestamp
+     */
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    /**
+     * Sets the timestamp of the response.
+     *
+     * @param timestamp The timestamp to set
+     */
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UidaiOtpInitiateResponseDto that = (UidaiOtpInitiateResponseDto) o;
+        return Objects.equals(transactionId, that.transactionId) &&
+                Objects.equals(status, that.status) &&
+                Objects.equals(message, that.message) &&
+                Objects.equals(errorCode, that.errorCode) &&
+                Objects.equals(timestamp, that.timestamp);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(transactionId, status, message, errorCode, timestamp);
+    }
+
+    @Override
+    public String toString() {
+        return "UidaiOtpInitiateResponseDto{" +
+                "transactionId='" + transactionId + '\'' +
+                ", status='" + status + '\'' +
+                ", message='" + message + '\'' +
+                ", errorCode='" + errorCode + '\'' +
+                ", timestamp='" + timestamp + '\'' +
+                '}';
+    }
+}

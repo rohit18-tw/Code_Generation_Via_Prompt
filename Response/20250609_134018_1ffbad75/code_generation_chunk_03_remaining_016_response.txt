@@ -1,0 +1,330 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:46:19
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_016
+# ==================================================
+
+package com.ekyc.service.dto;
+
+import com.ekyc.service.enums.ConsentType;
+import com.ekyc.service.enums.IdType;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.Objects;
+
+/**
+ * Data Transfer Object for eKYC request data.
+ * Contains all necessary information for electronic Know Your Customer verification.
+ */
+public class EkycRequestDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @NotBlank(message = "First name is required")
+    @Size(min = 2, max = 100, message = "First name must be between 2 and 100 characters")
+    private String firstName;
+
+    @NotBlank(message = "Last name is required")
+    @Size(min = 2, max = 100, message = "Last name must be between 2 and 100 characters")
+    private String lastName;
+
+    private String middleName;
+
+    @NotNull(message = "Date of birth is required")
+    private LocalDate dateOfBirth;
+
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email must be valid")
+    private String email;
+
+    @NotBlank(message = "Phone number is required")
+    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Phone number must be valid")
+    private String phoneNumber;
+
+    @NotBlank(message = "Address is required")
+    private String address;
+
+    @NotBlank(message = "City is required")
+    private String city;
+
+    @NotBlank(message = "State is required")
+    private String state;
+
+    @NotBlank(message = "Country is required")
+    private String country;
+
+    @NotBlank(message = "Postal code is required")
+    @Pattern(regexp = "^[0-9a-zA-Z-\\s]{5,10}$", message = "Postal code must be valid")
+    private String postalCode;
+
+    @NotNull(message = "ID type is required")
+    private IdType idType;
+
+    @NotBlank(message = "ID number is required")
+    private String idNumber;
+
+    @NotNull(message = "Consent type is required")
+    private ConsentType consentType;
+
+    private String referenceId;
+
+    private byte[] documentImage;
+
+    private String documentImageUrl;
+
+    private String additionalInfo;
+
+    /**
+     * Default constructor
+     */
+    public EkycRequestDto() {
+    }
+
+    /**
+     * Constructor with all required fields
+     */
+    public EkycRequestDto(String firstName, String lastName, LocalDate dateOfBirth, String email, 
+                          String phoneNumber, String address, String city, String state, 
+                          String country, String postalCode, IdType idType, String idNumber, 
+                          ConsentType consentType) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.city = city;
+        this.state = state;
+        this.country = country;
+        this.postalCode = postalCode;
+        this.idType = idType;
+        this.idNumber = idNumber;
+        this.consentType = consentType;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
+    public IdType getIdType() {
+        return idType;
+    }
+
+    public void setIdType(IdType idType) {
+        this.idType = idType;
+    }
+
+    public String getIdNumber() {
+        return idNumber;
+    }
+
+    public void setIdNumber(String idNumber) {
+        this.idNumber = idNumber;
+    }
+
+    public ConsentType getConsentType() {
+        return consentType;
+    }
+
+    public void setConsentType(ConsentType consentType) {
+        this.consentType = consentType;
+    }
+
+    public String getReferenceId() {
+        return referenceId;
+    }
+
+    public void setReferenceId(String referenceId) {
+        this.referenceId = referenceId;
+    }
+
+    public byte[] getDocumentImage() {
+        return documentImage != null ? documentImage.clone() : null;
+    }
+
+    public void setDocumentImage(byte[] documentImage) {
+        this.documentImage = documentImage != null ? documentImage.clone() : null;
+    }
+
+    public String getDocumentImageUrl() {
+        return documentImageUrl;
+    }
+
+    public void setDocumentImageUrl(String documentImageUrl) {
+        this.documentImageUrl = documentImageUrl;
+    }
+
+    public String getAdditionalInfo() {
+        return additionalInfo;
+    }
+
+    public void setAdditionalInfo(String additionalInfo) {
+        this.additionalInfo = additionalInfo;
+    }
+
+    /**
+     * Returns a masked representation of the ID number for logging purposes
+     * @return Masked ID number
+     */
+    public String getMaskedIdNumber() {
+        if (idNumber == null || idNumber.length() < 4) {
+            return "****";
+        }
+        int visibleChars = Math.min(4, idNumber.length());
+        return "*".repeat(idNumber.length() - visibleChars) + 
+               idNumber.substring(idNumber.length() - visibleChars);
+    }
+
+    /**
+     * Returns a masked representation of the email for logging purposes
+     * @return Masked email
+     */
+    public String getMaskedEmail() {
+        if (email == null || email.isEmpty()) {
+            return "";
+        }
+        
+        int atIndex = email.indexOf('@');
+        if (atIndex <= 1) {
+            return "****" + (atIndex >= 0 ? email.substring(atIndex) : "");
+        }
+        
+        return email.substring(0, 1) + 
+               "*".repeat(atIndex - 1) + 
+               email.substring(atIndex);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        
+        EkycRequestDto that = (EkycRequestDto) o;
+        
+        return Objects.equals(firstName, that.firstName) &&
+               Objects.equals(lastName, that.lastName) &&
+               Objects.equals(dateOfBirth, that.dateOfBirth) &&
+               Objects.equals(email, that.email) &&
+               Objects.equals(idType, that.idType) &&
+               Objects.equals(idNumber, that.idNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, lastName, dateOfBirth, email, idType, idNumber);
+    }
+
+    @Override
+    public String toString() {
+        return "EkycRequestDto{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", middleName='" + (middleName != null ? middleName : "") + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                ", email='" + getMaskedEmail() + '\'' +
+                ", phoneNumber='" + (phoneNumber != null ? "****" + phoneNumber.substring(Math.max(0, phoneNumber.length() - 4)) : "") + '\'' +
+                ", address='" + (address != null ? "****" : "") + '\'' +
+                ", city='" + city + '\'' +
+                ", state='" + state + '\'' +
+                ", country='" + country + '\'' +
+                ", postalCode='" + postalCode + '\'' +
+                ", idType=" + idType +
+                ", idNumber='" + getMaskedIdNumber() + '\'' +
+                ", consentType=" + consentType +
+                ", referenceId='" + referenceId + '\'' +
+                ", documentImage=" + (documentImage != null ? "[BINARY DATA]" : "null") +
+                ", documentImageUrl='" + (documentImageUrl != null ? "[URL REDACTED]" : "null") + '\'' +
+                ", additionalInfo='" + (additionalInfo != null ? "[REDACTED]" : "null") + '\'' +
+                '}';
+    }
+}

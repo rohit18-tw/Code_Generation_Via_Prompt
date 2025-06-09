@@ -1,0 +1,59 @@
+ekyc-verification-system/
+├── MockUidai.API/
+│   ├── Controllers/
+│   │   ├── AdminController.cs
+│   │   └── UidaiController.cs
+│   ├── Models/
+│   │   ├── ConfigOverrideRequest.cs
+│   │   ├── EkycInitiateRequest.cs
+│   │   ├── EkycInitiateResponse.cs
+│   │   ├── KycData.cs
+│   │   ├── OtpVerifyRequest.cs
+│   │   └── OtpVerifyResponse.cs
+│   ├── Program.cs
+│   ├── Services/
+│   │   ├── MockConfigService.cs
+│   │   ├── MockUidaiService.cs
+│   │   └── TraceLoggerService.cs
+│   └── appsettings.json
+├── eKYC.API/
+│   ├── Configuration/
+│   │   ├── DatabaseContext.cs
+│   │   └── LoggingConfiguration.cs
+│   ├── Controllers/
+│   │   └── EkycController.cs
+│   ├── Middleware/
+│   │   ├── CorrelationIdMiddleware.cs
+│   │   └── ExceptionHandlingMiddleware.cs
+│   ├── Models/
+│   │   ├── DTOs/
+│   │   │   ├── EkycRequestDto.cs
+│   │   │   ├── EkycResponseDto.cs
+│   │   │   └── OtpVerificationDto.cs
+│   │   ├── Entities/
+│   │   │   ├── EkycRequest.cs
+│   │   │   └── OtpVerification.cs
+│   │   ├── Enums/
+│   │   │   ├── ConsentType.cs
+│   │   │   ├── IdType.cs
+│   │   │   └── VerificationStatus.cs
+│   │   └── ErrorResponse.cs
+│   ├── Program.cs
+│   ├── Repositories/
+│   │   └── EkycRepository.cs
+│   ├── Services/
+│   │   ├── EkycService.cs
+│   │   └── UidaiApiService.cs
+│   ├── Validators/
+│   │   ├── EkycRequestValidator.cs
+│   │   └── OtpVerificationValidator.cs
+│   └── appsettings.json
+└── eKYC.Tests/
+    ├── Integration/
+    │   ├── EkycControllerTests.cs
+    │   └── EkycRepositoryTests.cs
+    └── Unit/
+        ├── EkycRequestValidatorTests.cs
+        ├── EkycServiceTests.cs
+        ├── OtpVerificationValidatorTests.cs
+        └── UidaiApiServiceTests.cs

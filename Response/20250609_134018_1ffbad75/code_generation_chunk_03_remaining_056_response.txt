@@ -1,0 +1,253 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 14:03:07
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_056
+# ==================================================
+
+package com.ekyc.service.integration;
+
+import com.ekyc.service.dto.EkycRequestDto;
+import com.ekyc.service.dto.EkycResponseDto;
+import com.ekyc.service.dto.OtpVerificationDto;
+import com.ekyc.service.entity.EkycRequest;
+import com.ekyc.service.repository.EkycRequestRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+/**
+ * Integration tests for the eKYC flow.
+ * Tests the complete flow from eKYC request submission to OTP verification.
+ */
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
+@Transactional
+public class EkycIntegrationTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private EkycRequestRepository ekycRequestRepository;
+
+    private EkycRequestDto validEkycRequest;
+    private static final String EKYC_ENDPOINT = "/api/v1/ekyc";
+    private static final String OTP_VERIFICATION_ENDPOINT = "/api/v1/otp/verify";
+
+    @BeforeEach
+    public void setup() {
+        // Setup valid eKYC request data
+        validEkycRequest = new EkycRequestDto();
+        validEkycRequest.setFullName("John Doe");
+        validEkycRequest.setDateOfBirth("1990-01-01");
+        validEkycRequest.setIdNumber("ABC123456789");
+        validEkycRequest.setIdType("PASSPORT");
+        validEkycRequest.setPhoneNumber("+1234567890");
+        validEkycRequest.setEmail("john.doe@example.com");
+        validEkycRequest.setAddress("123 Main St, City, Country");
+    }
+
+    @Test
+    @DisplayName("Should successfully complete the eKYC flow with valid data")
+    public void testSuccessfulEkycFlow() throws Exception {
+        // Step 1: Submit eKYC request
+        MvcResult ekycResult = mockMvc.perform(post(EKYC_ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(validEkycRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.requestId").exists())
+                .andExpect(jsonPath("$.status").value("PENDING_OTP_VERIFICATION"))
+                .andReturn();
+
+        // Extract response data
+        EkycResponseDto ekycResponse = objectMapper.readValue(
+                ekycResult.getResponse().getContentAsString(), EkycResponseDto.class);
+        String requestId = ekycResponse.getRequestId();
+        assertNotNull(requestId, "Request ID should not be null");
+
+        // Verify the request was saved in the database
+        Optional<EkycRequest> savedRequest = ekycRequestRepository.findByRequestId(UUID.fromString(requestId));
+        assertTrue(savedRequest.isPresent(), "eKYC request should be saved in the database");
+        assertEquals("PENDING_OTP_VERIFICATION", savedRequest.get().getStatus(), 
+                "Status should be PENDING_OTP_VERIFICATION");
+
+        // Step 2: Verify OTP
+        // For integration test, we'll retrieve the OTP from the database
+        String otp = savedRequest.get().getOtp();
+        assertNotNull(otp, "OTP should be generated and stored");
+
+        OtpVerificationDto otpVerificationDto = new OtpVerificationDto();
+        otpVerificationDto.setRequestId(requestId);
+        otpVerificationDto.setOtp(otp);
+
+        mockMvc.perform(post(OTP_VERIFICATION_ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(otpVerificationDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.requestId").value(requestId))
+                .andExpect(jsonPath("$.status").value("COMPLETED"))
+                .andReturn();
+
+        // Verify the request status was updated in the database
+        Optional<EkycRequest> verifiedRequest = ekycRequestRepository.findByRequestId(UUID.fromString(requestId));
+        assertTrue(verifiedRequest.isPresent(), "eKYC request should still exist in the database");
+        assertEquals("COMPLETED", verifiedRequest.get().getStatus(), "Status should be updated to COMPLETED");
+    }
+
+    @Test
+    @DisplayName("Should reject eKYC request with invalid data")
+    public void testInvalidEkycRequest() throws Exception {
+        // Create an invalid request with missing required fields
+        EkycRequestDto invalidRequest = new EkycRequestDto();
+        invalidRequest.setFullName(""); // Empty name
+        invalidRequest.setIdNumber("ABC123"); // Too short ID
+
+        mockMvc.perform(post(EKYC_ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").exists())
+                .andExpect(jsonPath("$.errors").exists());
+    }
+
+    @Test
+    @DisplayName("Should reject OTP verification with invalid OTP")
+    public void testInvalidOtpVerification() throws Exception {
+        // Step 1: Submit valid eKYC request
+        MvcResult ekycResult = mockMvc.perform(post(EKYC_ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(validEkycRequest)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        EkycResponseDto ekycResponse = objectMapper.readValue(
+                ekycResult.getResponse().getContentAsString(), EkycResponseDto.class);
+        String requestId = ekycResponse.getRequestId();
+
+        // Step 2: Submit invalid OTP
+        OtpVerificationDto invalidOtpDto = new OtpVerificationDto();
+        invalidOtpDto.setRequestId(requestId);
+        invalidOtpDto.setOtp("999999"); // Wrong OTP
+
+        mockMvc.perform(post(OTP_VERIFICATION_ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidOtpDto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Invalid OTP"));
+
+        // Verify the request status was not updated
+        Optional<EkycRequest> request = ekycRequestRepository.findByRequestId(UUID.fromString(requestId));
+        assertTrue(request.isPresent(), "eKYC request should exist in the database");
+        assertEquals("PENDING_OTP_VERIFICATION", request.get().getStatus(), 
+                "Status should still be PENDING_OTP_VERIFICATION");
+    }
+
+    @Test
+    @DisplayName("Should reject OTP verification with expired OTP")
+    public void testExpiredOtpVerification() throws Exception {
+        // Step 1: Submit valid eKYC request
+        MvcResult ekycResult = mockMvc.perform(post(EKYC_ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(validEkycRequest)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        EkycResponseDto ekycResponse = objectMapper.readValue(
+                ekycResult.getResponse().getContentAsString(), EkycResponseDto.class);
+        String requestId = ekycResponse.getRequestId();
+
+        // Step 2: Manually expire the OTP in the database
+        Optional<EkycRequest> savedRequest = ekycRequestRepository.findByRequestId(UUID.fromString(requestId));
+        assertTrue(savedRequest.isPresent(), "eKYC request should be saved in the database");
+        
+        EkycRequest request = savedRequest.get();
+        request.setOtpExpiryTime(LocalDateTime.now().minusMinutes(10)); // Set expiry to 10 minutes ago
+        ekycRequestRepository.save(request);
+
+        // Step 3: Try to verify with the correct but expired OTP
+        OtpVerificationDto otpVerificationDto = new OtpVerificationDto();
+        otpVerificationDto.setRequestId(requestId);
+        otpVerificationDto.setOtp(request.getOtp());
+
+        mockMvc.perform(post(OTP_VERIFICATION_ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(otpVerificationDto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("OTP has expired"));
+    }
+
+    @Test
+    @DisplayName("Should reject OTP verification with non-existent request ID")
+    public void testNonExistentRequestIdOtpVerification() throws Exception {
+        String nonExistentRequestId = UUID.randomUUID().toString();
+        
+        OtpVerificationDto otpVerificationDto = new OtpVerificationDto();
+        otpVerificationDto.setRequestId(nonExistentRequestId);
+        otpVerificationDto.setOtp("123456");
+
+        mockMvc.perform(post(OTP_VERIFICATION_ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(otpVerificationDto)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("eKYC request not found"));
+    }
+
+    @Test
+    @DisplayName("Should reject OTP verification after maximum attempts")
+    public void testMaxOtpAttempts() throws Exception {
+        // Step 1: Submit valid eKYC request
+        MvcResult ekycResult = mockMvc.perform(post(EKYC_ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(validEkycRequest)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        EkycResponseDto ekycResponse = objectMapper.readValue(
+                ekycResult.getResponse().getContentAsString(), EkycResponseDto.class);
+        String requestId = ekycResponse.getRequestId();
+
+        // Step 2: Manually set OTP attempts to maximum in the database
+        Optional<EkycRequest> savedRequest = ekycRequestRepository.findByRequestId(UUID.fromString(requestId));
+        assertTrue(savedRequest.isPresent(), "eKYC request should be saved in the database");
+        
+        EkycRequest request = savedRequest.get();
+        request.setOtpAttempts(3); // Assuming max attempts is 3
+        ekycRequestRepository.save(request);
+
+        // Step 3: Try to verify OTP
+        OtpVerificationDto otpVerificationDto = new OtpVerificationDto();
+        otpVerificationDto.setRequestId(requestId);
+        otpVerificationDto.setOtp(request.getOtp());
+
+        mockMvc.perform(post(OTP_VERIFICATION_ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(otpVerificationDto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Maximum OTP verification attempts exceeded"));
+    }
+}

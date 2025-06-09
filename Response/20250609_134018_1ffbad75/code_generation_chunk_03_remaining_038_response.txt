@@ -1,0 +1,266 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:53:16
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_038
+# ==================================================
+
+package com.ekyc.service.service.impl;
+
+import com.ekyc.service.dto.EkycResponseDto;
+import com.ekyc.service.dto.OtpVerificationDto;
+import com.ekyc.service.dto.UidaiOtpInitiateRequestDto;
+import com.ekyc.service.dto.UidaiOtpInitiateResponseDto;
+import com.ekyc.service.dto.UidaiOtpVerifyRequestDto;
+import com.ekyc.service.dto.UidaiOtpVerifyResponseDto;
+import com.ekyc.service.entity.EkycRequest;
+import com.ekyc.service.entity.OtpVerification;
+import com.ekyc.service.enums.VerificationStatus;
+import com.ekyc.service.exception.EkycException;
+import com.ekyc.service.exception.InvalidOtpException;
+import com.ekyc.service.exception.OtpExpiredException;
+import com.ekyc.service.exception.ResourceNotFoundException;
+import com.ekyc.service.repository.EkycRequestRepository;
+import com.ekyc.service.repository.OtpVerificationRepository;
+import com.ekyc.service.service.OtpVerificationService;
+import com.ekyc.service.service.UidaiApiService;
+import com.ekyc.service.util.LoggingUtil;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+/**
+ * Implementation of the OTP verification service.
+ * This service handles OTP generation, verification, and resending for the eKYC process.
+ */
+@Service
+public class OtpVerificationServiceImpl implements OtpVerificationService {
+
+    private static final Logger logger = LoggerFactory.getLogger(OtpVerificationServiceImpl.class);
+
+    private final OtpVerificationRepository otpVerificationRepository;
+    private final EkycRequestRepository ekycRequestRepository;
+    private final UidaiApiService uidaiApiService;
+
+    @Value("${otp.validity.minutes:10}")
+    private int otpValidityMinutes;
+
+    @Value("${otp.max.attempts:3}")
+    private int maxOtpAttempts;
+
+    /**
+     * Constructor for OtpVerificationServiceImpl.
+     *
+     * @param otpVerificationRepository Repository for OTP verification data
+     * @param ekycRequestRepository Repository for eKYC request data
+     * @param uidaiApiService Service for UIDAI API interactions
+     */
+    public OtpVerificationServiceImpl(
+            OtpVerificationRepository otpVerificationRepository,
+            EkycRequestRepository ekycRequestRepository,
+            UidaiApiService uidaiApiService) {
+        this.otpVerificationRepository = otpVerificationRepository;
+        this.ekycRequestRepository = ekycRequestRepository;
+        this.uidaiApiService = uidaiApiService;
+    }
+
+    /**
+     * Generates a new OTP for the given user and sends it via the specified channel.
+     *
+     * @param userId The ID of the user requesting the OTP
+     * @param channelId The channel through which to send the OTP (e.g., SMS, email)
+     * @return A response containing the status of the OTP generation
+     */
+    @Override
+    @Transactional
+    public EkycResponseDto generateOtp(UUID userId, String channelId) {
+        logger.info("Generating OTP for user: {}, channel: {}", LoggingUtil.maskUuid(userId), channelId);
+        
+        // Find the eKYC request for the user
+        EkycRequest ekycRequest = ekycRequestRepository.findByUserId(userId)
+                .orElseThrow(() -> {
+                    logger.error("No eKYC request found for user: {}", LoggingUtil.maskUuid(userId));
+                    return new ResourceNotFoundException("No eKYC request found for the user");
+                });
+        
+        // Validate Aadhaar number format
+        if (!uidaiApiService.isValidAadhaarFormat(ekycRequest.getAadhaarNumber())) {
+            logger.error("Invalid Aadhaar number format for user: {}", LoggingUtil.maskUuid(userId));
+            throw new EkycException("Invalid Aadhaar number format", HttpStatus.BAD_REQUEST);
+        }
+        
+        // Prepare request to UIDAI API
+        UidaiOtpInitiateRequestDto otpRequest = new UidaiOtpInitiateRequestDto();
+        otpRequest.setAadhaarNumber(ekycRequest.getAadhaarNumber());
+        otpRequest.setChannelId(channelId);
+        
+        try {
+            // Call UIDAI API to generate OTP
+            UidaiOtpInitiateResponseDto otpResponse = uidaiApiService.initiateOtp(otpRequest);
+            
+            // Create and save OTP verification record
+            OtpVerification otpVerification = new OtpVerification();
+            otpVerification.setRequestId(ekycRequest.getId());
+            otpVerification.setTransactionId(otpResponse.getTransactionId());
+            otpVerification.setChannelId(channelId);
+            otpVerification.setStatus(VerificationStatus.PENDING.name());
+            otpVerification.setCreatedAt(LocalDateTime.now());
+            otpVerification.setExpiresAt(LocalDateTime.now().plusMinutes(otpValidityMinutes));
+            otpVerification.setAttempts(0);
+            
+            otpVerificationRepository.save(otpVerification);
+            
+            logger.info("OTP generated successfully for user: {}, transaction: {}", 
+                    LoggingUtil.maskUuid(userId), 
+                    LoggingUtil.maskString(otpResponse.getTransactionId()));
+            
+            return new EkycResponseDto(true, "OTP sent successfully", otpResponse.getTransactionId());
+        } catch (Exception e) {
+            logger.error("Error generating OTP for user: {}: {}", LoggingUtil.maskUuid(userId), e.getMessage(), e);
+            throw new EkycException("Failed to generate OTP: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Verifies the OTP provided by the user.
+     *
+     * @param otpVerificationDto The DTO containing OTP verification details
+     * @return A response containing the status of the OTP verification
+     */
+    @Override
+    @Transactional
+    public EkycResponseDto verifyOtp(OtpVerificationDto otpVerificationDto) {
+        logger.info("Verifying OTP for transaction: {}", 
+                LoggingUtil.maskString(otpVerificationDto.getTransactionId()));
+        
+        // Find the OTP verification record
+        OtpVerification otpVerification = otpVerificationRepository
+                .findByTransactionId(otpVerificationDto.getTransactionId())
+                .orElseThrow(() -> {
+                    logger.error("No OTP verification found for transaction: {}", 
+                            LoggingUtil.maskString(otpVerificationDto.getTransactionId()));
+                    return new ResourceNotFoundException("No OTP verification found for the transaction");
+                });
+        
+        // Check if OTP is expired
+        if (LocalDateTime.now().isAfter(otpVerification.getExpiresAt())) {
+            otpVerification.setStatus(VerificationStatus.EXPIRED.name());
+            otpVerificationRepository.save(otpVerification);
+            
+            logger.warn("OTP expired for transaction: {}", 
+                    LoggingUtil.maskString(otpVerificationDto.getTransactionId()));
+            throw new OtpExpiredException("OTP has expired");
+        }
+        
+        // Check if max attempts reached
+        if (otpVerification.getAttempts() >= maxOtpAttempts) {
+            otpVerification.setStatus(VerificationStatus.FAILED.name());
+            otpVerificationRepository.save(otpVerification);
+            
+            logger.warn("Max OTP attempts reached for transaction: {}", 
+                    LoggingUtil.maskString(otpVerificationDto.getTransactionId()));
+            throw new InvalidOtpException("Maximum OTP verification attempts reached");
+        }
+        
+        // Increment attempts
+        otpVerification.setAttempts(otpVerification.getAttempts() + 1);
+        
+        // Find the eKYC request
+        EkycRequest ekycRequest = ekycRequestRepository.findById(otpVerification.getRequestId())
+                .orElseThrow(() -> {
+                    logger.error("No eKYC request found for request ID: {}", 
+                            LoggingUtil.maskUuid(otpVerification.getRequestId()));
+                    return new ResourceNotFoundException("No eKYC request found");
+                });
+        
+        // Prepare request to UIDAI API
+        UidaiOtpVerifyRequestDto verifyRequest = new UidaiOtpVerifyRequestDto();
+        verifyRequest.setTransactionId(otpVerificationDto.getTransactionId());
+        verifyRequest.setOtp(otpVerificationDto.getOtp());
+        verifyRequest.setAadhaarNumber(ekycRequest.getAadhaarNumber());
+        
+        try {
+            // Call UIDAI API to verify OTP
+            UidaiOtpVerifyResponseDto verifyResponse = uidaiApiService.verifyOtp(verifyRequest);
+            
+            if (verifyResponse.isSuccess()) {
+                // Update OTP verification status
+                otpVerification.setStatus(VerificationStatus.VERIFIED.name());
+                otpVerification.setVerifiedAt(LocalDateTime.now());
+                otpVerificationRepository.save(otpVerification);
+                
+                // Update eKYC request status
+                ekycRequest.setStatus(VerificationStatus.OTP_VERIFIED.name());
+                ekycRequest.setUpdatedAt(LocalDateTime.now());
+                ekycRequestRepository.save(ekycRequest);
+                
+                logger.info("OTP verified successfully for transaction: {}", 
+                        LoggingUtil.maskString(otpVerificationDto.getTransactionId()));
+                
+                return new EkycResponseDto(true, "OTP verified successfully", otpVerificationDto.getTransactionId());
+            } else {
+                // Update OTP verification status for failed attempt
+                otpVerificationRepository.save(otpVerification);
+                
+                logger.warn("OTP verification failed for transaction: {}", 
+                        LoggingUtil.maskString(otpVerificationDto.getTransactionId()));
+                
+                throw new InvalidOtpException("Invalid OTP provided");
+            }
+        } catch (InvalidOtpException e) {
+            throw e;
+        } catch (Exception e) {
+            logger.error("Error verifying OTP for transaction: {}: {}", 
+                    LoggingUtil.maskString(otpVerificationDto.getTransactionId()), 
+                    e.getMessage(), e);
+            throw new EkycException("Failed to verify OTP: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Resends an OTP to the user via the specified channel.
+     *
+     * @param userId The ID of the user requesting the OTP resend
+     * @param channelId The channel through which the OTP should be resent
+     * @return A response containing the status of the OTP resend operation
+     */
+    @Override
+    @Transactional
+    public EkycResponseDto resendOtp(UUID userId, String channelId) {
+        logger.info("Resending OTP for user: {}, channel: {}", LoggingUtil.maskUuid(userId), channelId);
+        
+        // Find the eKYC request for the user
+        EkycRequest ekycRequest = ekycRequestRepository.findByUserId(userId)
+                .orElseThrow(() -> {
+                    logger.error("No eKYC request found for user: {}", LoggingUtil.maskUuid(userId));
+                    return new ResourceNotFoundException("No eKYC request found for the user");
+                });
+        
+        // Find any pending OTP verifications
+        List<OtpVerification> pendingVerifications = otpVerificationRepository
+                .findAllByRequestIdAndStatus(ekycRequest.getId(), VerificationStatus.PENDING.name());
+        
+        // Mark any pending verifications as expired
+        for (OtpVerification verification : pendingVerifications) {
+            verification.setStatus(VerificationStatus.EXPIRED.name());
+            verification.setUpdatedAt(LocalDateTime.now());
+        }
+        
+        if (!pendingVerifications.isEmpty()) {
+            otpVerificationRepository.saveAll(pendingVerifications);
+            logger.info("Marked {} pending OTP verifications as expired for user: {}", 
+                    pendingVerifications.size(), LoggingUtil.maskUuid(userId));
+        }
+        
+        // Generate a new OTP
+        return generateOtp(userId, channelId);
+    }
+}

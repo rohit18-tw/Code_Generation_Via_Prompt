@@ -1,0 +1,36 @@
+aadhaar-ekyc-verification-system/
+├── src/
+│   ├── App.tsx
+│   ├── assets/
+│   ├── components/
+│   │   ├── AadhaarForm.tsx
+│   │   ├── ErrorBoundary.tsx
+│   │   ├── KycDataDisplay.tsx
+│   │   ├── LogViewer.tsx
+│   │   └── OtpForm.tsx
+│   ├── context/
+│   │   └── AuthContext.tsx
+│   ├── hooks/
+│   │   ├── useEkycRequest.ts
+│   │   └── useOtpVerification.ts
+│   ├── index.tsx
+│   ├── mocks/
+│   │   ├── browser.ts
+│   │   └── handlers.ts
+│   ├── pages/
+│   │   ├── AdminPanel.tsx
+│   │   ├── KycDisplayPage.tsx
+│   │   ├── OtpInitiationPage.tsx
+│   │   └── OtpVerificationPage.tsx
+│   ├── services/
+│   │   └── uidaiApi.ts
+│   ├── types/
+│   │   └── ekyc.ts
+│   └── utils/
+│       ├── logger.ts
+│       ├── trace.ts
+│       └── validation.ts
+└── tests/
+    ├── AadhaarForm.test.tsx
+    ├── OtpForm.test.tsx
+    └── uidaiApi.test.ts

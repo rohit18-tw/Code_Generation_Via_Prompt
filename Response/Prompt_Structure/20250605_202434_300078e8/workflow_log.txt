@@ -1,0 +1,151 @@
+[2025-06-05 20:24:34] [INFO] 🚀 Session started: 20250605_202434_300078e8
+[2025-06-05 20:24:34] [INFO] 📁 Session directory: Response/20250605_202434_300078e8
+[2025-06-05 20:24:34] [INFO] 🚀 Starting Agentic Workflow
+[2025-06-05 20:24:34] [INFO]    Input: ./Prompts/
+[2025-06-05 20:24:34] [INFO]    Max iterations: 5
+[2025-06-05 20:24:34] [INFO]    Session ID: 20250605_202434_300078e8
+[2025-06-05 20:24:34] [INFO] --------------------------------------------------
+[2025-06-05 20:24:34] [INFO] 🔍 Processing input: ./Prompts/
+[2025-06-05 20:24:34] [SUCCESS] ✅ SUCCESS in input_processing: Input processed - Type: folder, Source: Prompts
+[2025-06-05 20:24:34] [INFO] 🎯 Starting development plan generation...
+[2025-06-05 20:24:34] [INFO] 🎯 Sending plan generation request to Claude...
+[2025-06-05 20:26:12] [INFO] 💬 LLM Interaction: plan_generation -> plan_generation_001_response.txt
+[2025-06-05 20:26:12] [INFO] 📝 Plan generation response saved to: plan_generation_001_response.txt
+[2025-06-05 20:26:12] [SUCCESS] ✅ SUCCESS in plan_generation: Plan successfully parsed and structured
+[2025-06-05 20:26:12] [INFO] 🌳 Project tree structure saved to: project_structure.txt
+[2025-06-05 20:26:12] [INFO] 📊 Code generation analysis saved to: code_generation_analysis.json
+[2025-06-05 20:26:12] [INFO] 📋 Code Generation Insights:
+[2025-06-05 20:26:12] [INFO]    Strategy: file_by_file
+[2025-06-05 20:26:12] [INFO]    Total Files: 61
+[2025-06-05 20:26:12] [INFO]    Generation Order: config → entities → repositories → services → controllers → tests
+[2025-06-05 20:26:12] [INFO]    High Priority Files: 51
+[2025-06-05 20:26:12] [INFO] 📋 Plan Summary:
+[2025-06-05 20:26:12] [INFO]    🎯 **Enhanced Project Plan Generated**
+[2025-06-05 20:26:12] [INFO]    **Title**: eKYC Verification System with Mock UIDAI API
+[2025-06-05 20:26:12] [INFO]    **Language**: java
+[2025-06-05 20:26:12] [INFO]    **Framework**: spring-boot
+[2025-06-05 20:26:12] [INFO]    **Type**: api
+[2025-06-05 20:26:12] [INFO]    **Code Generation Strategy**: file_by_file
+[2025-06-05 20:26:12] [INFO]    **Generation Order**: config → entities → repositories → services → controllers → tests
+[2025-06-05 20:26:12] [INFO]    **Implementation Steps**: 13 steps planned
+[2025-06-05 20:26:12] [INFO]    **Files to Create**: 61 files
+[2025-06-05 20:26:12] [INFO]    Ready for enhanced code generation!
+[2025-06-05 20:26:12] [INFO] 
+🌳 Project Structure:
+[2025-06-05 20:26:12] [INFO]    ekyc-verification-system-with-mock-uidai-api/
+[2025-06-05 20:26:12] [INFO]    ├── ekyc-service/
+[2025-06-05 20:26:12] [INFO]    │   ├── pom.xml
+[2025-06-05 20:26:12] [INFO]    │   └── src/
+[2025-06-05 20:26:12] [INFO]    │       ├── main/
+[2025-06-05 20:26:12] [INFO]    │       │   ├── java/
+[2025-06-05 20:26:12] [INFO]    │       │   │   └── com/
+[2025-06-05 20:26:12] [INFO]    │       │   │       └── ekyc/
+[2025-06-05 20:26:12] [INFO]    │       │   │           └── service/
+[2025-06-05 20:26:12] [INFO]    │       │   │               ├── EkycServiceApplication.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               ├── config/
+[2025-06-05 20:26:12] [INFO]    │       │   │               │   ├── AppConfig.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               │   └── WebClientConfig.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               ├── controller/
+[2025-06-05 20:26:12] [INFO]    │       │   │               │   ├── EkycController.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               │   └── OtpVerificationController.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               ├── dto/
+[2025-06-05 20:26:12] [INFO]    │       │   │               │   ├── EkycRequestDto.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               │   ├── EkycResponseDto.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               │   ├── ErrorResponseDto.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               │   ├── OtpVerificationDto.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               │   ├── UidaiOtpInitiateRequestDto.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               │   ├── UidaiOtpInitiateResponseDto.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               │   ├── UidaiOtpVerifyRequestDto.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               │   └── UidaiOtpVerifyResponseDto.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               ├── entity/
+[2025-06-05 20:26:12] [INFO]    │       │   │               │   ├── EkycRequest.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               │   └── OtpVerification.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               ├── enums/
+[2025-06-05 20:26:12] [INFO]    │       │   │               │   ├── IdType.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               │   └── VerificationStatus.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               ├── exception/
+[2025-06-05 20:26:12] [INFO]    │       │   │               │   ├── EkycException.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               │   └── GlobalExceptionHandler.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               ├── repository/
+[2025-06-05 20:26:12] [INFO]    │       │   │               │   ├── EkycRequestRepository.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               │   └── OtpVerificationRepository.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               ├── service/
+[2025-06-05 20:26:12] [INFO]    │       │   │               │   ├── EkycService.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               │   ├── OtpVerificationService.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               │   ├── UidaiApiService.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               │   └── impl/
+[2025-06-05 20:26:12] [INFO]    │       │   │               │       ├── EkycServiceImpl.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               │       ├── OtpVerificationServiceImpl.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               │       └── UidaiApiServiceImpl.java
+[2025-06-05 20:26:12] [INFO]    │       │   │               └── util/
+[2025-06-05 20:26:12] [INFO]    │       │   │                   ├── LoggingUtil.java
+[2025-06-05 20:26:12] [INFO]    │       │   │                   └── ValidationUtil.java
+[2025-06-05 20:26:12] [INFO]    │       │   └── resources/
+[2025-06-05 20:26:12] [INFO]    │       │       ├── application.yml
+[2025-06-05 20:26:12] [INFO]    │       │       └── db/
+[2025-06-05 20:26:12] [INFO]    │       │           └── migration/
+[2025-06-05 20:26:12] [INFO]    │       │               └── V1__init_schema.sql
+[2025-06-05 20:26:12] [INFO]    │       └── test/
+[2025-06-05 20:26:12] [INFO]    │           └── java/
+[2025-06-05 20:26:12] [INFO]    │               └── com/
+[2025-06-05 20:26:12] [INFO]    │                   └── ekyc/
+[2025-06-05 20:26:12] [INFO]    │                       └── service/
+[2025-06-05 20:26:12] [INFO]    │                           ├── controller/
+[2025-06-05 20:26:12] [INFO]    │                           │   ├── EkycControllerTest.java
+[2025-06-05 20:26:12] [INFO]    │                           │   └── OtpVerificationControllerTest.java
+[2025-06-05 20:26:12] [INFO]    │                           ├── integration/
+[2025-06-05 20:26:12] [INFO]    │                           │   └── EkycIntegrationTest.java
+[2025-06-05 20:26:12] [INFO]    │                           └── service/
+[2025-06-05 20:26:12] [INFO]    │                               ├── EkycServiceImplTest.java
+[2025-06-05 20:26:12] [INFO]    │                               ├── OtpVerificationServiceImplTest.java
+[2025-06-05 20:26:12] [INFO]    │                               └── UidaiApiServiceImplTest.java
+[2025-06-05 20:26:12] [INFO]    └── mock-uidai-service/
+[2025-06-05 20:26:12] [INFO]        ├── README.md
+[2025-06-05 20:26:12] [INFO]        ├── pom.xml
+[2025-06-05 20:26:12] [INFO]        └── src/
+[2025-06-05 20:26:12] [INFO]            ├── main/
+[2025-06-05 20:26:12] [INFO]            │   ├── java/
+[2025-06-05 20:26:12] [INFO]            │   │   └── com/
+[2025-06-05 20:26:12] [INFO]            │   │       └── mock/
+[2025-06-05 20:26:12] [INFO]            │   │           └── uidai/
+[2025-06-05 20:26:12] [INFO]            │   │               ├── MockUidaiServiceApplication.java
+[2025-06-05 20:26:12] [INFO]            │   │               ├── config/
+[2025-06-05 20:26:12] [INFO]            │   │               │   └── OpenApiConfig.java
+[2025-06-05 20:26:12] [INFO]            │   │               ├── controller/
+[2025-06-05 20:26:12] [INFO]            │   │               │   ├── MockAdminController.java
+[2025-06-05 20:26:12] [INFO]            │   │               │   └── MockUidaiController.java
+[2025-06-05 20:26:12] [INFO]            │   │               ├── dto/
+[2025-06-05 20:26:12] [INFO]            │   │               │   ├── ConfigRequestDto.java
+[2025-06-05 20:26:12] [INFO]            │   │               │   ├── ErrorResponseDto.java
+[2025-06-05 20:26:12] [INFO]            │   │               │   ├── KycDataDto.java
+[2025-06-05 20:26:12] [INFO]            │   │               │   ├── OtpInitiateRequestDto.java
+[2025-06-05 20:26:12] [INFO]            │   │               │   ├── OtpInitiateResponseDto.java
+[2025-06-05 20:26:12] [INFO]            │   │               │   ├── OtpVerifyRequestDto.java
+[2025-06-05 20:26:12] [INFO]            │   │               │   └── OtpVerifyResponseDto.java
+[2025-06-05 20:26:12] [INFO]            │   │               ├── service/
+[2025-06-05 20:26:12] [INFO]            │   │               │   ├── MockConfigService.java
+[2025-06-05 20:26:12] [INFO]            │   │               │   ├── MockUidaiService.java
+[2025-06-05 20:26:12] [INFO]            │   │               │   ├── TraceLoggerService.java
+[2025-06-05 20:26:12] [INFO]            │   │               │   └── impl/
+[2025-06-05 20:26:12] [INFO]            │   │               │       ├── MockConfigServiceImpl.java
+[2025-06-05 20:26:12] [INFO]            │   │               │       ├── MockUidaiServiceImpl.java
+[2025-06-05 20:26:12] [INFO]            │   │               │       └── TraceLoggerServiceImpl.java
+[2025-06-05 20:26:12] [INFO]            │   │               └── util/
+[2025-06-05 20:26:12] [INFO]            │   │                   └── PiiMaskingUtil.java
+[2025-06-05 20:26:12] [INFO]            │   └── resources/
+[2025-06-05 20:26:12] [INFO]            │       └── application.yml
+[2025-06-05 20:26:12] [INFO]            └── test/
+[2025-06-05 20:26:12] [INFO]                └── java/
+[2025-06-05 20:26:12] [INFO]                    └── com/
+[2025-06-05 20:26:12] [INFO]                        └── mock/
+[2025-06-05 20:26:12] [INFO]                            └── uidai/
+[2025-06-05 20:26:12] [INFO]                                ├── controller/
+[2025-06-05 20:26:12] [INFO]                                │   └── MockUidaiControllerTest.java
+[2025-06-05 20:26:12] [INFO]                                └── service/
+[2025-06-05 20:26:12] [INFO]                                    └── MockUidaiServiceImplTest.java
+[2025-06-05 20:26:12] [SUCCESS] ✅ SUCCESS in plan_generation: Development plan generated and saved to development_plan.json
+[2025-06-05 20:26:12] [INFO] --------------------------------------------------
+[2025-06-05 20:26:12] [SUCCESS] ✅ SUCCESS in workflow: Workflow completed!
+[2025-06-05 20:26:12] [INFO]    Final step: git_complete
+[2025-06-05 20:26:12] [INFO]    Iterations: 0
+[2025-06-05 20:26:12] [INFO]    Errors: 0

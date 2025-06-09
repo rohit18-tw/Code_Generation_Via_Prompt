@@ -1,0 +1,216 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:56:51
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_046
+# ==================================================
+
+package com.mock.uidai.controller;
+
+import com.mock.uidai.dto.KycDataDto;
+import com.mock.uidai.dto.OtpInitiateRequestDto;
+import com.mock.uidai.dto.OtpInitiateResponseDto;
+import com.mock.uidai.dto.OtpVerifyRequestDto;
+import com.mock.uidai.dto.OtpVerifyResponseDto;
+import com.mock.uidai.dto.RequestLogDto;
+import com.mock.uidai.service.MockUidaiService;
+import com.mock.uidai.service.TraceLoggerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+import java.time.LocalDateTime;
+
+/**
+ * Controller for mock UIDAI API endpoints.
+ * This controller simulates the behavior of the actual UIDAI API for testing purposes.
+ */
+@RestController
+@RequestMapping("/api/v1/mock-uidai")
+public class MockUidaiController {
+
+    private static final Logger logger = LoggerFactory.getLogger(MockUidaiController.class);
+
+    private final MockUidaiService mockUidaiService;
+    private final TraceLoggerService traceLoggerService;
+
+    /**
+     * Constructor for dependency injection.
+     *
+     * @param mockUidaiService   Service for mock UIDAI operations
+     * @param traceLoggerService Service for trace logging
+     */
+    @Autowired
+    public MockUidaiController(MockUidaiService mockUidaiService, TraceLoggerService traceLoggerService) {
+        this.mockUidaiService = mockUidaiService;
+        this.traceLoggerService = traceLoggerService;
+    }
+
+    /**
+     * Endpoint to initiate OTP generation process.
+     *
+     * @param requestDto OTP initiation request data
+     * @return ResponseEntity containing OTP initiation response
+     */
+    @PostMapping(value = "/otp/generate", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<OtpInitiateResponseDto> initiateOtp(@Valid @RequestBody OtpInitiateRequestDto requestDto) {
+        try {
+            // Log the incoming request (masking PII)
+            traceLoggerService.info("Received OTP initiation request for UID: " + maskUid(requestDto.getUid()));
+            
+            // Log request details for debugging
+            RequestLogDto requestLog = new RequestLogDto();
+            requestLog.setEndpoint("/api/v1/mock-uidai/otp/generate");
+            requestLog.setMethod("POST");
+            requestLog.setTimestamp(LocalDateTime.now());
+            requestLog.setRequestBody("UID: " + maskUid(requestDto.getUid()) + ", txnId: " + requestDto.getTxnId());
+            traceLoggerService.logRequest(requestLog);
+            
+            // Process the request
+            OtpInitiateResponseDto responseDto = mockUidaiService.initiateOtp(requestDto);
+            
+            // Log the response (success case)
+            traceLoggerService.info("OTP initiation successful for transaction: " + responseDto.getTxnId());
+            
+            return ResponseEntity.ok(responseDto);
+        } catch (Exception e) {
+            // Log the error
+            traceLoggerService.error("Error processing OTP initiation request: " + e.getMessage(), e);
+            
+            // Return error response
+            OtpInitiateResponseDto errorResponse = new OtpInitiateResponseDto();
+            errorResponse.setStatus("failure");
+            errorResponse.setErrorCode("ERR-INTERNAL");
+            errorResponse.setErrorMessage("Internal server error occurred");
+            errorResponse.setTxnId(requestDto.getTxnId());
+            
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+    /**
+     * Endpoint to verify OTP.
+     *
+     * @param requestDto OTP verification request data
+     * @return ResponseEntity containing OTP verification response
+     */
+    @PostMapping(value = "/otp/verify", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<OtpVerifyResponseDto> verifyOtp(@Valid @RequestBody OtpVerifyRequestDto requestDto) {
+        try {
+            // Log the incoming request (masking sensitive data)
+            traceLoggerService.info("Received OTP verification request for transaction: " + requestDto.getTransactionId());
+            
+            // Log request details for debugging
+            RequestLogDto requestLog = new RequestLogDto();
+            requestLog.setEndpoint("/api/v1/mock-uidai/otp/verify");
+            requestLog.setMethod("POST");
+            requestLog.setTimestamp(LocalDateTime.now());
+            requestLog.setRequestBody("Transaction ID: " + requestDto.getTransactionId() + ", OTP: ******");
+            traceLoggerService.logRequest(requestLog);
+            
+            // Process the request
+            OtpVerifyResponseDto responseDto = mockUidaiService.verifyOtp(requestDto);
+            
+            // Log the response (success case)
+            traceLoggerService.info("OTP verification completed for transaction: " + responseDto.getTransactionId() + 
+                    " with status: " + responseDto.getStatus());
+            
+            return ResponseEntity.ok(responseDto);
+        } catch (Exception e) {
+            // Log the error
+            traceLoggerService.error("Error processing OTP verification request: " + e.getMessage(), e);
+            
+            // Return error response
+            OtpVerifyResponseDto errorResponse = new OtpVerifyResponseDto();
+            errorResponse.setStatus("failure");
+            errorResponse.setErrorCode("ERR-INTERNAL");
+            errorResponse.setTransactionId(requestDto.getTransactionId());
+            
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+    /**
+     * Endpoint to retrieve KYC data.
+     *
+     * @param requestDto OTP verification request containing transaction ID
+     * @return ResponseEntity containing KYC data
+     */
+    @PostMapping(value = "/kyc/retrieve", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<KycDataDto> retrieveKycData(@Valid @RequestBody OtpVerifyRequestDto requestDto) {
+        try {
+            // Log the incoming request
+            traceLoggerService.info("Received KYC data retrieval request for transaction: " + requestDto.getTransactionId());
+            
+            // Log request details for debugging
+            RequestLogDto requestLog = new RequestLogDto();
+            requestLog.setEndpoint("/api/v1/mock-uidai/kyc/retrieve");
+            requestLog.setMethod("POST");
+            requestLog.setTimestamp(LocalDateTime.now());
+            requestLog.setRequestBody("Transaction ID: " + requestDto.getTransactionId());
+            traceLoggerService.logRequest(requestLog);
+            
+            // Process the request
+            KycDataDto kycDataDto = mockUidaiService.retrieveKycData(requestDto.getTransactionId());
+            
+            // Log the response (success case, masking PII)
+            traceLoggerService.info("KYC data retrieved successfully for transaction: " + requestDto.getTransactionId() + 
+                    " for user: " + maskName(kycDataDto.getName()));
+            
+            return ResponseEntity.ok(kycDataDto);
+        } catch (Exception e) {
+            // Log the error
+            traceLoggerService.error("Error processing KYC data retrieval request: " + e.getMessage(), e);
+            
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * Masks a UID/Aadhaar number for logging purposes.
+     *
+     * @param uid The UID to mask
+     * @return Masked UID
+     */
+    private String maskUid(String uid) {
+        if (uid == null || uid.length() < 4) {
+            return "****";
+        }
+        return "XXXX-XXXX-" + uid.substring(uid.length() - 4);
+    }
+
+    /**
+     * Masks a person's name for logging purposes.
+     *
+     * @param name The name to mask
+     * @return Masked name
+     */
+    private String maskName(String name) {
+        if (name == null || name.isEmpty()) {
+            return "****";
+        }
+        
+        String[] parts = name.split("\\s+");
+        StringBuilder maskedName = new StringBuilder();
+        
+        for (String part : parts) {
+            if (part.length() > 1) {
+                maskedName.append(part.charAt(0))
+                          .append("*".repeat(part.length() - 2))
+                          .append(part.charAt(part.length() - 1))
+                          .append(" ");
+            } else if (part.length() == 1) {
+                maskedName.append(part.charAt(0)).append("* ");
+            }
+        }
+        
+        return maskedName.toString().trim();
+    }
+}

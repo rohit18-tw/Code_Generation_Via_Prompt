@@ -1,0 +1,1252 @@
+{
+  "project": {
+    "title": "eKYC Verification System with Mock UIDAI API",
+    "description": "A Java Spring Boot application for Aadhaar-based eKYC verification with a separate mock UIDAI service for testing",
+    "language": "java",
+    "type": "api",
+    "framework": "spring-boot"
+  },
+  "structure": {
+    "directories": [
+      "ekyc-service/src/main/java/com/ekyc/service",
+      "ekyc-service/src/main/java/com/ekyc/service/config",
+      "ekyc-service/src/main/java/com/ekyc/service/controller",
+      "ekyc-service/src/main/java/com/ekyc/service/dto",
+      "ekyc-service/src/main/java/com/ekyc/service/entity",
+      "ekyc-service/src/main/java/com/ekyc/service/enums",
+      "ekyc-service/src/main/java/com/ekyc/service/exception",
+      "ekyc-service/src/main/java/com/ekyc/service/repository",
+      "ekyc-service/src/main/java/com/ekyc/service/service",
+      "ekyc-service/src/main/java/com/ekyc/service/util",
+      "ekyc-service/src/main/resources",
+      "ekyc-service/src/main/resources/db/migration",
+      "ekyc-service/src/test/java/com/ekyc/service",
+      "mock-uidai-service/src/main/java/com/mock/uidai",
+      "mock-uidai-service/src/main/java/com/mock/uidai/config",
+      "mock-uidai-service/src/main/java/com/mock/uidai/controller",
+      "mock-uidai-service/src/main/java/com/mock/uidai/dto",
+      "mock-uidai-service/src/main/java/com/mock/uidai/service",
+      "mock-uidai-service/src/main/java/com/mock/uidai/util",
+      "mock-uidai-service/src/main/resources",
+      "mock-uidai-service/src/test/java/com/mock/uidai"
+    ],
+    "files": [
+      {
+        "path": "ekyc-service/pom.xml",
+        "purpose": "Maven project configuration for eKYC service",
+        "type": "config",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ],
+          "architectural_requirements": [
+            "Use PostgreSQL",
+            "Use Flyway for schema versioning"
+          ]
+        }
+      },
+      {
+        "path": "mock-uidai-service/pom.xml",
+        "purpose": "Maven project configuration for mock UIDAI service",
+        "type": "config",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ],
+          "architectural_requirements": [
+            "Mock services use in-memory storage"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/EkycServiceApplication.java",
+        "purpose": "Main application entry point for eKYC service",
+        "type": "main",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/MockUidaiServiceApplication.java",
+        "purpose": "Main application entry point for mock UIDAI service",
+        "type": "main",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/entity/EkycRequest.java",
+        "purpose": "Entity class for eKYC request data",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ],
+          "architectural_requirements": [
+            "Use PostgreSQL"
+          ],
+          "business_logic_requirements": [
+            "Immutability of key data"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/entity/OtpVerification.java",
+        "purpose": "Entity class for OTP verification data",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": [
+          "EkycRequest.java"
+        ],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ],
+          "architectural_requirements": [
+            "Use PostgreSQL"
+          ],
+          "business_logic_requirements": [
+            "Immutability of key data"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/enums/IdType.java",
+        "purpose": "Enum for ID types (AADHAAR or VID)",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/enums/VerificationStatus.java",
+        "purpose": "Enum for verification status (VERIFIED, FAILED, IN_PROGRESS)",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/enums/ConsentType.java",
+        "purpose": "Enum for consent types (YES, NO)",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/EkycRequestDto.java",
+        "purpose": "DTO for eKYC request data",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": [
+          "IdType.java",
+          "ConsentType.java"
+        ],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ],
+          "business_logic_requirements": [
+            "Validation (field-level, format-specific)"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/OtpVerificationDto.java",
+        "purpose": "DTO for OTP verification data",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ],
+          "business_logic_requirements": [
+            "Validation (field-level, format-specific)"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/EkycResponseDto.java",
+        "purpose": "DTO for eKYC response data",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": [
+          "VerificationStatus.java"
+        ],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateRequestDto.java",
+        "purpose": "DTO for UIDAI OTP initiation request",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateResponseDto.java",
+        "purpose": "DTO for UIDAI OTP initiation response",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpVerifyRequestDto.java",
+        "purpose": "DTO for UIDAI OTP verification request",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpVerifyResponseDto.java",
+        "purpose": "DTO for UIDAI OTP verification response",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/ErrorResponseDto.java",
+        "purpose": "DTO for standardized error responses",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/repository/EkycRequestRepository.java",
+        "purpose": "Repository for eKYC request data",
+        "type": "repository",
+        "priority": "high",
+        "dependencies": [
+          "EkycRequest.java"
+        ],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ],
+          "architectural_requirements": [
+            "Use PostgreSQL"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/repository/OtpVerificationRepository.java",
+        "purpose": "Repository for OTP verification data",
+        "type": "repository",
+        "priority": "high",
+        "dependencies": [
+          "OtpVerification.java"
+        ],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ],
+          "architectural_requirements": [
+            "Use PostgreSQL"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/service/EkycService.java",
+        "purpose": "Service interface for eKYC operations",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "EkycRequestDto.java",
+          "EkycResponseDto.java"
+        ],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/service/OtpVerificationService.java",
+        "purpose": "Service interface for OTP verification operations",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "OtpVerificationDto.java",
+          "EkycResponseDto.java"
+        ],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/service/UidaiApiService.java",
+        "purpose": "Service interface for UIDAI API operations",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "UidaiOtpInitiateRequestDto.java",
+          "UidaiOtpInitiateResponseDto.java",
+          "UidaiOtpVerifyRequestDto.java",
+          "UidaiOtpVerifyResponseDto.java"
+        ],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/service/impl/EkycServiceImpl.java",
+        "purpose": "Service implementation for eKYC operations",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "EkycService.java",
+          "EkycRequestRepository.java",
+          "UidaiApiService.java",
+          "AuditLogger.java"
+        ],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ],
+          "security_requirements": [
+            "Mask PII in logs"
+          ],
+          "business_logic_requirements": [
+            "Validation (field-level, format-specific)"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/service/impl/OtpVerificationServiceImpl.java",
+        "purpose": "Service implementation for OTP verification operations",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "OtpVerificationService.java",
+          "OtpVerificationRepository.java",
+          "EkycRequestRepository.java",
+          "UidaiApiService.java",
+          "AuditLogger.java"
+        ],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ],
+          "security_requirements": [
+            "Mask PII in logs"
+          ],
+          "business_logic_requirements": [
+            "Validation (field-level, format-specific)"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/service/impl/UidaiApiServiceImpl.java",
+        "purpose": "Service implementation for UIDAI API operations",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "UidaiApiService.java",
+          "AuditLogger.java"
+        ],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ],
+          "security_requirements": [
+            "Mask PII in logs"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/controller/EkycController.java",
+        "purpose": "REST controller for eKYC operations",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "EkycService.java",
+          "EkycRequestDto.java",
+          "EkycResponseDto.java"
+        ],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/controller/OtpVerificationController.java",
+        "purpose": "REST controller for OTP verification operations",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "OtpVerificationService.java",
+          "OtpVerificationDto.java",
+          "EkycResponseDto.java"
+        ],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/util/AuditLogger.java",
+        "purpose": "Utility for audit-ready logging with PII masking",
+        "type": "utility",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ],
+          "security_requirements": [
+            "Mask PII in logs"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/util/ValidationUtils.java",
+        "purpose": "Utility for validation operations",
+        "type": "utility",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/config/WebClientConfig.java",
+        "purpose": "Configuration for WebClient",
+        "type": "config",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/exception/GlobalExceptionHandler.java",
+        "purpose": "Global exception handler for standardized error responses",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "ErrorResponseDto.java",
+          "AuditLogger.java"
+        ],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ],
+          "security_requirements": [
+            "Mask PII in logs"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/exception/EkycException.java",
+        "purpose": "Custom exception for eKYC operations",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/resources/application.yml",
+        "purpose": "Application configuration for eKYC service",
+        "type": "config",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "architectural_requirements": [
+            "Use PostgreSQL",
+            "Use Flyway for schema versioning"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/main/resources/db/migration/V1__init_schema.sql",
+        "purpose": "Initial database schema migration",
+        "type": "config",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "architectural_requirements": [
+            "Use PostgreSQL",
+            "Use Flyway for schema versioning"
+          ]
+        }
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateRequestDto.java",
+        "purpose": "DTO for OTP initiation request in mock UIDAI service",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateResponseDto.java",
+        "purpose": "DTO for OTP initiation response in mock UIDAI service",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyRequestDto.java",
+        "purpose": "DTO for OTP verification request in mock UIDAI service",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyResponseDto.java",
+        "purpose": "DTO for OTP verification response in mock UIDAI service",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/KycDataDto.java",
+        "purpose": "DTO for KYC data in mock UIDAI service",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/ErrorResponseDto.java",
+        "purpose": "DTO for error responses in mock UIDAI service",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/ConfigRequestDto.java",
+        "purpose": "DTO for configuration requests in mock UIDAI service",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/service/MockUidaiService.java",
+        "purpose": "Service for mock UIDAI operations",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "OtpInitiateRequestDto.java",
+          "OtpInitiateResponseDto.java",
+          "OtpVerifyRequestDto.java",
+          "OtpVerifyResponseDto.java",
+          "KycDataDto.java"
+        ],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ],
+          "architectural_requirements": [
+            "Mock services use in-memory storage"
+          ],
+          "business_logic_requirements": [
+            "Even digits succeed",
+            "OTP 123456 succeeds"
+          ]
+        }
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/service/MockConfigService.java",
+        "purpose": "Service for mock configuration operations",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "ConfigRequestDto.java"
+        ],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ],
+          "architectural_requirements": [
+            "Mock services use in-memory storage"
+          ]
+        }
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/service/TraceLoggerService.java",
+        "purpose": "Service for trace logging with PII masking",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ],
+          "security_requirements": [
+            "Mask PII in logs"
+          ]
+        }
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/controller/MockUidaiController.java",
+        "purpose": "Controller for mock UIDAI operations",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "MockUidaiService.java",
+          "OtpInitiateRequestDto.java",
+          "OtpInitiateResponseDto.java",
+          "OtpVerifyRequestDto.java",
+          "OtpVerifyResponseDto.java"
+        ],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/controller/MockAdminController.java",
+        "purpose": "Controller for mock admin operations",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "MockConfigService.java",
+          "ConfigRequestDto.java"
+        ],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/config/OpenApiConfig.java",
+        "purpose": "Configuration for OpenAPI/Swagger",
+        "type": "config",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ]
+        }
+      },
+      {
+        "path": "mock-uidai-service/src/main/resources/application.yml",
+        "purpose": "Application configuration for mock UIDAI service",
+        "type": "config",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {
+          "architectural_requirements": [
+            "Mock services use in-memory storage"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/test/java/com/ekyc/service/controller/EkycControllerTest.java",
+        "purpose": "Unit tests for EkycController",
+        "type": "test",
+        "priority": "high",
+        "dependencies": [
+          "EkycController.java",
+          "EkycService.java"
+        ],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ],
+          "testing_requirements": [
+            "Use only JUnit 5"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/test/java/com/ekyc/service/controller/OtpVerificationControllerTest.java",
+        "purpose": "Unit tests for OtpVerificationController",
+        "type": "test",
+        "priority": "high",
+        "dependencies": [
+          "OtpVerificationController.java",
+          "OtpVerificationService.java"
+        ],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ],
+          "testing_requirements": [
+            "Use only JUnit 5"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/test/java/com/ekyc/service/service/EkycServiceImplTest.java",
+        "purpose": "Unit tests for EkycServiceImpl",
+        "type": "test",
+        "priority": "high",
+        "dependencies": [
+          "EkycServiceImpl.java"
+        ],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ],
+          "testing_requirements": [
+            "Use only JUnit 5"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/test/java/com/ekyc/service/service/OtpVerificationServiceImplTest.java",
+        "purpose": "Unit tests for OtpVerificationServiceImpl",
+        "type": "test",
+        "priority": "high",
+        "dependencies": [
+          "OtpVerificationServiceImpl.java"
+        ],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ],
+          "testing_requirements": [
+            "Use only JUnit 5"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/test/java/com/ekyc/service/service/UidaiApiServiceImplTest.java",
+        "purpose": "Unit tests for UidaiApiServiceImpl",
+        "type": "test",
+        "priority": "high",
+        "dependencies": [
+          "UidaiApiServiceImpl.java"
+        ],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ],
+          "testing_requirements": [
+            "Use only JUnit 5"
+          ]
+        }
+      },
+      {
+        "path": "ekyc-service/src/test/java/com/ekyc/service/integration/EkycIntegrationTest.java",
+        "purpose": "Integration tests for eKYC flow",
+        "type": "test",
+        "priority": "high",
+        "dependencies": [
+          "EkycController.java",
+          "OtpVerificationController.java"
+        ],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ],
+          "testing_requirements": [
+            "Use only JUnit 5"
+          ]
+        }
+      },
+      {
+        "path": "mock-uidai-service/src/test/java/com/mock/uidai/controller/MockUidaiControllerTest.java",
+        "purpose": "Unit tests for MockUidaiController",
+        "type": "test",
+        "priority": "high",
+        "dependencies": [
+          "MockUidaiController.java",
+          "MockUidaiService.java"
+        ],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ],
+          "testing_requirements": [
+            "Use only JUnit 5"
+          ]
+        }
+      },
+      {
+        "path": "mock-uidai-service/src/test/java/com/mock/uidai/service/MockUidaiServiceTest.java",
+        "purpose": "Unit tests for MockUidaiService",
+        "type": "test",
+        "priority": "high",
+        "dependencies": [
+          "MockUidaiService.java"
+        ],
+        "relevant_constraints": {
+          "technology_restrictions": [
+            "No Lombok",
+            "No Mockito"
+          ],
+          "testing_requirements": [
+            "Use only JUnit 5"
+          ],
+          "business_logic_requirements": [
+            "Even digits succeed",
+            "OTP 123456 succeeds"
+          ]
+        }
+      }
+    ]
+  },
+  "code_generation": {
+    "order": [
+      "config",
+      "entities",
+      "repositories",
+      "services",
+      "controllers",
+      "tests"
+    ],
+    "file_templates": {
+      "entity": "Java class with explicit getters/setters, validation annotations",
+      "controller": "Spring REST controller with request mapping and dependency injection",
+      "service": "Service interface and implementation with business logic",
+      "repository": "Spring Data JPA repository interface",
+      "config": "Spring configuration class with bean definitions",
+      "test": "JUnit 5 test class with Spring Boot test annotations"
+    },
+    "implementation_strategy": "file_by_file",
+    "validation_rules": [
+      "syntax_check",
+      "dependency_check",
+      "style_check"
+    ]
+  },
+  "dependencies": {
+    "runtime": [
+      "org.springframework.boot:spring-boot-starter-web",
+      "org.springframework.boot:spring-boot-starter-data-jpa",
+      "org.springframework.boot:spring-boot-starter-validation",
+      "org.springframework.boot:spring-boot-starter-webflux",
+      "org.postgresql:postgresql",
+      "org.flywaydb:flyway-core",
+      "com.fasterxml.jackson.core:jackson-databind",
+      "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0"
+    ],
+    "development": [
+      "org.springframework.boot:spring-boot-starter-test",
+      "org.junit.jupiter:junit-jupiter-api",
+      "org.junit.jupiter:junit-jupiter-engine",
+      "com.h2database:h2"
+    ],
+    "build": [
+      "maven"
+    ]
+  },
+  "steps": [
+    {
+      "step": 1,
+      "title": "Setup Project Structure",
+      "files": [
+        "ekyc-service/pom.xml",
+        "mock-uidai-service/pom.xml"
+      ],
+      "file_types": [
+        "config"
+      ],
+      "estimated_time": "30 minutes",
+      "validation": [
+        "directory_structure",
+        "dependency_files"
+      ]
+    },
+    {
+      "step": 2,
+      "title": "Create Application Entry Points",
+      "files": [
+        "EkycServiceApplication.java",
+        "MockUidaiServiceApplication.java"
+      ],
+      "file_types": [
+        "main"
+      ],
+      "estimated_time": "15 minutes",
+      "validation": [
+        "syntax_check"
+      ]
+    },
+    {
+      "step": 3,
+      "title": "Create Enums and DTOs",
+      "files": [
+        "IdType.java",
+        "VerificationStatus.java",
+        "ConsentType.java",
+        "EkycRequestDto.java",
+        "OtpVerificationDto.java",
+        "EkycResponseDto.java",
+        "UidaiOtpInitiateRequestDto.java",
+        "UidaiOtpInitiateResponseDto.java",
+        "UidaiOtpVerifyRequestDto.java",
+        "UidaiOtpVerifyResponseDto.java",
+        "ErrorResponseDto.java",
+        "OtpInitiateRequestDto.java",
+        "OtpInitiateResponseDto.java",
+        "OtpVerifyRequestDto.java",
+        "OtpVerifyResponseDto.java",
+        "KycDataDto.java",
+        "ConfigRequestDto.java"
+      ],
+      "file_types": [
+        "entity"
+      ],
+      "estimated_time": "60 minutes",
+      "validation": [
+        "syntax_check",
+        "validation_annotations"
+      ]
+    },
+    {
+      "step": 4,
+      "title": "Create Entity Classes",
+      "files": [
+        "EkycRequest.java",
+        "OtpVerification.java"
+      ],
+      "file_types": [
+        "entity"
+      ],
+      "estimated_time": "30 minutes",
+      "validation": [
+        "syntax_check",
+        "jpa_annotations"
+      ]
+    },
+    {
+      "step": 5,
+      "title": "Create Utility Classes",
+      "files": [
+        "AuditLogger.java",
+        "ValidationUtils.java",
+        "TraceLoggerService.java"
+      ],
+      "file_types": [
+        "utility"
+      ],
+      "estimated_time": "45 minutes",
+      "validation": [
+        "syntax_check",
+        "pii_masking"
+      ]
+    },
+    {
+      "step": 6,
+      "title": "Create Repository Interfaces",
+      "files": [
+        "EkycRequestRepository.java",
+        "OtpVerificationRepository.java"
+      ],
+      "file_types": [
+        "repository"
+      ],
+      "estimated_time": "20 minutes",
+      "validation": [
+        "syntax_check",
+        "repository_methods"
+      ]
+    },
+    {
+      "step": 7,
+      "title": "Create Service Interfaces",
+      "files": [
+        "EkycService.java",
+        "OtpVerificationService.java",
+        "UidaiApiService.java",
+        "MockUidaiService.java",
+        "MockConfigService.java"
+      ],
+      "file_types": [
+        "service"
+      ],
+      "estimated_time": "30 minutes",
+      "validation": [
+        "syntax_check",
+        "method_signatures"
+      ]
+    },
+    {
+      "step": 8,
+      "title": "Create Service Implementations",
+      "files": [
+        "EkycServiceImpl.java",
+        "OtpVerificationServiceImpl.java",
+        "UidaiApiServiceImpl.java"
+      ],
+      "file_types": [
+        "service"
+      ],
+      "estimated_time": "90 minutes",
+      "validation": [
+        "syntax_check",
+        "business_logic",
+        "error_handling"
+      ]
+    },
+    {
+      "step": 9,
+      "title": "Create Controllers",
+      "files": [
+        "EkycController.java",
+        "OtpVerificationController.java",
+        "GlobalExceptionHandler.java",
+        "MockUidaiController.java",
+        "MockAdminController.java"
+      ],
+      "file_types": [
+        "controller"
+      ],
+      "estimated_time": "60 minutes",
+      "validation": [
+        "syntax_check",
+        "endpoint_mapping",
+        "validation_handling"
+      ]
+    },
+    {
+      "step": 10,
+      "title": "Create Configuration Classes",
+      "files": [
+        "WebClientConfig.java",
+        "OpenApiConfig.java"
+      ],
+      "file_types": [
+        "config"
+      ],
+      "estimated_time": "30 minutes",
+      "validation": [
+        "syntax_check",
+        "bean_definitions"
+      ]
+    },
+    {
+      "step": 11,
+      "title": "Create Application Configuration",
+      "files": [
+        "ekyc-service/src/main/resources/application.yml",
+        "mock-uidai-service/src/main/resources/application.yml",
+        "V1__init_schema.sql"
+      ],
+      "file_types": [
+        "config"
+      ],
+      "estimated_time": "45 minutes",
+      "validation": [
+        "syntax_check",
+        "property_definitions"
+      ]
+    },
+    {
+      "step": 12,
+      "title": "Create Unit Tests",
+      "files": [
+        "EkycControllerTest.java",
+        "OtpVerificationControllerTest.java",
+        "EkycServiceImplTest.java",
+        "OtpVerificationServiceImplTest.java",
+        "UidaiApiServiceImplTest.java",
+        "MockUidaiControllerTest.java",
+        "MockUidaiServiceTest.java"
+      ],
+      "file_types": [
+        "test"
+      ],
+      "estimated_time": "120 minutes",
+      "validation": [
+        "syntax_check",
+        "test_coverage"
+      ]
+    },
+    {
+      "step": 13,
+      "title": "Create Integration Tests",
+      "files": [
+        "EkycIntegrationTest.java"
+      ],
+      "file_types": [
+        "test"
+      ],
+      "estimated_time": "60 minutes",
+      "validation": [
+        "syntax_check",
+        "test_coverage"
+      ]
+    }
+  ],
+  "constraints": {
+    "technology_restrictions": [
+      "No Lombok",
+      "No Mockito"
+    ],
+    "architectural_requirements": [
+      "Use PostgreSQL",
+      "Use Flyway for schema versioning",
+      "Mock services use in-memory storage"
+    ],
+    "business_logic_requirements": [
+      "Even digits succeed",
+      "OTP 123456 succeeds",
+      "Immutability of key data",
+      "Validation (field-level, format-specific)"
+    ],
+    "security_requirements": [
+      "Mask PII in logs"
+    ],
+    "testing_requirements": [
+      "Use only JUnit 5"
+    ]
+  },
+  "metadata": {
+    "generated_by": "claude_plan_generator",
+    "total_steps": 13,
+    "total_files": 56
+  }
+}

@@ -1,0 +1,200 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:57:14
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_047
+# ==================================================
+
+package com.mock.uidai.controller;
+
+import com.mock.uidai.dto.ConfigOverrideDto;
+import com.mock.uidai.dto.RequestLogDto;
+import com.mock.uidai.service.MockConfigService;
+import com.mock.uidai.service.TraceLoggerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Controller for mock admin operations.
+ * Provides endpoints for configuration management and request log retrieval.
+ */
+@RestController
+@RequestMapping("/api/v1/admin")
+public class MockAdminController {
+
+    private static final Logger logger = LoggerFactory.getLogger(MockAdminController.class);
+    
+    private final MockConfigService mockConfigService;
+    private final TraceLoggerService traceLoggerService;
+
+    /**
+     * Constructor for dependency injection.
+     *
+     * @param mockConfigService Service for managing mock configurations
+     * @param traceLoggerService Service for trace logging
+     */
+    @Autowired
+    public MockAdminController(MockConfigService mockConfigService, TraceLoggerService traceLoggerService) {
+        this.mockConfigService = mockConfigService;
+        this.traceLoggerService = traceLoggerService;
+    }
+
+    /**
+     * Retrieves the current configuration overrides.
+     *
+     * @return ResponseEntity containing the current configuration overrides
+     */
+    @GetMapping("/config")
+    public ResponseEntity<Map<String, ConfigOverrideDto>> getConfigOverrides() {
+        traceLoggerService.info("Retrieving current configuration overrides");
+        try {
+            Map<String, ConfigOverrideDto> configOverrides = mockConfigService.getAllConfigOverrides();
+            return ResponseEntity.ok(configOverrides);
+        } catch (Exception e) {
+            traceLoggerService.error("Error retrieving configuration overrides", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * Sets a configuration override for a specific UID.
+     *
+     * @param uid The UID to set the configuration override for
+     * @param configOverrideDto The configuration override details
+     * @return ResponseEntity with the updated configuration override
+     */
+    @PostMapping("/config/{uid}")
+    public ResponseEntity<ConfigOverrideDto> setConfigOverride(
+            @PathVariable String uid,
+            @Valid @RequestBody ConfigOverrideDto configOverrideDto) {
+        
+        String maskedUid = mockConfigService.maskUid(uid);
+        traceLoggerService.info("Setting configuration override for UID: {}", maskedUid);
+        
+        try {
+            ConfigOverrideDto savedConfig = mockConfigService.setConfigOverride(uid, configOverrideDto);
+            return ResponseEntity.ok(savedConfig);
+        } catch (IllegalArgumentException e) {
+            traceLoggerService.error("Invalid configuration override request for UID: {}", maskedUid);
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            traceLoggerService.error("Error setting configuration override for UID: " + maskedUid, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * Removes a configuration override for a specific UID.
+     *
+     * @param uid The UID to remove the configuration override for
+     * @return ResponseEntity with no content on success
+     */
+    @DeleteMapping("/config/{uid}")
+    public ResponseEntity<Void> removeConfigOverride(@PathVariable String uid) {
+        String maskedUid = mockConfigService.maskUid(uid);
+        traceLoggerService.info("Removing configuration override for UID: {}", maskedUid);
+        
+        try {
+            mockConfigService.removeConfigOverride(uid);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            traceLoggerService.error("Invalid UID for configuration removal: {}", maskedUid);
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            traceLoggerService.error("Error removing configuration override for UID: " + maskedUid, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * Clears all configuration overrides.
+     *
+     * @return ResponseEntity with no content on success
+     */
+    @DeleteMapping("/config")
+    public ResponseEntity<Void> clearAllConfigOverrides() {
+        traceLoggerService.info("Clearing all configuration overrides");
+        
+        try {
+            mockConfigService.clearAllConfigOverrides();
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            traceLoggerService.error("Error clearing all configuration overrides", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * Retrieves request logs with optional filtering.
+     *
+     * @param limit Maximum number of logs to retrieve (default: 100)
+     * @param uid Optional UID to filter logs by
+     * @param status Optional status to filter logs by
+     * @return ResponseEntity containing the list of request logs
+     */
+    @GetMapping("/logs")
+    public ResponseEntity<List<RequestLogDto>> getRequestLogs(
+            @RequestParam(defaultValue = "100") int limit,
+            @RequestParam(required = false) String uid,
+            @RequestParam(required = false) String status) {
+        
+        traceLoggerService.info("Retrieving request logs with limit: {}, uid: {}, status: {}", 
+                limit, uid != null ? mockConfigService.maskUid(uid) : "null", status);
+        
+        try {
+            List<RequestLogDto> logs;
+            if (uid != null && status != null) {
+                logs = mockConfigService.getRequestLogsByUidAndStatus(uid, status, limit);
+            } else if (uid != null) {
+                logs = mockConfigService.getRequestLogsByUid(uid, limit);
+            } else if (status != null) {
+                logs = mockConfigService.getRequestLogsByStatus(status, limit);
+            } else {
+                logs = mockConfigService.getRequestLogs(limit);
+            }
+            return ResponseEntity.ok(logs);
+        } catch (IllegalArgumentException e) {
+            traceLoggerService.error("Invalid parameters for request logs retrieval", e);
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            traceLoggerService.error("Error retrieving request logs", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * Clears all request logs.
+     *
+     * @return ResponseEntity with no content on success
+     */
+    @DeleteMapping("/logs")
+    public ResponseEntity<Void> clearAllRequestLogs() {
+        traceLoggerService.info("Clearing all request logs");
+        
+        try {
+            mockConfigService.clearAllRequestLogs();
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            traceLoggerService.error("Error clearing all request logs", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * Health check endpoint for the admin API.
+     *
+     * @return ResponseEntity with status information
+     */
+    @GetMapping("/health")
+    public ResponseEntity<Map<String, String>> healthCheck() {
+        traceLoggerService.info("Admin API health check requested");
+        return ResponseEntity.ok(Map.of("status", "UP", "service", "mock-uidai-admin-api"));
+    }
+}

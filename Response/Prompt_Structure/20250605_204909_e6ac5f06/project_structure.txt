@@ -1,0 +1,44 @@
+ekyc-verification-system-with-uidai-mock-service/
+├── README.md
+├── cmd/
+│   ├── ekyc/
+│   │   └── main.go
+│   └── mock-uidai/
+│       └── main.go
+├── docs/
+│   └── swagger.yaml
+├── go.mod
+├── internal/
+│   ├── api/
+│   │   └── router.go
+│   ├── config/
+│   │   └── config.go
+│   ├── domain/
+│   │   ├── ekyc.go
+│   │   └── errors.go
+│   ├── handler/
+│   │   └── ekyc_handler.go
+│   ├── middleware/
+│   │   ├── logging.go
+│   │   ├── tracing.go
+│   │   └── validation.go
+│   ├── repository/
+│   │   └── ekyc_repository.go
+│   ├── service/
+│   │   ├── ekyc_service.go
+│   │   └── uidai_client.go
+│   └── util/
+│       ├── logger.go
+│       └── trace.go
+├── mock/
+│   ├── api/
+│   │   └── router.go
+│   ├── handler/
+│   │   ├── admin_handler.go
+│   │   └── uidai_handler.go
+│   └── service/
+│       ├── config_service.go
+│       └── mock_uidai_service.go
+└── test/
+    ├── ekyc_integration_test.go
+    └── mock_uidai_test.go

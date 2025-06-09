@@ -1,0 +1,614 @@
+{
+  "project": {
+    "title": "eKYC Verification System",
+    "description": "A .NET 8 Web API application for Aadhaar-based eKYC verification with a separate Mock UIDAI API service",
+    "language": "csharp",
+    "type": "api",
+    "framework": "dotnet-webapi"
+  },
+  "structure": {
+    "directories": [
+      "eKYC.API",
+      "eKYC.API/Controllers",
+      "eKYC.API/Models",
+      "eKYC.API/Models/Entities",
+      "eKYC.API/Models/DTOs",
+      "eKYC.API/Models/Enums",
+      "eKYC.API/Services",
+      "eKYC.API/Repositories",
+      "eKYC.API/Middleware",
+      "eKYC.API/Validators",
+      "eKYC.API/Configuration",
+      "eKYC.Tests",
+      "eKYC.Tests/Unit",
+      "eKYC.Tests/Integration",
+      "MockUidai.API",
+      "MockUidai.API/Controllers",
+      "MockUidai.API/Models",
+      "MockUidai.API/Services"
+    ],
+    "files": [
+      {
+        "path": "eKYC.API/Program.cs",
+        "purpose": "Main entry point for the eKYC API application",
+        "type": "main",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "eKYC.API/appsettings.json",
+        "purpose": "Configuration settings for the application",
+        "type": "config",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "eKYC.API/Models/Entities/EkycRequest.cs",
+        "purpose": "Entity class for eKYC request data",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "eKYC.API/Models/Entities/OtpVerification.cs",
+        "purpose": "Entity class for OTP verification data",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "eKYC.API/Models/DTOs/EkycRequestDto.cs",
+        "purpose": "DTO for eKYC request data",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "eKYC.API/Models/DTOs/OtpVerificationDto.cs",
+        "purpose": "DTO for OTP verification data",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "eKYC.API/Models/DTOs/EkycResponseDto.cs",
+        "purpose": "DTO for eKYC response data",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "eKYC.API/Models/Enums/VerificationStatus.cs",
+        "purpose": "Enum for verification status values",
+        "type": "entity",
+        "priority": "medium",
+        "dependencies": []
+      },
+      {
+        "path": "eKYC.API/Models/Enums/IdType.cs",
+        "purpose": "Enum for ID types (AADHAAR or VID)",
+        "type": "entity",
+        "priority": "medium",
+        "dependencies": []
+      },
+      {
+        "path": "eKYC.API/Models/Enums/ConsentType.cs",
+        "purpose": "Enum for consent types",
+        "type": "entity",
+        "priority": "medium",
+        "dependencies": []
+      },
+      {
+        "path": "eKYC.API/Models/ErrorResponse.cs",
+        "purpose": "Standardized error response model",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "eKYC.API/Controllers/EkycController.cs",
+        "purpose": "Controller for eKYC endpoints",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "EkycService.cs",
+          "EkycRequestDto.cs",
+          "OtpVerificationDto.cs",
+          "EkycResponseDto.cs"
+        ]
+      },
+      {
+        "path": "eKYC.API/Services/EkycService.cs",
+        "purpose": "Service for eKYC business logic",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "EkycRepository.cs",
+          "UidaiApiService.cs"
+        ]
+      },
+      {
+        "path": "eKYC.API/Services/UidaiApiService.cs",
+        "purpose": "Service for UIDAI API integration",
+        "type": "service",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "eKYC.API/Repositories/EkycRepository.cs",
+        "purpose": "Repository for eKYC data access",
+        "type": "repository",
+        "priority": "high",
+        "dependencies": [
+          "EkycRequest.cs",
+          "OtpVerification.cs"
+        ]
+      },
+      {
+        "path": "eKYC.API/Middleware/CorrelationIdMiddleware.cs",
+        "purpose": "Middleware for adding correlation IDs to requests",
+        "type": "middleware",
+        "priority": "medium",
+        "dependencies": []
+      },
+      {
+        "path": "eKYC.API/Middleware/ExceptionHandlingMiddleware.cs",
+        "purpose": "Middleware for global exception handling",
+        "type": "middleware",
+        "priority": "medium",
+        "dependencies": [
+          "ErrorResponse.cs"
+        ]
+      },
+      {
+        "path": "eKYC.API/Validators/EkycRequestValidator.cs",
+        "purpose": "Validator for eKYC request data",
+        "type": "validator",
+        "priority": "medium",
+        "dependencies": [
+          "EkycRequestDto.cs"
+        ]
+      },
+      {
+        "path": "eKYC.API/Validators/OtpVerificationValidator.cs",
+        "purpose": "Validator for OTP verification data",
+        "type": "validator",
+        "priority": "medium",
+        "dependencies": [
+          "OtpVerificationDto.cs"
+        ]
+      },
+      {
+        "path": "eKYC.API/Configuration/DatabaseContext.cs",
+        "purpose": "EF Core database context",
+        "type": "config",
+        "priority": "high",
+        "dependencies": [
+          "EkycRequest.cs",
+          "OtpVerification.cs"
+        ]
+      },
+      {
+        "path": "eKYC.API/Configuration/LoggingConfiguration.cs",
+        "purpose": "Configuration for logging with PII masking",
+        "type": "config",
+        "priority": "medium",
+        "dependencies": []
+      },
+      {
+        "path": "eKYC.Tests/Unit/EkycServiceTests.cs",
+        "purpose": "Unit tests for EkycService",
+        "type": "test",
+        "priority": "high",
+        "dependencies": [
+          "EkycService.cs"
+        ]
+      },
+      {
+        "path": "eKYC.Tests/Unit/UidaiApiServiceTests.cs",
+        "purpose": "Unit tests for UidaiApiService",
+        "type": "test",
+        "priority": "high",
+        "dependencies": [
+          "UidaiApiService.cs"
+        ]
+      },
+      {
+        "path": "eKYC.Tests/Unit/EkycRequestValidatorTests.cs",
+        "purpose": "Unit tests for EkycRequestValidator",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": [
+          "EkycRequestValidator.cs"
+        ]
+      },
+      {
+        "path": "eKYC.Tests/Unit/OtpVerificationValidatorTests.cs",
+        "purpose": "Unit tests for OtpVerificationValidator",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": [
+          "OtpVerificationValidator.cs"
+        ]
+      },
+      {
+        "path": "eKYC.Tests/Integration/EkycControllerTests.cs",
+        "purpose": "Integration tests for EkycController",
+        "type": "test",
+        "priority": "high",
+        "dependencies": [
+          "EkycController.cs"
+        ]
+      },
+      {
+        "path": "eKYC.Tests/Integration/EkycRepositoryTests.cs",
+        "purpose": "Integration tests for EkycRepository",
+        "type": "test",
+        "priority": "high",
+        "dependencies": [
+          "EkycRepository.cs"
+        ]
+      },
+      {
+        "path": "MockUidai.API/Program.cs",
+        "purpose": "Main entry point for the Mock UIDAI API",
+        "type": "main",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "MockUidai.API/appsettings.json",
+        "purpose": "Configuration settings for the Mock UIDAI API",
+        "type": "config",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "MockUidai.API/Controllers/UidaiController.cs",
+        "purpose": "Controller for Mock UIDAI API endpoints",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "MockUidaiService.cs"
+        ]
+      },
+      {
+        "path": "MockUidai.API/Controllers/AdminController.cs",
+        "purpose": "Controller for Mock UIDAI API admin endpoints",
+        "type": "controller",
+        "priority": "medium",
+        "dependencies": [
+          "MockConfigService.cs"
+        ]
+      },
+      {
+        "path": "MockUidai.API/Models/EkycInitiateRequest.cs",
+        "purpose": "Model for eKYC initiation request",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "MockUidai.API/Models/EkycInitiateResponse.cs",
+        "purpose": "Model for eKYC initiation response",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "MockUidai.API/Models/OtpVerifyRequest.cs",
+        "purpose": "Model for OTP verification request",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "MockUidai.API/Models/OtpVerifyResponse.cs",
+        "purpose": "Model for OTP verification response",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "MockUidai.API/Models/KycData.cs",
+        "purpose": "Model for KYC data",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "MockUidai.API/Models/ConfigOverrideRequest.cs",
+        "purpose": "Model for configuration override request",
+        "type": "entity",
+        "priority": "medium",
+        "dependencies": []
+      },
+      {
+        "path": "MockUidai.API/Services/MockUidaiService.cs",
+        "purpose": "Service for Mock UIDAI API logic",
+        "type": "service",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "MockUidai.API/Services/MockConfigService.cs",
+        "purpose": "Service for Mock UIDAI API configuration",
+        "type": "service",
+        "priority": "medium",
+        "dependencies": []
+      },
+      {
+        "path": "MockUidai.API/Services/TraceLoggerService.cs",
+        "purpose": "Service for trace logging with PII masking",
+        "type": "service",
+        "priority": "medium",
+        "dependencies": []
+      }
+    ]
+  },
+  "code_generation": {
+    "order": [
+      "config",
+      "entities",
+      "repositories",
+      "services",
+      "controllers",
+      "middleware",
+      "validators",
+      "tests"
+    ],
+    "file_templates": {
+      "entity": "Data model with validation and immutability",
+      "controller": "REST endpoints with CRUD operations",
+      "service": "Business logic layer",
+      "repository": "Data access layer",
+      "config": "Configuration and setup",
+      "middleware": "Request processing pipeline components",
+      "validator": "Input validation logic",
+      "test": "Unit and integration tests"
+    },
+    "implementation_strategy": "file_by_file",
+    "validation_rules": [
+      "syntax_check",
+      "dependency_check",
+      "style_check"
+    ]
+  },
+  "dependencies": {
+    "runtime": [
+      "Microsoft.EntityFrameworkCore.PostgreSQL",
+      "Microsoft.EntityFrameworkCore.Tools",
+      "FluentValidation.AspNetCore",
+      "Serilog.AspNetCore",
+      "Serilog.Sinks.Console",
+      "Serilog.Sinks.File",
+      "Swashbuckle.AspNetCore"
+    ],
+    "development": [
+      "Microsoft.NET.Test.Sdk",
+      "xunit",
+      "xunit.runner.visualstudio",
+      "Microsoft.AspNetCore.Mvc.Testing",
+      "Testcontainers.PostgreSql"
+    ],
+    "build": [
+      "dotnet"
+    ]
+  },
+  "steps": [
+    {
+      "step": 1,
+      "title": "Setup Project Structure",
+      "files": [
+        "eKYC.API/Program.cs",
+        "eKYC.API/appsettings.json",
+        "MockUidai.API/Program.cs",
+        "MockUidai.API/appsettings.json"
+      ],
+      "file_types": [
+        "main",
+        "config"
+      ],
+      "estimated_time": "30 minutes",
+      "validation": [
+        "directory_structure",
+        "dependency_files"
+      ]
+    },
+    {
+      "step": 2,
+      "title": "Create Entity Models and DTOs",
+      "files": [
+        "eKYC.API/Models/Entities/EkycRequest.cs",
+        "eKYC.API/Models/Entities/OtpVerification.cs",
+        "eKYC.API/Models/DTOs/EkycRequestDto.cs",
+        "eKYC.API/Models/DTOs/OtpVerificationDto.cs",
+        "eKYC.API/Models/DTOs/EkycResponseDto.cs",
+        "eKYC.API/Models/Enums/VerificationStatus.cs",
+        "eKYC.API/Models/Enums/IdType.cs",
+        "eKYC.API/Models/Enums/ConsentType.cs",
+        "eKYC.API/Models/ErrorResponse.cs"
+      ],
+      "file_types": [
+        "entity"
+      ],
+      "estimated_time": "60 minutes",
+      "validation": [
+        "syntax_check",
+        "model_validation"
+      ]
+    },
+    {
+      "step": 3,
+      "title": "Create Mock UIDAI API Models",
+      "files": [
+        "MockUidai.API/Models/EkycInitiateRequest.cs",
+        "MockUidai.API/Models/EkycInitiateResponse.cs",
+        "MockUidai.API/Models/OtpVerifyRequest.cs",
+        "MockUidai.API/Models/OtpVerifyResponse.cs",
+        "MockUidai.API/Models/KycData.cs",
+        "MockUidai.API/Models/ConfigOverrideRequest.cs"
+      ],
+      "file_types": [
+        "entity"
+      ],
+      "estimated_time": "45 minutes",
+      "validation": [
+        "syntax_check",
+        "model_validation"
+      ]
+    },
+    {
+      "step": 4,
+      "title": "Setup Database Context and Configuration",
+      "files": [
+        "eKYC.API/Configuration/DatabaseContext.cs",
+        "eKYC.API/Configuration/LoggingConfiguration.cs"
+      ],
+      "file_types": [
+        "config"
+      ],
+      "estimated_time": "30 minutes",
+      "validation": [
+        "syntax_check",
+        "dependency_check"
+      ]
+    },
+    {
+      "step": 5,
+      "title": "Implement Repositories",
+      "files": [
+        "eKYC.API/Repositories/EkycRepository.cs"
+      ],
+      "file_types": [
+        "repository"
+      ],
+      "estimated_time": "45 minutes",
+      "validation": [
+        "syntax_check",
+        "dependency_check"
+      ]
+    },
+    {
+      "step": 6,
+      "title": "Implement Mock UIDAI Services",
+      "files": [
+        "MockUidai.API/Services/MockUidaiService.cs",
+        "MockUidai.API/Services/MockConfigService.cs",
+        "MockUidai.API/Services/TraceLoggerService.cs"
+      ],
+      "file_types": [
+        "service"
+      ],
+      "estimated_time": "60 minutes",
+      "validation": [
+        "syntax_check",
+        "dependency_check"
+      ]
+    },
+    {
+      "step": 7,
+      "title": "Implement eKYC Services",
+      "files": [
+        "eKYC.API/Services/EkycService.cs",
+        "eKYC.API/Services/UidaiApiService.cs"
+      ],
+      "file_types": [
+        "service"
+      ],
+      "estimated_time": "90 minutes",
+      "validation": [
+        "syntax_check",
+        "dependency_check"
+      ]
+    },
+    {
+      "step": 8,
+      "title": "Implement Validators",
+      "files": [
+        "eKYC.API/Validators/EkycRequestValidator.cs",
+        "eKYC.API/Validators/OtpVerificationValidator.cs"
+      ],
+      "file_types": [
+        "validator"
+      ],
+      "estimated_time": "30 minutes",
+      "validation": [
+        "syntax_check",
+        "dependency_check"
+      ]
+    },
+    {
+      "step": 9,
+      "title": "Implement Middleware",
+      "files": [
+        "eKYC.API/Middleware/CorrelationIdMiddleware.cs",
+        "eKYC.API/Middleware/ExceptionHandlingMiddleware.cs"
+      ],
+      "file_types": [
+        "middleware"
+      ],
+      "estimated_time": "45 minutes",
+      "validation": [
+        "syntax_check",
+        "dependency_check"
+      ]
+    },
+    {
+      "step": 10,
+      "title": "Implement Controllers",
+      "files": [
+        "eKYC.API/Controllers/EkycController.cs",
+        "MockUidai.API/Controllers/UidaiController.cs",
+        "MockUidai.API/Controllers/AdminController.cs"
+      ],
+      "file_types": [
+        "controller"
+      ],
+      "estimated_time": "60 minutes",
+      "validation": [
+        "syntax_check",
+        "dependency_check"
+      ]
+    },
+    {
+      "step": 11,
+      "title": "Implement Unit Tests",
+      "files": [
+        "eKYC.Tests/Unit/EkycServiceTests.cs",
+        "eKYC.Tests/Unit/UidaiApiServiceTests.cs",
+        "eKYC.Tests/Unit/EkycRequestValidatorTests.cs",
+        "eKYC.Tests/Unit/OtpVerificationValidatorTests.cs"
+      ],
+      "file_types": [
+        "test"
+      ],
+      "estimated_time": "90 minutes",
+      "validation": [
+        "syntax_check",
+        "test_execution"
+      ]
+    },
+    {
+      "step": 12,
+      "title": "Implement Integration Tests",
+      "files": [
+        "eKYC.Tests/Integration/EkycControllerTests.cs",
+        "eKYC.Tests/Integration/EkycRepositoryTests.cs"
+      ],
+      "file_types": [
+        "test"
+      ],
+      "estimated_time": "60 minutes",
+      "validation": [
+        "syntax_check",
+        "test_execution"
+      ]
+    }
+  ],
+  "metadata": {
+    "generated_by": "claude_plan_generator",
+    "total_steps": 12,
+    "total_files": 40
+  }
+}

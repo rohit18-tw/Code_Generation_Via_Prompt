@@ -1,0 +1,221 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-06 15:33:09
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_051
+# ==================================================
+
+package com.ekyc.service.controller;
+
+import com.ekyc.service.dto.EkycResponseDto;
+import com.ekyc.service.dto.OtpVerificationDto;
+import com.ekyc.service.enums.VerificationStatus;
+import com.ekyc.service.service.OtpVerificationService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@ExtendWith(SpringExtension.class)
+@WebMvcTest(OtpVerificationController.class)
+public class OtpVerificationControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private OtpVerificationService otpVerificationService;
+
+    private OtpVerificationDto validOtpVerificationDto;
+    private OtpVerificationDto invalidOtpVerificationDto;
+
+    @TestConfiguration
+    static class TestConfig {
+        @Bean
+        public OtpVerificationService otpVerificationService() {
+            return new MockOtpVerificationService();
+        }
+    }
+
+    static class MockOtpVerificationService implements OtpVerificationService {
+        @Override
+        public EkycResponseDto verifyOtp(OtpVerificationDto otpVerificationDto) {
+            EkycResponseDto response = new EkycResponseDto();
+            
+            if (otpVerificationDto.getReferenceId() == null || otpVerificationDto.getOtp() == null) {
+                response.setStatus(VerificationStatus.FAILED);
+                response.setMessage("Invalid input parameters");
+                return response;
+            }
+            
+            if ("REF123456".equals(otpVerificationDto.getReferenceId()) && 
+                "123456".equals(otpVerificationDto.getOtp())) {
+                response.setStatus(VerificationStatus.SUCCESS);
+                response.setMessage("OTP verification successful");
+                response.setReferenceId(otpVerificationDto.getReferenceId());
+                return response;
+            } else {
+                response.setStatus(VerificationStatus.FAILED);
+                response.setMessage("Invalid OTP");
+                response.setReferenceId(otpVerificationDto.getReferenceId());
+                return response;
+            }
+        }
+
+        @Override
+        public int getRemainingAttempts(String referenceId) {
+            if ("REF123456".equals(referenceId)) {
+                return 3;
+            } else if ("REF000000".equals(referenceId)) {
+                return 0;
+            }
+            return -1; // Invalid reference ID
+        }
+    }
+
+    @BeforeEach
+    public void setup() {
+        validOtpVerificationDto = new OtpVerificationDto();
+        validOtpVerificationDto.setReferenceId("REF123456");
+        validOtpVerificationDto.setOtp("123456");
+
+        invalidOtpVerificationDto = new OtpVerificationDto();
+        invalidOtpVerificationDto.setReferenceId("REF123456");
+        invalidOtpVerificationDto.setOtp("999999");
+    }
+
+    @Test
+    @DisplayName("Should successfully verify OTP with valid input")
+    public void testVerifyOtp_WithValidInput_ShouldReturnSuccess() throws Exception {
+        mockMvc.perform(post("/api/v1/otp/verify")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(validOtpVerificationDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("SUCCESS"))
+                .andExpect(jsonPath("$.message").value("OTP verification successful"))
+                .andExpect(jsonPath("$.referenceId").value("REF123456"));
+    }
+
+    @Test
+    @DisplayName("Should return failure when OTP verification fails")
+    public void testVerifyOtp_WithInvalidOtp_ShouldReturnFailure() throws Exception {
+        mockMvc.perform(post("/api/v1/otp/verify")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidOtpVerificationDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("FAILED"))
+                .andExpect(jsonPath("$.message").value("Invalid OTP"))
+                .andExpect(jsonPath("$.referenceId").value("REF123456"));
+    }
+
+    @Test
+    @DisplayName("Should return bad request when input is missing")
+    public void testVerifyOtp_WithMissingInput_ShouldReturnBadRequest() throws Exception {
+        OtpVerificationDto incompleteDto = new OtpVerificationDto();
+        // Missing referenceId and OTP
+
+        mockMvc.perform(post("/api/v1/otp/verify")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(incompleteDto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Should return bad request when referenceId is null")
+    public void testVerifyOtp_WithNullReferenceId_ShouldReturnBadRequest() throws Exception {
+        OtpVerificationDto nullRefDto = new OtpVerificationDto();
+        nullRefDto.setOtp("123456");
+        // referenceId is null
+
+        mockMvc.perform(post("/api/v1/otp/verify")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(nullRefDto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Should return bad request when OTP is null")
+    public void testVerifyOtp_WithNullOtp_ShouldReturnBadRequest() throws Exception {
+        OtpVerificationDto nullOtpDto = new OtpVerificationDto();
+        nullOtpDto.setReferenceId("REF123456");
+        // OTP is null
+
+        mockMvc.perform(post("/api/v1/otp/verify")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(nullOtpDto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Should return remaining attempts for valid reference ID")
+    public void testGetRemainingAttempts_WithValidReferenceId_ShouldReturnAttempts() throws Exception {
+        mockMvc.perform(get("/api/v1/otp/remaining-attempts")
+                .param("referenceId", "REF123456"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.remainingAttempts").value(3));
+    }
+
+    @Test
+    @DisplayName("Should return zero attempts for reference ID with no attempts left")
+    public void testGetRemainingAttempts_WithNoAttemptsLeft_ShouldReturnZero() throws Exception {
+        mockMvc.perform(get("/api/v1/otp/remaining-attempts")
+                .param("referenceId", "REF000000"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.remainingAttempts").value(0));
+    }
+
+    @Test
+    @DisplayName("Should return bad request for invalid reference ID")
+    public void testGetRemainingAttempts_WithInvalidReferenceId_ShouldReturnBadRequest() throws Exception {
+        MvcResult result = mockMvc.perform(get("/api/v1/otp/remaining-attempts")
+                .param("referenceId", "INVALID_REF"))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        
+        String content = result.getResponse().getContentAsString();
+        Map<String, Object> responseMap = objectMapper.readValue(content, HashMap.class);
+        
+        assertTrue(responseMap.containsKey("message"));
+        assertEquals("Invalid reference ID", responseMap.get("message"));
+    }
+
+    @Test
+    @DisplayName("Should return bad request when reference ID is missing")
+    public void testGetRemainingAttempts_WithMissingReferenceId_ShouldReturnBadRequest() throws Exception {
+        mockMvc.perform(get("/api/v1/otp/remaining-attempts"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Should handle exceptions during OTP verification")
+    public void testVerifyOtp_WithExceptionThrown_ShouldReturnInternalServerError() throws Exception {
+        // Create a malformed JSON to trigger an exception
+        String malformedJson = "{\"referenceId\":\"REF123456\", \"otp\":123456}"; // OTP as number instead of string
+
+        mockMvc.perform(post("/api/v1/otp/verify")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(malformedJson))
+                .andExpect(status().isInternalServerError());
+    }
+}

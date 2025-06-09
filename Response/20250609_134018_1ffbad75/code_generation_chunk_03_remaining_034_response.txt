@@ -1,0 +1,112 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:51:31
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_034
+# ==================================================
+
+package com.ekyc.service.service;
+
+import com.ekyc.service.dto.EkycRequestDto;
+import com.ekyc.service.dto.EkycResponseDto;
+import com.ekyc.service.enums.VerificationStatus;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+/**
+ * Service interface for eKYC (Electronic Know Your Customer) operations.
+ * This interface defines the contract for all eKYC verification processes.
+ */
+public interface EkycService {
+
+    /**
+     * Initiates a new eKYC verification process.
+     *
+     * @param requestDto The request containing all necessary information for verification
+     * @return Response with verification details including status and reference ID
+     */
+    EkycResponseDto initiateVerification(EkycRequestDto requestDto);
+
+    /**
+     * Retrieves the current status of an eKYC verification process.
+     *
+     * @param referenceId The unique identifier for the verification process
+     * @return Response with current verification status and details
+     */
+    EkycResponseDto getVerificationStatus(UUID referenceId);
+
+    /**
+     * Updates an existing eKYC verification with new information.
+     *
+     * @param referenceId The unique identifier for the verification process
+     * @param requestDto The request containing updated information
+     * @return Response with updated verification details
+     */
+    EkycResponseDto updateVerification(UUID referenceId, EkycRequestDto requestDto);
+
+    /**
+     * Completes a verification process with final status.
+     *
+     * @param referenceId The unique identifier for the verification process
+     * @param status The final verification status
+     * @param remarks Optional remarks about the verification outcome
+     * @return Response with final verification details
+     */
+    EkycResponseDto completeVerification(UUID referenceId, VerificationStatus status, String remarks);
+
+    /**
+     * Cancels an ongoing verification process.
+     *
+     * @param referenceId The unique identifier for the verification process
+     * @param reason The reason for cancellation
+     * @return Response with cancellation details
+     */
+    EkycResponseDto cancelVerification(UUID referenceId, String reason);
+
+    /**
+     * Retrieves verification history for a specific customer.
+     *
+     * @param customerId The unique identifier for the customer
+     * @return List of verification responses for the customer
+     */
+    List<EkycResponseDto> getVerificationHistory(String customerId);
+
+    /**
+     * Searches for verification records based on various criteria.
+     *
+     * @param customerId Optional customer ID to filter by
+     * @param status Optional verification status to filter by
+     * @param startDate Optional start date for date range filtering
+     * @param endDate Optional end date for date range filtering
+     * @return List of matching verification responses
+     */
+    List<EkycResponseDto> searchVerifications(Optional<String> customerId, Optional<VerificationStatus> status, 
+                                             Optional<String> startDate, Optional<String> endDate);
+
+    /**
+     * Validates the provided identity document against external verification services.
+     *
+     * @param requestDto The request containing document information
+     * @return Response with document validation results
+     */
+    EkycResponseDto validateIdentityDocument(EkycRequestDto requestDto);
+
+    /**
+     * Performs facial recognition verification by comparing provided image with ID document.
+     *
+     * @param referenceId The unique identifier for the verification process
+     * @param faceImageUrl URL to the facial image to be verified
+     * @return Response with facial verification results
+     */
+    EkycResponseDto verifyFacialBiometric(UUID referenceId, String faceImageUrl);
+
+    /**
+     * Retrieves verification metrics and statistics.
+     *
+     * @param startDate Start date for the reporting period
+     * @param endDate End date for the reporting period
+     * @return Statistical data about verifications in the specified period
+     */
+    Object getVerificationMetrics(String startDate, String endDate);
+}

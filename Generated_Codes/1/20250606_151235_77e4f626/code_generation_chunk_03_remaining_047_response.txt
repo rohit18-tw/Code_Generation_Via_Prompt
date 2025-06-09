@@ -1,0 +1,150 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-06 15:31:08
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_047
+# ==================================================
+
+package com.mock.uidai.controller;
+
+import com.mock.uidai.dto.ConfigRequestDto;
+import com.mock.uidai.entity.MockConfig;
+import com.mock.uidai.exception.ConfigNotFoundException;
+import com.mock.uidai.exception.InvalidConfigException;
+import com.mock.uidai.service.MockConfigService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
+
+/**
+ * Controller for handling administrative operations for the Mock UIDAI service.
+ * Provides endpoints for managing configuration settings.
+ */
+@RestController
+@RequestMapping("/api/v1/admin")
+public class MockAdminController {
+
+    private static final Logger logger = LoggerFactory.getLogger(MockAdminController.class);
+
+    private final MockConfigService mockConfigService;
+
+    /**
+     * Constructor for dependency injection.
+     *
+     * @param mockConfigService Service for managing mock configurations
+     */
+    @Autowired
+    public MockAdminController(MockConfigService mockConfigService) {
+        this.mockConfigService = mockConfigService;
+    }
+
+    /**
+     * Retrieves all configuration settings.
+     *
+     * @return List of all configuration settings
+     */
+    @GetMapping("/config")
+    public ResponseEntity<List<MockConfig>> getAllConfigs() {
+        logger.info("Received request to get all configurations");
+        List<MockConfig> configs = mockConfigService.getAllConfigs();
+        logger.info("Returning {} configuration entries", configs.size());
+        return ResponseEntity.ok(configs);
+    }
+
+    /**
+     * Retrieves a specific configuration by key.
+     *
+     * @param key The configuration key to retrieve
+     * @return The configuration entry if found
+     */
+    @GetMapping("/config/{key}")
+    public ResponseEntity<MockConfig> getConfigByKey(@PathVariable String key) {
+        logger.info("Received request to get configuration with key: {}", key);
+        try {
+            MockConfig config = mockConfigService.getConfigByKey(key);
+            logger.info("Found configuration with key: {}", key);
+            return ResponseEntity.ok(config);
+        } catch (ConfigNotFoundException e) {
+            logger.error("Configuration not found with key: {}", key);
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * Creates a new configuration entry.
+     *
+     * @param configRequestDto The configuration data to create
+     * @return The created configuration entry
+     */
+    @PostMapping("/config")
+    public ResponseEntity<MockConfig> createConfig(@Valid @RequestBody ConfigRequestDto configRequestDto) {
+        logger.info("Received request to create configuration with key: {}", configRequestDto.getKey());
+        try {
+            MockConfig createdConfig = mockConfigService.createConfig(configRequestDto);
+            logger.info("Created configuration with key: {}", createdConfig.getKey());
+            return new ResponseEntity<>(createdConfig, HttpStatus.CREATED);
+        } catch (InvalidConfigException e) {
+            logger.error("Failed to create configuration: {}", e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    /**
+     * Updates an existing configuration entry.
+     *
+     * @param key The key of the configuration to update
+     * @param configRequestDto The updated configuration data
+     * @return The updated configuration entry
+     */
+    @PutMapping("/config/{key}")
+    public ResponseEntity<MockConfig> updateConfig(@PathVariable String key, 
+                                                  @Valid @RequestBody ConfigRequestDto configRequestDto) {
+        logger.info("Received request to update configuration with key: {}", key);
+        try {
+            MockConfig updatedConfig = mockConfigService.updateConfig(key, configRequestDto);
+            logger.info("Updated configuration with key: {}", key);
+            return ResponseEntity.ok(updatedConfig);
+        } catch (ConfigNotFoundException e) {
+            logger.error("Configuration not found with key: {}", key);
+            return ResponseEntity.notFound().build();
+        } catch (InvalidConfigException e) {
+            logger.error("Invalid configuration update: {}", e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    /**
+     * Deletes a configuration entry.
+     *
+     * @param key The key of the configuration to delete
+     * @return HTTP status indicating success or failure
+     */
+    @DeleteMapping("/config/{key}")
+    public ResponseEntity<Void> deleteConfig(@PathVariable String key) {
+        logger.info("Received request to delete configuration with key: {}", key);
+        try {
+            mockConfigService.deleteConfig(key);
+            logger.info("Deleted configuration with key: {}", key);
+            return ResponseEntity.noContent().build();
+        } catch (ConfigNotFoundException e) {
+            logger.error("Configuration not found with key: {}", key);
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * Health check endpoint for the admin API.
+     *
+     * @return Simple status message
+     */
+    @GetMapping("/health")
+    public ResponseEntity<String> healthCheck() {
+        logger.info("Admin API health check requested");
+        return ResponseEntity.ok("Mock UIDAI Admin API is running");
+    }
+}

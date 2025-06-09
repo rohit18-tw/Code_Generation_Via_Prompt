@@ -1,0 +1,99 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:44:16
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_009
+# ==================================================
+
+package com.ekyc.service;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Arrays;
+
+/**
+ * Main application class for the eKYC Service.
+ * This service handles electronic Know Your Customer processes.
+ */
+@SpringBootApplication
+@EnableAsync
+@EnableScheduling
+public class EkycServiceApplication {
+    
+    private static final Logger logger = LoggerFactory.getLogger(EkycServiceApplication.class);
+
+    /**
+     * Main method to start the eKYC Service application.
+     *
+     * @param args Command line arguments passed to the application
+     */
+    public static void main(String[] args) {
+        SpringApplication app = new SpringApplication(EkycServiceApplication.class);
+        Environment env = app.run(args).getEnvironment();
+        logApplicationStartup(env);
+    }
+
+    /**
+     * Logs application startup information including URL, profile, and configuration details.
+     *
+     * @param env The Spring environment containing configuration properties
+     */
+    private static void logApplicationStartup(Environment env) {
+        String protocol = "http";
+        if (env.getProperty("server.ssl.key-store") != null) {
+            protocol = "https";
+        }
+        
+        String serverPort = env.getProperty("server.port");
+        String contextPath = env.getProperty("server.servlet.context-path");
+        if (contextPath == null || contextPath.isEmpty()) {
+            contextPath = "/";
+        }
+        
+        String hostAddress = "localhost";
+        try {
+            hostAddress = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            logger.warn("The host name could not be determined, using 'localhost' as fallback");
+        }
+
+        logger.info(
+                "\n----------------------------------------------------------\n\t" +
+                "Application '{}' is running! Access URLs:\n\t" +
+                "Local: \t\t{}://localhost:{}{}\n\t" +
+                "External: \t{}://{}:{}{}\n\t" +
+                "Profile(s): \t{}\n----------------------------------------------------------",
+                env.getProperty("spring.application.name"),
+                protocol,
+                serverPort,
+                contextPath,
+                protocol,
+                hostAddress,
+                serverPort,
+                contextPath,
+                Arrays.toString(env.getActiveProfiles())
+        );
+    }
+
+    /**
+     * Creates an application listener that logs when the application is fully started.
+     *
+     * @return ApplicationListener for ApplicationReadyEvent
+     */
+    @Bean
+    public ApplicationListener<ApplicationReadyEvent> applicationReadyEventApplicationListener() {
+        return event -> {
+            logger.info("eKYC Service application is ready to serve requests");
+        };
+    }
+}

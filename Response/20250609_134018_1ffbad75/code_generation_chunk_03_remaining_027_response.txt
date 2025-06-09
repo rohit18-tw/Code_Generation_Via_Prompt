@@ -1,0 +1,157 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:49:23
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_027
+# ==================================================
+
+package com.mock.uidai.dto;
+
+import java.io.Serializable;
+import java.util.Objects;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Data Transfer Object for OTP verification response.
+ * This class represents the response structure when verifying an OTP in the UIDAI mock service.
+ */
+public class OtpVerifyResponseDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @JsonProperty("status")
+    @NotBlank(message = "Status cannot be blank")
+    private String status;
+
+    @JsonProperty("message")
+    private String message;
+
+    @JsonProperty("transaction_id")
+    @Pattern(regexp = "^[a-zA-Z0-9-]*$", message = "Transaction ID must contain only alphanumeric characters and hyphens")
+    private String transactionId;
+
+    @JsonProperty("error_code")
+    private String errorCode;
+
+    /**
+     * Default constructor
+     */
+    public OtpVerifyResponseDto() {
+    }
+
+    /**
+     * Parameterized constructor with all fields
+     * 
+     * @param status        the status of the OTP verification
+     * @param message       the message describing the result
+     * @param transactionId the transaction ID associated with this verification
+     * @param errorCode     the error code if verification failed
+     */
+    public OtpVerifyResponseDto(String status, String message, String transactionId, String errorCode) {
+        this.status = status;
+        this.message = message;
+        this.transactionId = transactionId;
+        this.errorCode = errorCode;
+    }
+
+    /**
+     * Get the status of the OTP verification
+     * 
+     * @return the status
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * Set the status of the OTP verification
+     * 
+     * @param status the status to set
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    /**
+     * Get the message describing the result
+     * 
+     * @return the message
+     */
+    public String getMessage() {
+        return message;
+    }
+
+    /**
+     * Set the message describing the result
+     * 
+     * @param message the message to set
+     */
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    /**
+     * Get the transaction ID associated with this verification
+     * 
+     * @return the transaction ID
+     */
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    /**
+     * Set the transaction ID associated with this verification
+     * 
+     * @param transactionId the transaction ID to set
+     */
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    /**
+     * Get the error code if verification failed
+     * 
+     * @return the error code
+     */
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    /**
+     * Set the error code if verification failed
+     * 
+     * @param errorCode the error code to set
+     */
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OtpVerifyResponseDto that = (OtpVerifyResponseDto) o;
+        return Objects.equals(status, that.status) &&
+                Objects.equals(message, that.message) &&
+                Objects.equals(transactionId, that.transactionId) &&
+                Objects.equals(errorCode, that.errorCode);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(status, message, transactionId, errorCode);
+    }
+
+    @Override
+    public String toString() {
+        return "OtpVerifyResponseDto{" +
+                "status='" + status + '\'' +
+                ", message='" + message + '\'' +
+                ", transactionId='" + transactionId + '\'' +
+                ", errorCode='" + errorCode + '\'' +
+                '}';
+    }
+}

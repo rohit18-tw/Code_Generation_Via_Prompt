@@ -1,0 +1,293 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:45:24
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_012
+# ==================================================
+
+package com.ekyc.service.entity;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.UUID;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+
+/**
+ * Entity class representing OTP verification data.
+ * This entity stores information about OTP verification attempts,
+ * including the OTP code, verification status, and timestamps.
+ */
+@Entity
+@Table(name = "otp_verification")
+public class OtpVerification {
+
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Type(type = "org.hibernate.type.UUIDCharType")
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID id;
+
+    @NotBlank(message = "Phone number is required")
+    @Column(name = "phone_number", nullable = false)
+    private String phoneNumber;
+
+    @NotBlank(message = "OTP code is required")
+    @Size(min = 4, max = 8, message = "OTP code must be between 4 and 8 characters")
+    @Column(name = "otp_code", nullable = false)
+    private String otpCode;
+
+    @Column(name = "verified")
+    private boolean verified;
+
+    @Column(name = "attempts")
+    private int attempts;
+
+    @Column(name = "max_attempts")
+    private int maxAttempts;
+
+    @NotNull(message = "Created date is required")
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "expires_at", nullable = false)
+    private LocalDateTime expiresAt;
+
+    @Column(name = "verified_at")
+    private LocalDateTime verifiedAt;
+
+    @Column(name = "request_id")
+    @Type(type = "org.hibernate.type.UUIDCharType")
+    private UUID requestId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "verification_type")
+    private VerificationType verificationType;
+
+    /**
+     * Enum representing different types of verification.
+     */
+    public enum VerificationType {
+        REGISTRATION,
+        PASSWORD_RESET,
+        TRANSACTION_CONFIRMATION,
+        DOCUMENT_VERIFICATION
+    }
+
+    /**
+     * Default constructor for JPA.
+     */
+    public OtpVerification() {
+    }
+
+    /**
+     * Constructor with essential fields.
+     *
+     * @param phoneNumber      The phone number to which OTP was sent
+     * @param otpCode          The OTP code
+     * @param maxAttempts      Maximum allowed verification attempts
+     * @param expiryMinutes    Minutes until OTP expiration
+     * @param verificationType Type of verification
+     * @param requestId        Associated request ID
+     */
+    public OtpVerification(String phoneNumber, String otpCode, int maxAttempts, 
+                          int expiryMinutes, VerificationType verificationType, UUID requestId) {
+        this.phoneNumber = phoneNumber;
+        this.otpCode = otpCode;
+        this.verified = false;
+        this.attempts = 0;
+        this.maxAttempts = maxAttempts;
+        this.createdAt = LocalDateTime.now();
+        this.expiresAt = this.createdAt.plusMinutes(expiryMinutes);
+        this.verificationType = verificationType;
+        this.requestId = requestId;
+    }
+
+    /**
+     * Checks if the OTP has expired.
+     *
+     * @return true if the OTP has expired, false otherwise
+     */
+    public boolean isExpired() {
+        return LocalDateTime.now().isAfter(expiresAt);
+    }
+
+    /**
+     * Checks if the maximum number of attempts has been reached.
+     *
+     * @return true if max attempts reached, false otherwise
+     */
+    public boolean isMaxAttemptsReached() {
+        return attempts >= maxAttempts;
+    }
+
+    /**
+     * Increments the number of verification attempts.
+     */
+    public void incrementAttempts() {
+        this.attempts++;
+    }
+
+    /**
+     * Marks the OTP as verified and sets the verification timestamp.
+     */
+    public void markAsVerified() {
+        this.verified = true;
+        this.verifiedAt = LocalDateTime.now();
+    }
+
+    /**
+     * Returns a masked version of the phone number for logging purposes.
+     *
+     * @return masked phone number
+     */
+    public String getMaskedPhoneNumber() {
+        if (phoneNumber == null || phoneNumber.length() < 4) {
+            return "****";
+        }
+        return "****" + phoneNumber.substring(phoneNumber.length() - 4);
+    }
+
+    /**
+     * Returns a masked version of the OTP code for logging purposes.
+     *
+     * @return masked OTP code
+     */
+    public String getMaskedOtpCode() {
+        if (otpCode == null || otpCode.isEmpty()) {
+            return "****";
+        }
+        return "****";
+    }
+
+    // Getters and Setters
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getOtpCode() {
+        return otpCode;
+    }
+
+    public void setOtpCode(String otpCode) {
+        this.otpCode = otpCode;
+    }
+
+    public boolean isVerified() {
+        return verified;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
+    }
+
+    public int getAttempts() {
+        return attempts;
+    }
+
+    public void setAttempts(int attempts) {
+        this.attempts = attempts;
+    }
+
+    public int getMaxAttempts() {
+        return maxAttempts;
+    }
+
+    public void setMaxAttempts(int maxAttempts) {
+        this.maxAttempts = maxAttempts;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getExpiresAt() {
+        return expiresAt;
+    }
+
+    public void setExpiresAt(LocalDateTime expiresAt) {
+        this.expiresAt = expiresAt;
+    }
+
+    public LocalDateTime getVerifiedAt() {
+        return verifiedAt;
+    }
+
+    public void setVerifiedAt(LocalDateTime verifiedAt) {
+        this.verifiedAt = verifiedAt;
+    }
+
+    public UUID getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(UUID requestId) {
+        this.requestId = requestId;
+    }
+
+    public VerificationType getVerificationType() {
+        return verificationType;
+    }
+
+    public void setVerificationType(VerificationType verificationType) {
+        this.verificationType = verificationType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OtpVerification that = (OtpVerification) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "OtpVerification{" +
+                "id=" + id +
+                ", phoneNumber='" + getMaskedPhoneNumber() + '\'' +
+                ", verified=" + verified +
+                ", attempts=" + attempts +
+                ", maxAttempts=" + maxAttempts +
+                ", createdAt=" + createdAt +
+                ", expiresAt=" + expiresAt +
+                ", verifiedAt=" + verifiedAt +
+                ", requestId=" + requestId +
+                ", verificationType=" + verificationType +
+                '}';
+    }
+}

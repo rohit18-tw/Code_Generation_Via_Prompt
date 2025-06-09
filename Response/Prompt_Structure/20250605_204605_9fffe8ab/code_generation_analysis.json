@@ -1,0 +1,775 @@
+{
+  "total_files": 24,
+  "files_by_type": {
+    "main": [
+      {
+        "path": "src/App.tsx",
+        "purpose": "Main application component with routing",
+        "type": "main",
+        "priority": "high",
+        "dependencies": [
+          "react-router-dom",
+          "src/context/AuthContext.tsx"
+        ]
+      },
+      {
+        "path": "src/index.tsx",
+        "purpose": "Entry point for the React application",
+        "type": "main",
+        "priority": "high",
+        "dependencies": [
+          "App.tsx",
+          "react-query"
+        ]
+      }
+    ],
+    "entity": [
+      {
+        "path": "src/types/ekyc.ts",
+        "purpose": "TypeScript interfaces for eKYC data models",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      }
+    ],
+    "service": [
+      {
+        "path": "src/utils/validation.ts",
+        "purpose": "Validation schemas using Yup",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "yup",
+          "src/types/ekyc.ts"
+        ]
+      },
+      {
+        "path": "src/utils/logger.ts",
+        "purpose": "Audit-ready logging with PII masking",
+        "type": "service",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "src/utils/trace.ts",
+        "purpose": "Trace ID generation and management",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "uuid"
+        ]
+      },
+      {
+        "path": "src/services/uidaiApi.ts",
+        "purpose": "API service for UIDAI interactions",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "axios",
+          "src/utils/logger.ts",
+          "src/utils/trace.ts",
+          "src/types/ekyc.ts"
+        ]
+      },
+      {
+        "path": "src/context/AuthContext.tsx",
+        "purpose": "Authentication context provider",
+        "type": "service",
+        "priority": "medium",
+        "dependencies": [
+          "react"
+        ]
+      },
+      {
+        "path": "src/hooks/useEkycRequest.ts",
+        "purpose": "Custom hook for eKYC request handling",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "react-query",
+          "src/services/uidaiApi.ts",
+          "src/types/ekyc.ts"
+        ]
+      },
+      {
+        "path": "src/hooks/useOtpVerification.ts",
+        "purpose": "Custom hook for OTP verification",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "react-query",
+          "src/services/uidaiApi.ts",
+          "src/types/ekyc.ts"
+        ]
+      }
+    ],
+    "controller": [
+      {
+        "path": "src/components/ErrorBoundary.tsx",
+        "purpose": "Error boundary component for graceful error handling",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "react",
+          "src/utils/logger.ts"
+        ]
+      },
+      {
+        "path": "src/components/AadhaarForm.tsx",
+        "purpose": "Form component for Aadhaar/VID input",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "react",
+          "react-hook-form",
+          "src/utils/validation.ts",
+          "src/hooks/useEkycRequest.ts"
+        ]
+      },
+      {
+        "path": "src/components/OtpForm.tsx",
+        "purpose": "Form component for OTP verification",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "react",
+          "react-hook-form",
+          "src/utils/validation.ts",
+          "src/hooks/useOtpVerification.ts"
+        ]
+      },
+      {
+        "path": "src/components/KycDataDisplay.tsx",
+        "purpose": "Component to display verified KYC data",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "react",
+          "src/types/ekyc.ts"
+        ]
+      },
+      {
+        "path": "src/components/LogViewer.tsx",
+        "purpose": "Component to display masked logs",
+        "type": "controller",
+        "priority": "medium",
+        "dependencies": [
+          "react"
+        ]
+      },
+      {
+        "path": "src/pages/OtpInitiationPage.tsx",
+        "purpose": "Page for initiating OTP verification",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "react",
+          "src/components/AadhaarForm.tsx",
+          "src/components/ErrorBoundary.tsx"
+        ]
+      },
+      {
+        "path": "src/pages/OtpVerificationPage.tsx",
+        "purpose": "Page for OTP verification",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "react",
+          "src/components/OtpForm.tsx",
+          "src/components/ErrorBoundary.tsx"
+        ]
+      },
+      {
+        "path": "src/pages/KycDisplayPage.tsx",
+        "purpose": "Page for displaying KYC data",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "react",
+          "src/components/KycDataDisplay.tsx",
+          "src/components/ErrorBoundary.tsx"
+        ]
+      },
+      {
+        "path": "src/pages/AdminPanel.tsx",
+        "purpose": "Admin panel for configuration and logs",
+        "type": "controller",
+        "priority": "medium",
+        "dependencies": [
+          "react",
+          "src/components/LogViewer.tsx"
+        ]
+      }
+    ],
+    "config": [
+      {
+        "path": "src/mocks/handlers.ts",
+        "purpose": "Mock API handlers for testing",
+        "type": "config",
+        "priority": "medium",
+        "dependencies": [
+          "msw",
+          "src/types/ekyc.ts"
+        ]
+      },
+      {
+        "path": "src/mocks/browser.ts",
+        "purpose": "MSW setup for browser mocks",
+        "type": "config",
+        "priority": "medium",
+        "dependencies": [
+          "msw",
+          "src/mocks/handlers.ts"
+        ]
+      }
+    ],
+    "test": [
+      {
+        "path": "tests/AadhaarForm.test.tsx",
+        "purpose": "Tests for Aadhaar form component",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": [
+          "@testing-library/react",
+          "src/components/AadhaarForm.tsx"
+        ]
+      },
+      {
+        "path": "tests/OtpForm.test.tsx",
+        "purpose": "Tests for OTP form component",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": [
+          "@testing-library/react",
+          "src/components/OtpForm.tsx"
+        ]
+      },
+      {
+        "path": "tests/uidaiApi.test.ts",
+        "purpose": "Tests for UIDAI API service",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": [
+          "jest",
+          "src/services/uidaiApi.ts",
+          "msw"
+        ]
+      }
+    ]
+  },
+  "files_by_priority": {
+    "high": [
+      {
+        "path": "src/App.tsx",
+        "purpose": "Main application component with routing",
+        "type": "main",
+        "priority": "high",
+        "dependencies": [
+          "react-router-dom",
+          "src/context/AuthContext.tsx"
+        ]
+      },
+      {
+        "path": "src/index.tsx",
+        "purpose": "Entry point for the React application",
+        "type": "main",
+        "priority": "high",
+        "dependencies": [
+          "App.tsx",
+          "react-query"
+        ]
+      },
+      {
+        "path": "src/types/ekyc.ts",
+        "purpose": "TypeScript interfaces for eKYC data models",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "src/utils/validation.ts",
+        "purpose": "Validation schemas using Yup",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "yup",
+          "src/types/ekyc.ts"
+        ]
+      },
+      {
+        "path": "src/utils/logger.ts",
+        "purpose": "Audit-ready logging with PII masking",
+        "type": "service",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "src/utils/trace.ts",
+        "purpose": "Trace ID generation and management",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "uuid"
+        ]
+      },
+      {
+        "path": "src/services/uidaiApi.ts",
+        "purpose": "API service for UIDAI interactions",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "axios",
+          "src/utils/logger.ts",
+          "src/utils/trace.ts",
+          "src/types/ekyc.ts"
+        ]
+      },
+      {
+        "path": "src/hooks/useEkycRequest.ts",
+        "purpose": "Custom hook for eKYC request handling",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "react-query",
+          "src/services/uidaiApi.ts",
+          "src/types/ekyc.ts"
+        ]
+      },
+      {
+        "path": "src/hooks/useOtpVerification.ts",
+        "purpose": "Custom hook for OTP verification",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "react-query",
+          "src/services/uidaiApi.ts",
+          "src/types/ekyc.ts"
+        ]
+      },
+      {
+        "path": "src/components/ErrorBoundary.tsx",
+        "purpose": "Error boundary component for graceful error handling",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "react",
+          "src/utils/logger.ts"
+        ]
+      },
+      {
+        "path": "src/components/AadhaarForm.tsx",
+        "purpose": "Form component for Aadhaar/VID input",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "react",
+          "react-hook-form",
+          "src/utils/validation.ts",
+          "src/hooks/useEkycRequest.ts"
+        ]
+      },
+      {
+        "path": "src/components/OtpForm.tsx",
+        "purpose": "Form component for OTP verification",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "react",
+          "react-hook-form",
+          "src/utils/validation.ts",
+          "src/hooks/useOtpVerification.ts"
+        ]
+      },
+      {
+        "path": "src/components/KycDataDisplay.tsx",
+        "purpose": "Component to display verified KYC data",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "react",
+          "src/types/ekyc.ts"
+        ]
+      },
+      {
+        "path": "src/pages/OtpInitiationPage.tsx",
+        "purpose": "Page for initiating OTP verification",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "react",
+          "src/components/AadhaarForm.tsx",
+          "src/components/ErrorBoundary.tsx"
+        ]
+      },
+      {
+        "path": "src/pages/OtpVerificationPage.tsx",
+        "purpose": "Page for OTP verification",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "react",
+          "src/components/OtpForm.tsx",
+          "src/components/ErrorBoundary.tsx"
+        ]
+      },
+      {
+        "path": "src/pages/KycDisplayPage.tsx",
+        "purpose": "Page for displaying KYC data",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "react",
+          "src/components/KycDataDisplay.tsx",
+          "src/components/ErrorBoundary.tsx"
+        ]
+      }
+    ],
+    "medium": [
+      {
+        "path": "src/context/AuthContext.tsx",
+        "purpose": "Authentication context provider",
+        "type": "service",
+        "priority": "medium",
+        "dependencies": [
+          "react"
+        ]
+      },
+      {
+        "path": "src/components/LogViewer.tsx",
+        "purpose": "Component to display masked logs",
+        "type": "controller",
+        "priority": "medium",
+        "dependencies": [
+          "react"
+        ]
+      },
+      {
+        "path": "src/pages/AdminPanel.tsx",
+        "purpose": "Admin panel for configuration and logs",
+        "type": "controller",
+        "priority": "medium",
+        "dependencies": [
+          "react",
+          "src/components/LogViewer.tsx"
+        ]
+      },
+      {
+        "path": "src/mocks/handlers.ts",
+        "purpose": "Mock API handlers for testing",
+        "type": "config",
+        "priority": "medium",
+        "dependencies": [
+          "msw",
+          "src/types/ekyc.ts"
+        ]
+      },
+      {
+        "path": "src/mocks/browser.ts",
+        "purpose": "MSW setup for browser mocks",
+        "type": "config",
+        "priority": "medium",
+        "dependencies": [
+          "msw",
+          "src/mocks/handlers.ts"
+        ]
+      },
+      {
+        "path": "tests/AadhaarForm.test.tsx",
+        "purpose": "Tests for Aadhaar form component",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": [
+          "@testing-library/react",
+          "src/components/AadhaarForm.tsx"
+        ]
+      },
+      {
+        "path": "tests/OtpForm.test.tsx",
+        "purpose": "Tests for OTP form component",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": [
+          "@testing-library/react",
+          "src/components/OtpForm.tsx"
+        ]
+      },
+      {
+        "path": "tests/uidaiApi.test.ts",
+        "purpose": "Tests for UIDAI API service",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": [
+          "jest",
+          "src/services/uidaiApi.ts",
+          "msw"
+        ]
+      }
+    ],
+    "low": []
+  },
+  "generation_order": [
+    "config",
+    "entities",
+    "services",
+    "controllers",
+    "tests"
+  ],
+  "ordered_files": [
+    {
+      "path": "src/mocks/handlers.ts",
+      "purpose": "Mock API handlers for testing",
+      "type": "config",
+      "priority": "medium",
+      "dependencies": [
+        "msw",
+        "src/types/ekyc.ts"
+      ]
+    },
+    {
+      "path": "src/mocks/browser.ts",
+      "purpose": "MSW setup for browser mocks",
+      "type": "config",
+      "priority": "medium",
+      "dependencies": [
+        "msw",
+        "src/mocks/handlers.ts"
+      ]
+    },
+    {
+      "path": "src/App.tsx",
+      "purpose": "Main application component with routing",
+      "type": "main",
+      "priority": "high",
+      "dependencies": [
+        "react-router-dom",
+        "src/context/AuthContext.tsx"
+      ]
+    },
+    {
+      "path": "src/index.tsx",
+      "purpose": "Entry point for the React application",
+      "type": "main",
+      "priority": "high",
+      "dependencies": [
+        "App.tsx",
+        "react-query"
+      ]
+    },
+    {
+      "path": "src/types/ekyc.ts",
+      "purpose": "TypeScript interfaces for eKYC data models",
+      "type": "entity",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "src/utils/validation.ts",
+      "purpose": "Validation schemas using Yup",
+      "type": "service",
+      "priority": "high",
+      "dependencies": [
+        "yup",
+        "src/types/ekyc.ts"
+      ]
+    },
+    {
+      "path": "src/utils/logger.ts",
+      "purpose": "Audit-ready logging with PII masking",
+      "type": "service",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "src/utils/trace.ts",
+      "purpose": "Trace ID generation and management",
+      "type": "service",
+      "priority": "high",
+      "dependencies": [
+        "uuid"
+      ]
+    },
+    {
+      "path": "src/services/uidaiApi.ts",
+      "purpose": "API service for UIDAI interactions",
+      "type": "service",
+      "priority": "high",
+      "dependencies": [
+        "axios",
+        "src/utils/logger.ts",
+        "src/utils/trace.ts",
+        "src/types/ekyc.ts"
+      ]
+    },
+    {
+      "path": "src/context/AuthContext.tsx",
+      "purpose": "Authentication context provider",
+      "type": "service",
+      "priority": "medium",
+      "dependencies": [
+        "react"
+      ]
+    },
+    {
+      "path": "src/hooks/useEkycRequest.ts",
+      "purpose": "Custom hook for eKYC request handling",
+      "type": "service",
+      "priority": "high",
+      "dependencies": [
+        "react-query",
+        "src/services/uidaiApi.ts",
+        "src/types/ekyc.ts"
+      ]
+    },
+    {
+      "path": "src/hooks/useOtpVerification.ts",
+      "purpose": "Custom hook for OTP verification",
+      "type": "service",
+      "priority": "high",
+      "dependencies": [
+        "react-query",
+        "src/services/uidaiApi.ts",
+        "src/types/ekyc.ts"
+      ]
+    },
+    {
+      "path": "src/components/ErrorBoundary.tsx",
+      "purpose": "Error boundary component for graceful error handling",
+      "type": "controller",
+      "priority": "high",
+      "dependencies": [
+        "react",
+        "src/utils/logger.ts"
+      ]
+    },
+    {
+      "path": "src/components/AadhaarForm.tsx",
+      "purpose": "Form component for Aadhaar/VID input",
+      "type": "controller",
+      "priority": "high",
+      "dependencies": [
+        "react",
+        "react-hook-form",
+        "src/utils/validation.ts",
+        "src/hooks/useEkycRequest.ts"
+      ]
+    },
+    {
+      "path": "src/components/OtpForm.tsx",
+      "purpose": "Form component for OTP verification",
+      "type": "controller",
+      "priority": "high",
+      "dependencies": [
+        "react",
+        "react-hook-form",
+        "src/utils/validation.ts",
+        "src/hooks/useOtpVerification.ts"
+      ]
+    },
+    {
+      "path": "src/components/KycDataDisplay.tsx",
+      "purpose": "Component to display verified KYC data",
+      "type": "controller",
+      "priority": "high",
+      "dependencies": [
+        "react",
+        "src/types/ekyc.ts"
+      ]
+    },
+    {
+      "path": "src/components/LogViewer.tsx",
+      "purpose": "Component to display masked logs",
+      "type": "controller",
+      "priority": "medium",
+      "dependencies": [
+        "react"
+      ]
+    },
+    {
+      "path": "src/pages/OtpInitiationPage.tsx",
+      "purpose": "Page for initiating OTP verification",
+      "type": "controller",
+      "priority": "high",
+      "dependencies": [
+        "react",
+        "src/components/AadhaarForm.tsx",
+        "src/components/ErrorBoundary.tsx"
+      ]
+    },
+    {
+      "path": "src/pages/OtpVerificationPage.tsx",
+      "purpose": "Page for OTP verification",
+      "type": "controller",
+      "priority": "high",
+      "dependencies": [
+        "react",
+        "src/components/OtpForm.tsx",
+        "src/components/ErrorBoundary.tsx"
+      ]
+    },
+    {
+      "path": "src/pages/KycDisplayPage.tsx",
+      "purpose": "Page for displaying KYC data",
+      "type": "controller",
+      "priority": "high",
+      "dependencies": [
+        "react",
+        "src/components/KycDataDisplay.tsx",
+        "src/components/ErrorBoundary.tsx"
+      ]
+    },
+    {
+      "path": "src/pages/AdminPanel.tsx",
+      "purpose": "Admin panel for configuration and logs",
+      "type": "controller",
+      "priority": "medium",
+      "dependencies": [
+        "react",
+        "src/components/LogViewer.tsx"
+      ]
+    },
+    {
+      "path": "tests/AadhaarForm.test.tsx",
+      "purpose": "Tests for Aadhaar form component",
+      "type": "test",
+      "priority": "medium",
+      "dependencies": [
+        "@testing-library/react",
+        "src/components/AadhaarForm.tsx"
+      ]
+    },
+    {
+      "path": "tests/OtpForm.test.tsx",
+      "purpose": "Tests for OTP form component",
+      "type": "test",
+      "priority": "medium",
+      "dependencies": [
+        "@testing-library/react",
+        "src/components/OtpForm.tsx"
+      ]
+    },
+    {
+      "path": "tests/uidaiApi.test.ts",
+      "purpose": "Tests for UIDAI API service",
+      "type": "test",
+      "priority": "medium",
+      "dependencies": [
+        "jest",
+        "src/services/uidaiApi.ts",
+        "msw"
+      ]
+    }
+  ],
+  "implementation_strategy": "file_by_file",
+  "validation_rules": [
+    "syntax_check",
+    "dependency_check",
+    "style_check"
+  ],
+  "file_templates": {
+    "entity": "TypeScript interfaces with validation",
+    "controller": "React components with hooks and state management",
+    "service": "API services and business logic",
+    "config": "Configuration and setup files",
+    "test": "Jest and React Testing Library tests"
+  }
+}

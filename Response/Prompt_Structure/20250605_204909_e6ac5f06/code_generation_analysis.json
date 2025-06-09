@@ -1,0 +1,732 @@
+{
+  "total_files": 25,
+  "files_by_type": {
+    "main": [
+      {
+        "path": "cmd/ekyc/main.go",
+        "purpose": "Main entry point for eKYC service",
+        "type": "main",
+        "priority": "high",
+        "dependencies": [
+          "internal/config",
+          "internal/api",
+          "internal/middleware"
+        ]
+      },
+      {
+        "path": "cmd/mock-uidai/main.go",
+        "purpose": "Main entry point for mock UIDAI service",
+        "type": "main",
+        "priority": "high",
+        "dependencies": [
+          "mock/api",
+          "mock/handler",
+          "mock/service"
+        ]
+      }
+    ],
+    "config": [
+      {
+        "path": "internal/config/config.go",
+        "purpose": "Configuration management for eKYC service",
+        "type": "config",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "internal/api/router.go",
+        "purpose": "API router setup for eKYC service",
+        "type": "config",
+        "priority": "high",
+        "dependencies": [
+          "internal/handler",
+          "internal/middleware"
+        ]
+      },
+      {
+        "path": "mock/api/router.go",
+        "purpose": "API router setup for mock UIDAI service",
+        "type": "config",
+        "priority": "high",
+        "dependencies": [
+          "mock/handler",
+          "mock/service"
+        ]
+      },
+      {
+        "path": "go.mod",
+        "purpose": "Go module definition",
+        "type": "config",
+        "priority": "high",
+        "dependencies": []
+      }
+    ],
+    "entity": [
+      {
+        "path": "internal/domain/ekyc.go",
+        "purpose": "Domain models for eKYC entities",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "internal/domain/errors.go",
+        "purpose": "Custom error types and error codes",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      }
+    ],
+    "controller": [
+      {
+        "path": "internal/handler/ekyc_handler.go",
+        "purpose": "HTTP handlers for eKYC endpoints",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "internal/service",
+          "internal/domain",
+          "internal/util"
+        ]
+      },
+      {
+        "path": "mock/handler/uidai_handler.go",
+        "purpose": "HTTP handlers for mock UIDAI endpoints",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "mock/service",
+          "internal/util"
+        ]
+      },
+      {
+        "path": "mock/handler/admin_handler.go",
+        "purpose": "HTTP handlers for mock UIDAI admin endpoints",
+        "type": "controller",
+        "priority": "medium",
+        "dependencies": [
+          "mock/service",
+          "internal/util"
+        ]
+      }
+    ],
+    "middleware": [
+      {
+        "path": "internal/middleware/logging.go",
+        "purpose": "Middleware for audit-ready logging",
+        "type": "middleware",
+        "priority": "high",
+        "dependencies": [
+          "internal/util"
+        ]
+      },
+      {
+        "path": "internal/middleware/tracing.go",
+        "purpose": "Middleware for request tracing",
+        "type": "middleware",
+        "priority": "high",
+        "dependencies": [
+          "internal/util"
+        ]
+      },
+      {
+        "path": "internal/middleware/validation.go",
+        "purpose": "Middleware for request validation",
+        "type": "middleware",
+        "priority": "high",
+        "dependencies": [
+          "internal/domain"
+        ]
+      }
+    ],
+    "repository": [
+      {
+        "path": "internal/repository/ekyc_repository.go",
+        "purpose": "Data access layer for eKYC requests",
+        "type": "repository",
+        "priority": "high",
+        "dependencies": [
+          "internal/domain"
+        ]
+      }
+    ],
+    "service": [
+      {
+        "path": "internal/service/ekyc_service.go",
+        "purpose": "Business logic for eKYC verification",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "internal/repository",
+          "internal/domain",
+          "internal/util"
+        ]
+      },
+      {
+        "path": "internal/service/uidai_client.go",
+        "purpose": "Client for UIDAI API integration",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "internal/domain",
+          "internal/config",
+          "internal/util"
+        ]
+      },
+      {
+        "path": "mock/service/mock_uidai_service.go",
+        "purpose": "Mock implementation of UIDAI service",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "internal/util"
+        ]
+      },
+      {
+        "path": "mock/service/config_service.go",
+        "purpose": "Configuration service for mock UIDAI",
+        "type": "service",
+        "priority": "medium",
+        "dependencies": [
+          "internal/util"
+        ]
+      }
+    ],
+    "utility": [
+      {
+        "path": "internal/util/logger.go",
+        "purpose": "PII-masking logger utility",
+        "type": "utility",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "internal/util/trace.go",
+        "purpose": "Trace ID generation and management",
+        "type": "utility",
+        "priority": "high",
+        "dependencies": []
+      }
+    ],
+    "test": [
+      {
+        "path": "test/ekyc_integration_test.go",
+        "purpose": "Integration tests for eKYC service",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": [
+          "internal/domain",
+          "internal/service"
+        ]
+      },
+      {
+        "path": "test/mock_uidai_test.go",
+        "purpose": "Tests for mock UIDAI service",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": [
+          "mock/service"
+        ]
+      }
+    ],
+    "documentation": [
+      {
+        "path": "docs/swagger.yaml",
+        "purpose": "OpenAPI/Swagger documentation",
+        "type": "documentation",
+        "priority": "medium",
+        "dependencies": []
+      },
+      {
+        "path": "README.md",
+        "purpose": "Project documentation",
+        "type": "documentation",
+        "priority": "medium",
+        "dependencies": []
+      }
+    ]
+  },
+  "files_by_priority": {
+    "high": [
+      {
+        "path": "cmd/ekyc/main.go",
+        "purpose": "Main entry point for eKYC service",
+        "type": "main",
+        "priority": "high",
+        "dependencies": [
+          "internal/config",
+          "internal/api",
+          "internal/middleware"
+        ]
+      },
+      {
+        "path": "cmd/mock-uidai/main.go",
+        "purpose": "Main entry point for mock UIDAI service",
+        "type": "main",
+        "priority": "high",
+        "dependencies": [
+          "mock/api",
+          "mock/handler",
+          "mock/service"
+        ]
+      },
+      {
+        "path": "internal/config/config.go",
+        "purpose": "Configuration management for eKYC service",
+        "type": "config",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "internal/domain/ekyc.go",
+        "purpose": "Domain models for eKYC entities",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "internal/domain/errors.go",
+        "purpose": "Custom error types and error codes",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "internal/handler/ekyc_handler.go",
+        "purpose": "HTTP handlers for eKYC endpoints",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "internal/service",
+          "internal/domain",
+          "internal/util"
+        ]
+      },
+      {
+        "path": "internal/middleware/logging.go",
+        "purpose": "Middleware for audit-ready logging",
+        "type": "middleware",
+        "priority": "high",
+        "dependencies": [
+          "internal/util"
+        ]
+      },
+      {
+        "path": "internal/middleware/tracing.go",
+        "purpose": "Middleware for request tracing",
+        "type": "middleware",
+        "priority": "high",
+        "dependencies": [
+          "internal/util"
+        ]
+      },
+      {
+        "path": "internal/middleware/validation.go",
+        "purpose": "Middleware for request validation",
+        "type": "middleware",
+        "priority": "high",
+        "dependencies": [
+          "internal/domain"
+        ]
+      },
+      {
+        "path": "internal/repository/ekyc_repository.go",
+        "purpose": "Data access layer for eKYC requests",
+        "type": "repository",
+        "priority": "high",
+        "dependencies": [
+          "internal/domain"
+        ]
+      },
+      {
+        "path": "internal/service/ekyc_service.go",
+        "purpose": "Business logic for eKYC verification",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "internal/repository",
+          "internal/domain",
+          "internal/util"
+        ]
+      },
+      {
+        "path": "internal/service/uidai_client.go",
+        "purpose": "Client for UIDAI API integration",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "internal/domain",
+          "internal/config",
+          "internal/util"
+        ]
+      },
+      {
+        "path": "internal/util/logger.go",
+        "purpose": "PII-masking logger utility",
+        "type": "utility",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "internal/util/trace.go",
+        "purpose": "Trace ID generation and management",
+        "type": "utility",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "internal/api/router.go",
+        "purpose": "API router setup for eKYC service",
+        "type": "config",
+        "priority": "high",
+        "dependencies": [
+          "internal/handler",
+          "internal/middleware"
+        ]
+      },
+      {
+        "path": "mock/api/router.go",
+        "purpose": "API router setup for mock UIDAI service",
+        "type": "config",
+        "priority": "high",
+        "dependencies": [
+          "mock/handler",
+          "mock/service"
+        ]
+      },
+      {
+        "path": "mock/handler/uidai_handler.go",
+        "purpose": "HTTP handlers for mock UIDAI endpoints",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "mock/service",
+          "internal/util"
+        ]
+      },
+      {
+        "path": "mock/service/mock_uidai_service.go",
+        "purpose": "Mock implementation of UIDAI service",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "internal/util"
+        ]
+      },
+      {
+        "path": "go.mod",
+        "purpose": "Go module definition",
+        "type": "config",
+        "priority": "high",
+        "dependencies": []
+      }
+    ],
+    "medium": [
+      {
+        "path": "mock/handler/admin_handler.go",
+        "purpose": "HTTP handlers for mock UIDAI admin endpoints",
+        "type": "controller",
+        "priority": "medium",
+        "dependencies": [
+          "mock/service",
+          "internal/util"
+        ]
+      },
+      {
+        "path": "mock/service/config_service.go",
+        "purpose": "Configuration service for mock UIDAI",
+        "type": "service",
+        "priority": "medium",
+        "dependencies": [
+          "internal/util"
+        ]
+      },
+      {
+        "path": "test/ekyc_integration_test.go",
+        "purpose": "Integration tests for eKYC service",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": [
+          "internal/domain",
+          "internal/service"
+        ]
+      },
+      {
+        "path": "test/mock_uidai_test.go",
+        "purpose": "Tests for mock UIDAI service",
+        "type": "test",
+        "priority": "medium",
+        "dependencies": [
+          "mock/service"
+        ]
+      },
+      {
+        "path": "docs/swagger.yaml",
+        "purpose": "OpenAPI/Swagger documentation",
+        "type": "documentation",
+        "priority": "medium",
+        "dependencies": []
+      },
+      {
+        "path": "README.md",
+        "purpose": "Project documentation",
+        "type": "documentation",
+        "priority": "medium",
+        "dependencies": []
+      }
+    ],
+    "low": []
+  },
+  "generation_order": [
+    "config",
+    "entities",
+    "utilities",
+    "repositories",
+    "services",
+    "middleware",
+    "controllers",
+    "tests"
+  ],
+  "ordered_files": [
+    {
+      "path": "internal/config/config.go",
+      "purpose": "Configuration management for eKYC service",
+      "type": "config",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "internal/api/router.go",
+      "purpose": "API router setup for eKYC service",
+      "type": "config",
+      "priority": "high",
+      "dependencies": [
+        "internal/handler",
+        "internal/middleware"
+      ]
+    },
+    {
+      "path": "mock/api/router.go",
+      "purpose": "API router setup for mock UIDAI service",
+      "type": "config",
+      "priority": "high",
+      "dependencies": [
+        "mock/handler",
+        "mock/service"
+      ]
+    },
+    {
+      "path": "go.mod",
+      "purpose": "Go module definition",
+      "type": "config",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "internal/middleware/logging.go",
+      "purpose": "Middleware for audit-ready logging",
+      "type": "middleware",
+      "priority": "high",
+      "dependencies": [
+        "internal/util"
+      ]
+    },
+    {
+      "path": "internal/middleware/tracing.go",
+      "purpose": "Middleware for request tracing",
+      "type": "middleware",
+      "priority": "high",
+      "dependencies": [
+        "internal/util"
+      ]
+    },
+    {
+      "path": "internal/middleware/validation.go",
+      "purpose": "Middleware for request validation",
+      "type": "middleware",
+      "priority": "high",
+      "dependencies": [
+        "internal/domain"
+      ]
+    },
+    {
+      "path": "cmd/ekyc/main.go",
+      "purpose": "Main entry point for eKYC service",
+      "type": "main",
+      "priority": "high",
+      "dependencies": [
+        "internal/config",
+        "internal/api",
+        "internal/middleware"
+      ]
+    },
+    {
+      "path": "cmd/mock-uidai/main.go",
+      "purpose": "Main entry point for mock UIDAI service",
+      "type": "main",
+      "priority": "high",
+      "dependencies": [
+        "mock/api",
+        "mock/handler",
+        "mock/service"
+      ]
+    },
+    {
+      "path": "internal/domain/ekyc.go",
+      "purpose": "Domain models for eKYC entities",
+      "type": "entity",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "internal/domain/errors.go",
+      "purpose": "Custom error types and error codes",
+      "type": "entity",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "internal/handler/ekyc_handler.go",
+      "purpose": "HTTP handlers for eKYC endpoints",
+      "type": "controller",
+      "priority": "high",
+      "dependencies": [
+        "internal/service",
+        "internal/domain",
+        "internal/util"
+      ]
+    },
+    {
+      "path": "mock/handler/uidai_handler.go",
+      "purpose": "HTTP handlers for mock UIDAI endpoints",
+      "type": "controller",
+      "priority": "high",
+      "dependencies": [
+        "mock/service",
+        "internal/util"
+      ]
+    },
+    {
+      "path": "mock/handler/admin_handler.go",
+      "purpose": "HTTP handlers for mock UIDAI admin endpoints",
+      "type": "controller",
+      "priority": "medium",
+      "dependencies": [
+        "mock/service",
+        "internal/util"
+      ]
+    },
+    {
+      "path": "internal/repository/ekyc_repository.go",
+      "purpose": "Data access layer for eKYC requests",
+      "type": "repository",
+      "priority": "high",
+      "dependencies": [
+        "internal/domain"
+      ]
+    },
+    {
+      "path": "internal/service/ekyc_service.go",
+      "purpose": "Business logic for eKYC verification",
+      "type": "service",
+      "priority": "high",
+      "dependencies": [
+        "internal/repository",
+        "internal/domain",
+        "internal/util"
+      ]
+    },
+    {
+      "path": "internal/service/uidai_client.go",
+      "purpose": "Client for UIDAI API integration",
+      "type": "service",
+      "priority": "high",
+      "dependencies": [
+        "internal/domain",
+        "internal/config",
+        "internal/util"
+      ]
+    },
+    {
+      "path": "mock/service/mock_uidai_service.go",
+      "purpose": "Mock implementation of UIDAI service",
+      "type": "service",
+      "priority": "high",
+      "dependencies": [
+        "internal/util"
+      ]
+    },
+    {
+      "path": "mock/service/config_service.go",
+      "purpose": "Configuration service for mock UIDAI",
+      "type": "service",
+      "priority": "medium",
+      "dependencies": [
+        "internal/util"
+      ]
+    },
+    {
+      "path": "internal/util/logger.go",
+      "purpose": "PII-masking logger utility",
+      "type": "utility",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "internal/util/trace.go",
+      "purpose": "Trace ID generation and management",
+      "type": "utility",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "test/ekyc_integration_test.go",
+      "purpose": "Integration tests for eKYC service",
+      "type": "test",
+      "priority": "medium",
+      "dependencies": [
+        "internal/domain",
+        "internal/service"
+      ]
+    },
+    {
+      "path": "test/mock_uidai_test.go",
+      "purpose": "Tests for mock UIDAI service",
+      "type": "test",
+      "priority": "medium",
+      "dependencies": [
+        "mock/service"
+      ]
+    },
+    {
+      "path": "docs/swagger.yaml",
+      "purpose": "OpenAPI/Swagger documentation",
+      "type": "documentation",
+      "priority": "medium",
+      "dependencies": []
+    },
+    {
+      "path": "README.md",
+      "purpose": "Project documentation",
+      "type": "documentation",
+      "priority": "medium",
+      "dependencies": []
+    }
+  ],
+  "implementation_strategy": "file_by_file",
+  "validation_rules": [
+    "syntax_check",
+    "dependency_check",
+    "style_check",
+    "pii_masking_check"
+  ],
+  "file_templates": {
+    "entity": "Domain models with validation tags",
+    "controller": "HTTP handlers with request/response processing",
+    "service": "Business logic with error handling",
+    "repository": "Data access with immutability guarantees",
+    "config": "Configuration loading and validation",
+    "middleware": "HTTP middleware for cross-cutting concerns",
+    "utility": "Helper functions and common utilities"
+  }
+}

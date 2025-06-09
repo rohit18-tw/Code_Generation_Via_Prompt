@@ -1,0 +1,144 @@
+package com.ekyc.service.config;
+
+import io.netty.channel.ChannelOption;
+import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.handler.timeout.WriteTimeoutHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
+
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
+
+/**
+* Configuration class for WebClient instances used in the eKYC service.
+* This class provides customized WebClient beans with appropriate timeouts,
+* connection pooling, and logging capabilities.
+*/
+@Configuration
+public class WebClientConfig {
+
+    private static final Logger logger = LoggerFactory.getLogger(WebClientConfig.class);
+
+    @Value("${webclient.max-in-memory-size:16777216}") // 16MB default
+    private int maxInMemorySize;
+
+    @Value("${webclient.connection-timeout:5000}") // 5 seconds default
+    private int connectionTimeout;
+
+    @Value("${webclient.read-timeout:30000}") // 30 seconds default
+    private int readTimeout;
+
+    @Value("${webclient.write-timeout:30000}") // 30 seconds default
+    private int writeTimeout;
+
+    @Value("${webclient.max-connections:500}") // Maximum connections in pool
+    private int maxConnections;
+
+    @Value("${webclient.acquire-timeout:45000}") // 45 seconds default
+    private int acquireTimeout;
+
+    /**
+    * Creates a default WebClient bean with customized settings for connection pooling,
+    * timeouts, and memory allocation for response handling.
+    *
+    * @return A configured WebClient.Builder instance
+    */
+    @Bean
+    public WebClient.Builder webClientBuilder() {
+        // Configure connection provider with pooling settings
+        ConnectionProvider provider = ConnectionProvider.builder("ekyc-connection-pool")
+        .maxConnections(maxConnections)
+        .maxIdleTime(Duration.ofSeconds(60))
+        .maxLifeTime(Duration.ofMinutes(5))
+        .pendingAcquireTimeout(Duration.ofMillis(acquireTimeout))
+        .build();
+
+        // Configure HTTP client with timeout settings
+        HttpClient httpClient = HttpClient.create(provider)
+        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectionTimeout)
+        .responseTimeout(Duration.ofMillis(readTimeout))
+        .doOnConnected(conn ->
+        conn.addHandlerLast(new ReadTimeoutHandler(readTimeout, TimeUnit.MILLISECONDS))
+        .addHandlerLast(new WriteTimeoutHandler(writeTimeout, TimeUnit.MILLISECONDS)));
+
+        // Configure memory allocation for request/response bodies
+        ExchangeStrategies strategies = ExchangeStrategies.builder()
+        .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(maxInMemorySize))
+        .build();
+
+        // Build and return the WebClient
+        return WebClient.builder()
+        .clientConnector(new ReactorClientHttpConnector(httpClient))
+        .exchangeStrategies(strategies)
+        .filter(logRequest())
+        .filter(logResponse());
+    }
+
+    /**
+    * Creates a specialized WebClient bean for external API calls that may require
+    * different timeout or retry settings.
+    *
+    * @return A configured WebClient instance for external API calls
+    */
+    @Bean
+    public WebClient externalApiWebClient(WebClient.Builder webClientBuilder) {
+        return webClientBuilder.build();
+    }
+
+    /**
+    * Filter function to log outgoing requests.
+    * Sensitive information is masked in logs.
+    *
+    * @return ExchangeFilterFunction for logging requests
+    */
+    private ExchangeFilterFunction logRequest() {
+        return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
+            logger.debug("Request: {} {}",
+            clientRequest.method(),
+            clientRequest.url());
+            clientRequest.headers().forEach((name, values) -> {
+                if (isSensitiveHeader(name)) {
+                    logger.debug("{}:{}", name, "******");
+                } else {
+                    logger.debug("{}:{}", name, values);
+                }
+            });
+            return Mono.just(clientRequest);
+        });
+    }
+
+    /**
+    * Filter function to log incoming responses.
+    *
+    * @return ExchangeFilterFunction for logging responses
+    */
+    private ExchangeFilterFunction logResponse() {
+        return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {
+            logger.debug("Response status: {}", clientResponse.statusCode());
+            return Mono.just(clientResponse);
+        });
+    }
+
+    /**
+    * Determines if a header contains sensitive information that should be masked in logs.
+    *
+    * @param headerName The name of the header to check
+    * @return true if the header contains sensitive information, false otherwise
+    */
+    private boolean isSensitiveHeader(String headerName) {
+        return headerName.toLowerCase().contains("authorization") ||
+        headerName.toLowerCase().contains("cookie") ||
+        headerName.toLowerCase().contains("token") ||
+        headerName.toLowerCase().contains("api-key");
+    }
+}

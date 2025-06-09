@@ -1,0 +1,187 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:50:42
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_031
+# ==================================================
+
+package com.mock.uidai.dto;
+
+import java.io.Serializable;
+import java.util.Objects;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Data Transfer Object for configuration overrides in the mock UIDAI service.
+ * This class represents configuration parameters that can be dynamically overridden
+ * during runtime to modify the behavior of the mock service.
+ */
+public class ConfigOverrideDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @JsonProperty("response_type")
+    @NotBlank(message = "Response type cannot be blank")
+    @Pattern(regexp = "^(success|error|timeout)$", message = "Response type must be one of: success, error, timeout")
+    private String responseType;
+
+    @JsonProperty("delay_ms")
+    private Integer delayMs;
+
+    @JsonProperty("error_code")
+    @Size(max = 50, message = "Error code cannot exceed 50 characters")
+    private String errorCode;
+
+    @JsonProperty("error_message")
+    @Size(max = 255, message = "Error message cannot exceed 255 characters")
+    private String errorMessage;
+
+    @JsonProperty("transaction_id")
+    @Size(max = 50, message = "Transaction ID cannot exceed 50 characters")
+    private String transactionId;
+
+    /**
+     * Default constructor for ConfigOverrideDto.
+     */
+    public ConfigOverrideDto() {
+    }
+
+    /**
+     * Parameterized constructor for ConfigOverrideDto.
+     *
+     * @param responseType  The type of response to simulate (success, error, timeout)
+     * @param delayMs       The delay in milliseconds to simulate network latency
+     * @param errorCode     The error code to return in case of error response
+     * @param errorMessage  The error message to return in case of error response
+     * @param transactionId The transaction ID to use in the response
+     */
+    public ConfigOverrideDto(String responseType, Integer delayMs, String errorCode, String errorMessage, String transactionId) {
+        this.responseType = responseType;
+        this.delayMs = delayMs;
+        this.errorCode = errorCode;
+        this.errorMessage = errorMessage;
+        this.transactionId = transactionId;
+    }
+
+    /**
+     * Gets the response type.
+     *
+     * @return The response type
+     */
+    public String getResponseType() {
+        return responseType;
+    }
+
+    /**
+     * Sets the response type.
+     *
+     * @param responseType The response type to set
+     */
+    public void setResponseType(String responseType) {
+        this.responseType = responseType;
+    }
+
+    /**
+     * Gets the delay in milliseconds.
+     *
+     * @return The delay in milliseconds
+     */
+    public Integer getDelayMs() {
+        return delayMs;
+    }
+
+    /**
+     * Sets the delay in milliseconds.
+     *
+     * @param delayMs The delay in milliseconds to set
+     */
+    public void setDelayMs(Integer delayMs) {
+        this.delayMs = delayMs;
+    }
+
+    /**
+     * Gets the error code.
+     *
+     * @return The error code
+     */
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    /**
+     * Sets the error code.
+     *
+     * @param errorCode The error code to set
+     */
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    /**
+     * Gets the error message.
+     *
+     * @return The error message
+     */
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    /**
+     * Sets the error message.
+     *
+     * @param errorMessage The error message to set
+     */
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    /**
+     * Gets the transaction ID.
+     *
+     * @return The transaction ID
+     */
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    /**
+     * Sets the transaction ID.
+     *
+     * @param transactionId The transaction ID to set
+     */
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ConfigOverrideDto that = (ConfigOverrideDto) o;
+        return Objects.equals(responseType, that.responseType) &&
+                Objects.equals(delayMs, that.delayMs) &&
+                Objects.equals(errorCode, that.errorCode) &&
+                Objects.equals(errorMessage, that.errorMessage) &&
+                Objects.equals(transactionId, that.transactionId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(responseType, delayMs, errorCode, errorMessage, transactionId);
+    }
+
+    @Override
+    public String toString() {
+        return "ConfigOverrideDto{" +
+                "responseType='" + responseType + '\'' +
+                ", delayMs=" + delayMs +
+                ", errorCode='" + errorCode + '\'' +
+                ", errorMessage='" + errorMessage + '\'' +
+                ", transactionId='" + transactionId + '\'' +
+                '}';
+    }
+}

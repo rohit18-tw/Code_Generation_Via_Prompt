@@ -1,0 +1,104 @@
+# LLM Response - code_generation_chunk_01_config
+# Timestamp: 2025-06-09 13:43:25
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_01_config_005
+# ==================================================
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api/v1
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: never
+    include-exception: false
+
+spring:
+  application:
+    name: ekyc-service
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:ekyc}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 600000
+      max-lifetime: 1800000
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+    default-property-inclusion: non_null
+  webflux:
+    client:
+      max-in-memory-size: 16MB
+
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+    com.example.ekyc: INFO
+    org.hibernate.SQL: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/ekyc-service.log
+    max-size: 10MB
+    max-history: 7
+
+# eKYC Service Configuration
+ekyc:
+  security:
+    jwt:
+      secret: ${JWT_SECRET:defaultSecretKeyThatShouldBeChangedInProduction}
+      expiration: ${JWT_EXPIRATION:86400000}
+  document:
+    storage:
+      location: ${DOCUMENT_STORAGE_LOCATION:./uploads}
+      max-file-size: 10MB
+  verification:
+    retry:
+      max-attempts: 3
+      delay: 5000
+  external-services:
+    identity-verification:
+      base-url: ${IDENTITY_VERIFICATION_URL:http://localhost:9090/verify}
+      timeout: 30000
+      api-key: ${IDENTITY_VERIFICATION_API_KEY:test-api-key}
+    document-validation:
+      base-url: ${DOCUMENT_VALIDATION_URL:http://localhost:9091/validate}
+      timeout: 30000
+      api-key: ${DOCUMENT_VALIDATION_API_KEY:test-api-key}
+  rate-limiting:
+    enabled: true
+    requests-per-second: 10
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when_authorized
+  health:
+    db:
+      enabled: true

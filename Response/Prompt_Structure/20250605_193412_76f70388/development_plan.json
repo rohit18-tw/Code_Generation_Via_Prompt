@@ -1,0 +1,455 @@
+{
+  "project": {
+    "title": "eKYC Verification System",
+    "description": "A Spring Boot application for Aadhaar-based eKYC verification with a mock UIDAI service",
+    "language": "java",
+    "type": "web_app"
+  },
+  "structure": {
+    "directories": [
+      "ekyc-service",
+      "ekyc-service/src/main/java/com/ekyc/service",
+      "ekyc-service/src/main/java/com/ekyc/service/controller",
+      "ekyc-service/src/main/java/com/ekyc/service/service",
+      "ekyc-service/src/main/java/com/ekyc/service/repository",
+      "ekyc-service/src/main/java/com/ekyc/service/model",
+      "ekyc-service/src/main/java/com/ekyc/service/dto",
+      "ekyc-service/src/main/java/com/ekyc/service/exception",
+      "ekyc-service/src/main/java/com/ekyc/service/config",
+      "ekyc-service/src/main/java/com/ekyc/service/util",
+      "ekyc-service/src/main/resources",
+      "ekyc-service/src/main/resources/db/migration",
+      "ekyc-service/src/test/java/com/ekyc/service",
+      "mock-uidai-service",
+      "mock-uidai-service/src/main/java/com/mock/uidai",
+      "mock-uidai-service/src/main/java/com/mock/uidai/controller",
+      "mock-uidai-service/src/main/java/com/mock/uidai/service",
+      "mock-uidai-service/src/main/java/com/mock/uidai/model",
+      "mock-uidai-service/src/main/java/com/mock/uidai/dto",
+      "mock-uidai-service/src/main/java/com/mock/uidai/config",
+      "mock-uidai-service/src/main/java/com/mock/uidai/util",
+      "mock-uidai-service/src/main/resources",
+      "mock-uidai-service/src/test/java/com/mock/uidai"
+    ],
+    "files": [
+      {
+        "path": "ekyc-service/pom.xml",
+        "purpose": "Maven configuration for eKYC service"
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/EkycServiceApplication.java",
+        "purpose": "Main application class for eKYC service"
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/model/EkycRequest.java",
+        "purpose": "Entity class for eKYC request"
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/model/OtpVerification.java",
+        "purpose": "Entity class for OTP verification"
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/EkycRequestDto.java",
+        "purpose": "DTO for eKYC request"
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/OtpVerificationDto.java",
+        "purpose": "DTO for OTP verification"
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/UidaiInitiateRequestDto.java",
+        "purpose": "DTO for UIDAI initiate request"
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/UidaiInitiateResponseDto.java",
+        "purpose": "DTO for UIDAI initiate response"
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/UidaiVerifyRequestDto.java",
+        "purpose": "DTO for UIDAI verify request"
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/UidaiVerifyResponseDto.java",
+        "purpose": "DTO for UIDAI verify response"
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/EkycResponseDto.java",
+        "purpose": "DTO for eKYC response"
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/dto/ErrorResponseDto.java",
+        "purpose": "DTO for error response"
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/enums/IdType.java",
+        "purpose": "Enum for ID type (AADHAAR or VID)"
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/enums/VerificationStatus.java",
+        "purpose": "Enum for verification status"
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/enums/ConsentType.java",
+        "purpose": "Enum for consent type"
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/controller/EkycController.java",
+        "purpose": "Controller for eKYC endpoints"
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/service/EkycService.java",
+        "purpose": "Service interface for eKYC operations"
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/service/EkycServiceImpl.java",
+        "purpose": "Implementation of eKYC service"
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/service/UidaiClientService.java",
+        "purpose": "Service for UIDAI API client"
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/repository/EkycRequestRepository.java",
+        "purpose": "Repository for eKYC requests"
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/repository/OtpVerificationRepository.java",
+        "purpose": "Repository for OTP verifications"
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/exception/GlobalExceptionHandler.java",
+        "purpose": "Global exception handler"
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/exception/EkycException.java",
+        "purpose": "Custom exception for eKYC errors"
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/config/WebClientConfig.java",
+        "purpose": "Configuration for WebClient"
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/util/LoggingUtil.java",
+        "purpose": "Utility for audit-ready logging with PII masking"
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/util/ValidationUtil.java",
+        "purpose": "Utility for validation"
+      },
+      {
+        "path": "ekyc-service/src/main/java/com/ekyc/service/util/ReferenceNumberGenerator.java",
+        "purpose": "Utility for generating reference numbers"
+      },
+      {
+        "path": "ekyc-service/src/main/resources/application.yml",
+        "purpose": "Application configuration"
+      },
+      {
+        "path": "ekyc-service/src/main/resources/db/migration/V1__init_schema.sql",
+        "purpose": "Initial database schema migration"
+      },
+      {
+        "path": "ekyc-service/src/test/java/com/ekyc/service/controller/EkycControllerTest.java",
+        "purpose": "Tests for eKYC controller"
+      },
+      {
+        "path": "ekyc-service/src/test/java/com/ekyc/service/service/EkycServiceImplTest.java",
+        "purpose": "Tests for eKYC service implementation"
+      },
+      {
+        "path": "ekyc-service/src/test/java/com/ekyc/service/service/UidaiClientServiceTest.java",
+        "purpose": "Tests for UIDAI client service"
+      },
+      {
+        "path": "ekyc-service/src/test/java/com/ekyc/service/util/LoggingUtilTest.java",
+        "purpose": "Tests for logging utility"
+      },
+      {
+        "path": "ekyc-service/src/test/java/com/ekyc/service/util/ValidationUtilTest.java",
+        "purpose": "Tests for validation utility"
+      },
+      {
+        "path": "ekyc-service/src/test/java/com/ekyc/service/integration/EkycIntegrationTest.java",
+        "purpose": "Integration tests for eKYC flow"
+      },
+      {
+        "path": "mock-uidai-service/pom.xml",
+        "purpose": "Maven configuration for mock UIDAI service"
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/MockUidaiServiceApplication.java",
+        "purpose": "Main application class for mock UIDAI service"
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/controller/UidaiController.java",
+        "purpose": "Controller for UIDAI endpoints"
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/controller/AdminController.java",
+        "purpose": "Controller for admin endpoints"
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/service/MockUidaiService.java",
+        "purpose": "Service for mock UIDAI operations"
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/service/MockConfigService.java",
+        "purpose": "Service for mock configuration"
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/service/TraceLoggerService.java",
+        "purpose": "Service for trace logging"
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/InitiateRequestDto.java",
+        "purpose": "DTO for initiate request"
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/InitiateResponseDto.java",
+        "purpose": "DTO for initiate response"
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/VerifyRequestDto.java",
+        "purpose": "DTO for verify request"
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/VerifyResponseDto.java",
+        "purpose": "DTO for verify response"
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/KycDataDto.java",
+        "purpose": "DTO for KYC data"
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/ErrorResponseDto.java",
+        "purpose": "DTO for error response"
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/dto/ConfigRequestDto.java",
+        "purpose": "DTO for configuration request"
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/model/RequestLog.java",
+        "purpose": "Model for request logging"
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/config/OpenApiConfig.java",
+        "purpose": "Configuration for OpenAPI/Swagger"
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/config/SecurityConfig.java",
+        "purpose": "Configuration for security"
+      },
+      {
+        "path": "mock-uidai-service/src/main/java/com/mock/uidai/util/MaskingUtil.java",
+        "purpose": "Utility for PII masking"
+      },
+      {
+        "path": "mock-uidai-service/src/main/resources/application.yml",
+        "purpose": "Application configuration"
+      },
+      {
+        "path": "mock-uidai-service/src/test/java/com/mock/uidai/controller/UidaiControllerTest.java",
+        "purpose": "Tests for UIDAI controller"
+      },
+      {
+        "path": "mock-uidai-service/src/test/java/com/mock/uidai/service/MockUidaiServiceTest.java",
+        "purpose": "Tests for mock UIDAI service"
+      },
+      {
+        "path": "mock-uidai-service/README.md",
+        "purpose": "Documentation for mock UIDAI service"
+      }
+    ]
+  },
+  "dependencies": [
+    "spring-boot-starter-web",
+    "spring-boot-starter-data-jpa",
+    "spring-boot-starter-validation",
+    "spring-boot-starter-webflux",
+    "spring-boot-starter-test",
+    "postgresql",
+    "flyway-core",
+    "springdoc-openapi-starter-webmvc-ui",
+    "spring-boot-starter-security",
+    "jackson-databind"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "title": "Project Setup",
+      "files": [
+        "ekyc-service/pom.xml",
+        "ekyc-service/src/main/resources/application.yml",
+        "ekyc-service/src/main/java/com/ekyc/service/EkycServiceApplication.java",
+        "mock-uidai-service/pom.xml",
+        "mock-uidai-service/src/main/resources/application.yml",
+        "mock-uidai-service/src/main/java/com/mock/uidai/MockUidaiServiceApplication.java"
+      ]
+    },
+    {
+      "step": 2,
+      "title": "Database Schema and Migrations",
+      "files": [
+        "ekyc-service/src/main/resources/db/migration/V1__init_schema.sql"
+      ]
+    },
+    {
+      "step": 3,
+      "title": "eKYC Service - Models and DTOs",
+      "files": [
+        "ekyc-service/src/main/java/com/ekyc/service/model/EkycRequest.java",
+        "ekyc-service/src/main/java/com/ekyc/service/model/OtpVerification.java",
+        "ekyc-service/src/main/java/com/ekyc/service/dto/EkycRequestDto.java",
+        "ekyc-service/src/main/java/com/ekyc/service/dto/OtpVerificationDto.java",
+        "ekyc-service/src/main/java/com/ekyc/service/dto/UidaiInitiateRequestDto.java",
+        "ekyc-service/src/main/java/com/ekyc/service/dto/UidaiInitiateResponseDto.java",
+        "ekyc-service/src/main/java/com/ekyc/service/dto/UidaiVerifyRequestDto.java",
+        "ekyc-service/src/main/java/com/ekyc/service/dto/UidaiVerifyResponseDto.java",
+        "ekyc-service/src/main/java/com/ekyc/service/dto/EkycResponseDto.java",
+        "ekyc-service/src/main/java/com/ekyc/service/dto/ErrorResponseDto.java",
+        "ekyc-service/src/main/java/com/ekyc/service/enums/IdType.java",
+        "ekyc-service/src/main/java/com/ekyc/service/enums/VerificationStatus.java",
+        "ekyc-service/src/main/java/com/ekyc/service/enums/ConsentType.java"
+      ]
+    },
+    {
+      "step": 4,
+      "title": "eKYC Service - Repositories",
+      "files": [
+        "ekyc-service/src/main/java/com/ekyc/service/repository/EkycRequestRepository.java",
+        "ekyc-service/src/main/java/com/ekyc/service/repository/OtpVerificationRepository.java"
+      ]
+    },
+    {
+      "step": 5,
+      "title": "eKYC Service - Utilities",
+      "files": [
+        "ekyc-service/src/main/java/com/ekyc/service/util/LoggingUtil.java",
+        "ekyc-service/src/main/java/com/ekyc/service/util/ValidationUtil.java",
+        "ekyc-service/src/main/java/com/ekyc/service/util/ReferenceNumberGenerator.java"
+      ]
+    },
+    {
+      "step": 6,
+      "title": "eKYC Service - Exception Handling",
+      "files": [
+        "ekyc-service/src/main/java/com/ekyc/service/exception/EkycException.java",
+        "ekyc-service/src/main/java/com/ekyc/service/exception/GlobalExceptionHandler.java"
+      ]
+    },
+    {
+      "step": 7,
+      "title": "eKYC Service - Configuration",
+      "files": [
+        "ekyc-service/src/main/java/com/ekyc/service/config/WebClientConfig.java"
+      ]
+    },
+    {
+      "step": 8,
+      "title": "eKYC Service - Services",
+      "files": [
+        "ekyc-service/src/main/java/com/ekyc/service/service/EkycService.java",
+        "ekyc-service/src/main/java/com/ekyc/service/service/EkycServiceImpl.java",
+        "ekyc-service/src/main/java/com/ekyc/service/service/UidaiClientService.java"
+      ]
+    },
+    {
+      "step": 9,
+      "title": "eKYC Service - Controllers",
+      "files": [
+        "ekyc-service/src/main/java/com/ekyc/service/controller/EkycController.java"
+      ]
+    },
+    {
+      "step": 10,
+      "title": "Mock UIDAI Service - DTOs",
+      "files": [
+        "mock-uidai-service/src/main/java/com/mock/uidai/dto/InitiateRequestDto.java",
+        "mock-uidai-service/src/main/java/com/mock/uidai/dto/InitiateResponseDto.java",
+        "mock-uidai-service/src/main/java/com/mock/uidai/dto/VerifyRequestDto.java",
+        "mock-uidai-service/src/main/java/com/mock/uidai/dto/VerifyResponseDto.java",
+        "mock-uidai-service/src/main/java/com/mock/uidai/dto/KycDataDto.java",
+        "mock-uidai-service/src/main/java/com/mock/uidai/dto/ErrorResponseDto.java",
+        "mock-uidai-service/src/main/java/com/mock/uidai/dto/ConfigRequestDto.java"
+      ]
+    },
+    {
+      "step": 11,
+      "title": "Mock UIDAI Service - Models",
+      "files": [
+        "mock-uidai-service/src/main/java/com/mock/uidai/model/RequestLog.java"
+      ]
+    },
+    {
+      "step": 12,
+      "title": "Mock UIDAI Service - Utilities",
+      "files": [
+        "mock-uidai-service/src/main/java/com/mock/uidai/util/MaskingUtil.java"
+      ]
+    },
+    {
+      "step": 13,
+      "title": "Mock UIDAI Service - Configuration",
+      "files": [
+        "mock-uidai-service/src/main/java/com/mock/uidai/config/OpenApiConfig.java",
+        "mock-uidai-service/src/main/java/com/mock/uidai/config/SecurityConfig.java"
+      ]
+    },
+    {
+      "step": 14,
+      "title": "Mock UIDAI Service - Services",
+      "files": [
+        "mock-uidai-service/src/main/java/com/mock/uidai/service/MockUidaiService.java",
+        "mock-uidai-service/src/main/java/com/mock/uidai/service/MockConfigService.java",
+        "mock-uidai-service/src/main/java/com/mock/uidai/service/TraceLoggerService.java"
+      ]
+    },
+    {
+      "step": 15,
+      "title": "Mock UIDAI Service - Controllers",
+      "files": [
+        "mock-uidai-service/src/main/java/com/mock/uidai/controller/UidaiController.java",
+        "mock-uidai-service/src/main/java/com/mock/uidai/controller/AdminController.java"
+      ]
+    },
+    {
+      "step": 16,
+      "title": "eKYC Service - Unit Tests",
+      "files": [
+        "ekyc-service/src/test/java/com/ekyc/service/controller/EkycControllerTest.java",
+        "ekyc-service/src/test/java/com/ekyc/service/service/EkycServiceImplTest.java",
+        "ekyc-service/src/test/java/com/ekyc/service/service/UidaiClientServiceTest.java",
+        "ekyc-service/src/test/java/com/ekyc/service/util/LoggingUtilTest.java",
+        "ekyc-service/src/test/java/com/ekyc/service/util/ValidationUtilTest.java"
+      ]
+    },
+    {
+      "step": 17,
+      "title": "eKYC Service - Integration Tests",
+      "files": [
+        "ekyc-service/src/test/java/com/ekyc/service/integration/EkycIntegrationTest.java"
+      ]
+    },
+    {
+      "step": 18,
+      "title": "Mock UIDAI Service - Tests",
+      "files": [
+        "mock-uidai-service/src/test/java/com/mock/uidai/controller/UidaiControllerTest.java",
+        "mock-uidai-service/src/test/java/com/mock/uidai/service/MockUidaiServiceTest.java"
+      ]
+    },
+    {
+      "step": 19,
+      "title": "Documentation",
+      "files": [
+        "mock-uidai-service/README.md"
+      ]
+    }
+  ],
+  "metadata": {
+    "generated_by": "claude_plan_generator",
+    "total_steps": 19,
+    "total_files": 57
+  }
+}

@@ -1,0 +1,168 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-06 15:22:24
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_024
+# ==================================================
+
+package com.ekyc.service.exception;
+
+import java.time.LocalDateTime;
+
+/**
+ * Custom exception class for eKYC operations.
+ * This exception is thrown when there are issues with eKYC processing,
+ * validation, or integration with external systems.
+ */
+public class EkycException extends RuntimeException {
+
+    private static final long serialVersionUID = 1L;
+    
+    private final String errorCode;
+    private final LocalDateTime timestamp;
+    private final String details;
+    private final String source;
+
+    /**
+     * Constructs a new EkycException with the specified error message.
+     *
+     * @param message the error message
+     */
+    public EkycException(String message) {
+        super(message);
+        this.errorCode = "EKYC-ERR-1000";
+        this.timestamp = LocalDateTime.now();
+        this.details = null;
+        this.source = null;
+    }
+
+    /**
+     * Constructs a new EkycException with the specified error message and cause.
+     *
+     * @param message the error message
+     * @param cause the cause of the exception
+     */
+    public EkycException(String message, Throwable cause) {
+        super(message, cause);
+        this.errorCode = "EKYC-ERR-1000";
+        this.timestamp = LocalDateTime.now();
+        this.details = null;
+        this.source = null;
+    }
+
+    /**
+     * Constructs a new EkycException with the specified error code and message.
+     *
+     * @param errorCode the error code
+     * @param message the error message
+     */
+    public EkycException(String errorCode, String message) {
+        super(message);
+        this.errorCode = errorCode;
+        this.timestamp = LocalDateTime.now();
+        this.details = null;
+        this.source = null;
+    }
+
+    /**
+     * Constructs a new EkycException with the specified error code, message, and cause.
+     *
+     * @param errorCode the error code
+     * @param message the error message
+     * @param cause the cause of the exception
+     */
+    public EkycException(String errorCode, String message, Throwable cause) {
+        super(message, cause);
+        this.errorCode = errorCode;
+        this.timestamp = LocalDateTime.now();
+        this.details = null;
+        this.source = null;
+    }
+
+    /**
+     * Constructs a new EkycException with detailed information.
+     *
+     * @param errorCode the error code
+     * @param message the error message
+     * @param details additional details about the error
+     * @param source the source of the error
+     */
+    public EkycException(String errorCode, String message, String details, String source) {
+        super(message);
+        this.errorCode = errorCode;
+        this.timestamp = LocalDateTime.now();
+        this.details = details;
+        this.source = source;
+    }
+
+    /**
+     * Constructs a new EkycException with detailed information and cause.
+     *
+     * @param errorCode the error code
+     * @param message the error message
+     * @param details additional details about the error
+     * @param source the source of the error
+     * @param cause the cause of the exception
+     */
+    public EkycException(String errorCode, String message, String details, String source, Throwable cause) {
+        super(message, cause);
+        this.errorCode = errorCode;
+        this.timestamp = LocalDateTime.now();
+        this.details = details;
+        this.source = source;
+    }
+
+    /**
+     * Gets the error code associated with this exception.
+     *
+     * @return the error code
+     */
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    /**
+     * Gets the timestamp when this exception was created.
+     *
+     * @return the timestamp
+     */
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    /**
+     * Gets additional details about the error.
+     *
+     * @return the details
+     */
+    public String getDetails() {
+        return details;
+    }
+
+    /**
+     * Gets the source of the error.
+     *
+     * @return the source
+     */
+    public String getSource() {
+        return source;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("EkycException [errorCode=").append(errorCode)
+          .append(", timestamp=").append(timestamp)
+          .append(", message=").append(getMessage());
+        
+        if (details != null) {
+            sb.append(", details=").append(details);
+        }
+        
+        if (source != null) {
+            sb.append(", source=").append(source);
+        }
+        
+        sb.append("]");
+        return sb.toString();
+    }
+}

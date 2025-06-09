@@ -1,0 +1,285 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:49:47
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_028
+# ==================================================
+
+package com.mock.uidai.dto;
+
+import java.io.Serializable;
+import java.util.Objects;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Data Transfer Object for KYC (Know Your Customer) data.
+ * This class represents the KYC information retrieved from the UIDAI service.
+ */
+public class KycDataDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @JsonProperty("aadhaar_number")
+    @NotBlank(message = "Aadhaar number cannot be blank")
+    @Pattern(regexp = "^[0-9]{12}$", message = "Aadhaar number must be 12 digits")
+    private String aadhaarNumber;
+
+    @JsonProperty("name")
+    @NotBlank(message = "Name cannot be blank")
+    @Size(max = 100, message = "Name cannot exceed 100 characters")
+    private String name;
+
+    @JsonProperty("dob")
+    @NotBlank(message = "Date of birth cannot be blank")
+    @Pattern(regexp = "^\\d{2}/\\d{2}/\\d{4}$", message = "Date of birth must be in DD/MM/YYYY format")
+    private String dateOfBirth;
+
+    @JsonProperty("gender")
+    @NotBlank(message = "Gender cannot be blank")
+    @Pattern(regexp = "^[MFO]$", message = "Gender must be M (Male), F (Female), or O (Other)")
+    private String gender;
+
+    @JsonProperty("address")
+    @NotBlank(message = "Address cannot be blank")
+    @Size(max = 500, message = "Address cannot exceed 500 characters")
+    private String address;
+
+    @JsonProperty("phone")
+    @Pattern(regexp = "^[0-9]{10}$", message = "Phone number must be 10 digits")
+    private String phone;
+
+    @JsonProperty("email")
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Invalid email format")
+    private String email;
+
+    @JsonProperty("photo")
+    private String photo;
+
+    /**
+     * Default constructor for KycDataDto.
+     */
+    public KycDataDto() {
+    }
+
+    /**
+     * Parameterized constructor for KycDataDto.
+     *
+     * @param aadhaarNumber the Aadhaar number
+     * @param name the name of the individual
+     * @param dateOfBirth the date of birth in DD/MM/YYYY format
+     * @param gender the gender (M, F, or O)
+     * @param address the address
+     * @param phone the phone number
+     * @param email the email address
+     * @param photo the base64 encoded photo
+     */
+    public KycDataDto(String aadhaarNumber, String name, String dateOfBirth, String gender, 
+                     String address, String phone, String email, String photo) {
+        this.aadhaarNumber = aadhaarNumber;
+        this.name = name;
+        this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
+        this.address = address;
+        this.phone = phone;
+        this.email = email;
+        this.photo = photo;
+    }
+
+    /**
+     * Gets the Aadhaar number.
+     *
+     * @return the Aadhaar number
+     */
+    public String getAadhaarNumber() {
+        return aadhaarNumber;
+    }
+
+    /**
+     * Sets the Aadhaar number.
+     *
+     * @param aadhaarNumber the Aadhaar number to set
+     */
+    public void setAadhaarNumber(String aadhaarNumber) {
+        this.aadhaarNumber = aadhaarNumber;
+    }
+
+    /**
+     * Gets the name.
+     *
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets the name.
+     *
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Gets the date of birth.
+     *
+     * @return the date of birth
+     */
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    /**
+     * Sets the date of birth.
+     *
+     * @param dateOfBirth the date of birth to set
+     */
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    /**
+     * Gets the gender.
+     *
+     * @return the gender
+     */
+    public String getGender() {
+        return gender;
+    }
+
+    /**
+     * Sets the gender.
+     *
+     * @param gender the gender to set
+     */
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    /**
+     * Gets the address.
+     *
+     * @return the address
+     */
+    public String getAddress() {
+        return address;
+    }
+
+    /**
+     * Sets the address.
+     *
+     * @param address the address to set
+     */
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    /**
+     * Gets the phone number.
+     *
+     * @return the phone number
+     */
+    public String getPhone() {
+        return phone;
+    }
+
+    /**
+     * Sets the phone number.
+     *
+     * @param phone the phone number to set
+     */
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    /**
+     * Gets the email address.
+     *
+     * @return the email address
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * Sets the email address.
+     *
+     * @param email the email address to set
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
+     * Gets the photo.
+     *
+     * @return the base64 encoded photo
+     */
+    public String getPhoto() {
+        return photo;
+    }
+
+    /**
+     * Sets the photo.
+     *
+     * @param photo the base64 encoded photo to set
+     */
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    /**
+     * Returns a string representation of the KYC data with sensitive information masked.
+     *
+     * @return a string representation of the KYC data
+     */
+    @Override
+    public String toString() {
+        return "KycDataDto{" +
+                "aadhaarNumber='" + (aadhaarNumber != null ? "XXXX-XXXX-" + aadhaarNumber.substring(8) : null) + '\'' +
+                ", name='" + name + '\'' +
+                ", dateOfBirth='" + dateOfBirth + '\'' +
+                ", gender='" + gender + '\'' +
+                ", address='" + (address != null ? "***MASKED***" : null) + '\'' +
+                ", phone='" + (phone != null ? "XXXXXX" + phone.substring(Math.max(0, phone.length() - 4)) : null) + '\'' +
+                ", email='" + (email != null ? email.replaceAll("(?<=.{3}).(?=[^@]*?@)", "*") : null) + '\'' +
+                ", photo='" + (photo != null ? "***PHOTO_DATA_PRESENT***" : null) + '\'' +
+                '}';
+    }
+
+    /**
+     * Compares this KycDataDto with the specified object for equality.
+     *
+     * @param o the object to compare with
+     * @return true if the objects are equal, false otherwise
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        KycDataDto that = (KycDataDto) o;
+        return Objects.equals(aadhaarNumber, that.aadhaarNumber) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(dateOfBirth, that.dateOfBirth) &&
+                Objects.equals(gender, that.gender) &&
+                Objects.equals(address, that.address) &&
+                Objects.equals(phone, that.phone) &&
+                Objects.equals(email, that.email) &&
+                Objects.equals(photo, that.photo);
+    }
+
+    /**
+     * Returns a hash code value for this KycDataDto.
+     *
+     * @return a hash code value for this object
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(aadhaarNumber, name, dateOfBirth, gender, address, phone, email, photo);
+    }
+}

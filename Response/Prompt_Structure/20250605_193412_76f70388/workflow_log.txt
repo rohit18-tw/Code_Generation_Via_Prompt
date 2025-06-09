@@ -1,0 +1,138 @@
+[2025-06-05 19:34:12] [INFO] 🚀 Session started: 20250605_193412_76f70388
+[2025-06-05 19:34:12] [INFO] 📁 Session directory: Response/20250605_193412_76f70388
+[2025-06-05 19:34:12] [INFO] 🚀 Starting Agentic Workflow
+[2025-06-05 19:34:12] [INFO]    Input: ./Prompts/
+[2025-06-05 19:34:12] [INFO]    Max iterations: 5
+[2025-06-05 19:34:12] [INFO]    Session ID: 20250605_193412_76f70388
+[2025-06-05 19:34:12] [INFO] --------------------------------------------------
+[2025-06-05 19:34:12] [INFO] 🔍 Processing input: ./Prompts/
+[2025-06-05 19:34:12] [SUCCESS] ✅ SUCCESS in input_processing: Input processed - Type: folder, Source: Prompts
+[2025-06-05 19:34:12] [INFO] 🎯 Starting development plan generation...
+[2025-06-05 19:34:12] [INFO] 🎯 Sending plan generation request to Claude...
+[2025-06-05 19:35:20] [INFO] 💬 LLM Interaction: plan_generation -> plan_generation_001_response.txt
+[2025-06-05 19:35:20] [INFO] 📝 Plan generation response saved to: plan_generation_001_response.txt
+[2025-06-05 19:35:20] [SUCCESS] ✅ SUCCESS in plan_generation: Plan successfully parsed and structured
+[2025-06-05 19:35:20] [INFO] 🌳 Project tree structure saved to: project_structure.txt
+[2025-06-05 19:35:20] [INFO] 📋 Plan Summary:
+[2025-06-05 19:35:20] [INFO]    🎯 **Project Plan Generated**
+[2025-06-05 19:35:20] [INFO]    **Title**: eKYC Verification System
+[2025-06-05 19:35:20] [INFO]    **Language**: java
+[2025-06-05 19:35:20] [INFO]    **Type**: web_app
+[2025-06-05 19:35:20] [INFO]    **Implementation Steps**: 19 steps planned
+[2025-06-05 19:35:20] [INFO]    **Files to Create**: 57 files
+[2025-06-05 19:35:20] [INFO]    Ready for code generation!
+[2025-06-05 19:35:20] [INFO] 
+🌳 Project Structure:
+[2025-06-05 19:35:20] [INFO]    ekyc-verification-system/
+[2025-06-05 19:35:20] [INFO]    ├── ekyc-service/
+[2025-06-05 19:35:20] [INFO]    │   ├── pom.xml
+[2025-06-05 19:35:20] [INFO]    │   └── src/
+[2025-06-05 19:35:20] [INFO]    │       ├── main/
+[2025-06-05 19:35:20] [INFO]    │       │   ├── java/
+[2025-06-05 19:35:20] [INFO]    │       │   │   └── com/
+[2025-06-05 19:35:20] [INFO]    │       │   │       └── ekyc/
+[2025-06-05 19:35:20] [INFO]    │       │   │           └── service/
+[2025-06-05 19:35:20] [INFO]    │       │   │               ├── EkycServiceApplication.java
+[2025-06-05 19:35:20] [INFO]    │       │   │               ├── config/
+[2025-06-05 19:35:20] [INFO]    │       │   │               │   └── WebClientConfig.java
+[2025-06-05 19:35:20] [INFO]    │       │   │               ├── controller/
+[2025-06-05 19:35:20] [INFO]    │       │   │               │   └── EkycController.java
+[2025-06-05 19:35:20] [INFO]    │       │   │               ├── dto/
+[2025-06-05 19:35:20] [INFO]    │       │   │               │   ├── EkycRequestDto.java
+[2025-06-05 19:35:20] [INFO]    │       │   │               │   ├── EkycResponseDto.java
+[2025-06-05 19:35:20] [INFO]    │       │   │               │   ├── ErrorResponseDto.java
+[2025-06-05 19:35:20] [INFO]    │       │   │               │   ├── OtpVerificationDto.java
+[2025-06-05 19:35:20] [INFO]    │       │   │               │   ├── UidaiInitiateRequestDto.java
+[2025-06-05 19:35:20] [INFO]    │       │   │               │   ├── UidaiInitiateResponseDto.java
+[2025-06-05 19:35:20] [INFO]    │       │   │               │   ├── UidaiVerifyRequestDto.java
+[2025-06-05 19:35:20] [INFO]    │       │   │               │   └── UidaiVerifyResponseDto.java
+[2025-06-05 19:35:20] [INFO]    │       │   │               ├── enums/
+[2025-06-05 19:35:20] [INFO]    │       │   │               │   ├── ConsentType.java
+[2025-06-05 19:35:20] [INFO]    │       │   │               │   ├── IdType.java
+[2025-06-05 19:35:20] [INFO]    │       │   │               │   └── VerificationStatus.java
+[2025-06-05 19:35:20] [INFO]    │       │   │               ├── exception/
+[2025-06-05 19:35:20] [INFO]    │       │   │               │   ├── EkycException.java
+[2025-06-05 19:35:20] [INFO]    │       │   │               │   └── GlobalExceptionHandler.java
+[2025-06-05 19:35:20] [INFO]    │       │   │               ├── model/
+[2025-06-05 19:35:20] [INFO]    │       │   │               │   ├── EkycRequest.java
+[2025-06-05 19:35:20] [INFO]    │       │   │               │   └── OtpVerification.java
+[2025-06-05 19:35:20] [INFO]    │       │   │               ├── repository/
+[2025-06-05 19:35:20] [INFO]    │       │   │               │   ├── EkycRequestRepository.java
+[2025-06-05 19:35:20] [INFO]    │       │   │               │   └── OtpVerificationRepository.java
+[2025-06-05 19:35:20] [INFO]    │       │   │               ├── service/
+[2025-06-05 19:35:20] [INFO]    │       │   │               │   ├── EkycService.java
+[2025-06-05 19:35:20] [INFO]    │       │   │               │   ├── EkycServiceImpl.java
+[2025-06-05 19:35:20] [INFO]    │       │   │               │   └── UidaiClientService.java
+[2025-06-05 19:35:20] [INFO]    │       │   │               └── util/
+[2025-06-05 19:35:20] [INFO]    │       │   │                   ├── LoggingUtil.java
+[2025-06-05 19:35:20] [INFO]    │       │   │                   ├── ReferenceNumberGenerator.java
+[2025-06-05 19:35:20] [INFO]    │       │   │                   └── ValidationUtil.java
+[2025-06-05 19:35:20] [INFO]    │       │   └── resources/
+[2025-06-05 19:35:20] [INFO]    │       │       ├── application.yml
+[2025-06-05 19:35:20] [INFO]    │       │       └── db/
+[2025-06-05 19:35:20] [INFO]    │       │           └── migration/
+[2025-06-05 19:35:20] [INFO]    │       │               └── V1__init_schema.sql
+[2025-06-05 19:35:20] [INFO]    │       └── test/
+[2025-06-05 19:35:20] [INFO]    │           └── java/
+[2025-06-05 19:35:20] [INFO]    │               └── com/
+[2025-06-05 19:35:20] [INFO]    │                   └── ekyc/
+[2025-06-05 19:35:20] [INFO]    │                       └── service/
+[2025-06-05 19:35:20] [INFO]    │                           ├── controller/
+[2025-06-05 19:35:20] [INFO]    │                           │   └── EkycControllerTest.java
+[2025-06-05 19:35:20] [INFO]    │                           ├── integration/
+[2025-06-05 19:35:20] [INFO]    │                           │   └── EkycIntegrationTest.java
+[2025-06-05 19:35:20] [INFO]    │                           ├── service/
+[2025-06-05 19:35:20] [INFO]    │                           │   ├── EkycServiceImplTest.java
+[2025-06-05 19:35:20] [INFO]    │                           │   └── UidaiClientServiceTest.java
+[2025-06-05 19:35:20] [INFO]    │                           └── util/
+[2025-06-05 19:35:20] [INFO]    │                               ├── LoggingUtilTest.java
+[2025-06-05 19:35:20] [INFO]    │                               └── ValidationUtilTest.java
+[2025-06-05 19:35:20] [INFO]    └── mock-uidai-service/
+[2025-06-05 19:35:20] [INFO]        ├── README.md
+[2025-06-05 19:35:20] [INFO]        ├── pom.xml
+[2025-06-05 19:35:20] [INFO]        └── src/
+[2025-06-05 19:35:20] [INFO]            ├── main/
+[2025-06-05 19:35:20] [INFO]            │   ├── java/
+[2025-06-05 19:35:20] [INFO]            │   │   └── com/
+[2025-06-05 19:35:20] [INFO]            │   │       └── mock/
+[2025-06-05 19:35:20] [INFO]            │   │           └── uidai/
+[2025-06-05 19:35:20] [INFO]            │   │               ├── MockUidaiServiceApplication.java
+[2025-06-05 19:35:20] [INFO]            │   │               ├── config/
+[2025-06-05 19:35:20] [INFO]            │   │               │   ├── OpenApiConfig.java
+[2025-06-05 19:35:20] [INFO]            │   │               │   └── SecurityConfig.java
+[2025-06-05 19:35:20] [INFO]            │   │               ├── controller/
+[2025-06-05 19:35:20] [INFO]            │   │               │   ├── AdminController.java
+[2025-06-05 19:35:20] [INFO]            │   │               │   └── UidaiController.java
+[2025-06-05 19:35:20] [INFO]            │   │               ├── dto/
+[2025-06-05 19:35:20] [INFO]            │   │               │   ├── ConfigRequestDto.java
+[2025-06-05 19:35:20] [INFO]            │   │               │   ├── ErrorResponseDto.java
+[2025-06-05 19:35:20] [INFO]            │   │               │   ├── InitiateRequestDto.java
+[2025-06-05 19:35:20] [INFO]            │   │               │   ├── InitiateResponseDto.java
+[2025-06-05 19:35:20] [INFO]            │   │               │   ├── KycDataDto.java
+[2025-06-05 19:35:20] [INFO]            │   │               │   ├── VerifyRequestDto.java
+[2025-06-05 19:35:20] [INFO]            │   │               │   └── VerifyResponseDto.java
+[2025-06-05 19:35:20] [INFO]            │   │               ├── model/
+[2025-06-05 19:35:20] [INFO]            │   │               │   └── RequestLog.java
+[2025-06-05 19:35:20] [INFO]            │   │               ├── service/
+[2025-06-05 19:35:20] [INFO]            │   │               │   ├── MockConfigService.java
+[2025-06-05 19:35:20] [INFO]            │   │               │   ├── MockUidaiService.java
+[2025-06-05 19:35:20] [INFO]            │   │               │   └── TraceLoggerService.java
+[2025-06-05 19:35:20] [INFO]            │   │               └── util/
+[2025-06-05 19:35:20] [INFO]            │   │                   └── MaskingUtil.java
+[2025-06-05 19:35:20] [INFO]            │   └── resources/
+[2025-06-05 19:35:20] [INFO]            │       └── application.yml
+[2025-06-05 19:35:20] [INFO]            └── test/
+[2025-06-05 19:35:20] [INFO]                └── java/
+[2025-06-05 19:35:20] [INFO]                    └── com/
+[2025-06-05 19:35:20] [INFO]                        └── mock/
+[2025-06-05 19:35:20] [INFO]                            └── uidai/
+[2025-06-05 19:35:20] [INFO]                                ├── controller/
+[2025-06-05 19:35:20] [INFO]                                │   └── UidaiControllerTest.java
+[2025-06-05 19:35:20] [INFO]                                └── service/
+[2025-06-05 19:35:20] [INFO]                                    └── MockUidaiServiceTest.java
+[2025-06-05 19:35:20] [SUCCESS] ✅ SUCCESS in plan_generation: Development plan generated and saved to development_plan.json
+[2025-06-05 19:35:20] [INFO] --------------------------------------------------
+[2025-06-05 19:35:20] [SUCCESS] ✅ SUCCESS in workflow: Workflow completed!
+[2025-06-05 19:35:20] [INFO]    Final step: git_complete
+[2025-06-05 19:35:20] [INFO]    Iterations: 0
+[2025-06-05 19:35:20] [INFO]    Errors: 0

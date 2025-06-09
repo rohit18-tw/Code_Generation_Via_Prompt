@@ -1,0 +1,125 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:51:17
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_033
+# ==================================================
+
+package com.ekyc.service.repository;
+
+import com.ekyc.service.entity.OtpVerification;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+/**
+ * Repository interface for OtpVerification entity.
+ * Provides methods to perform CRUD operations and custom queries on OtpVerification data.
+ */
+@Repository
+public interface OtpVerificationRepository extends JpaRepository<OtpVerification, UUID> {
+
+    /**
+     * Find OTP verification by request ID and verification type.
+     *
+     * @param requestId The request ID associated with the OTP verification
+     * @param verificationType The type of verification
+     * @return Optional containing the OTP verification if found, empty otherwise
+     */
+    Optional<OtpVerification> findByRequestIdAndVerificationType(UUID requestId, String verificationType);
+
+    /**
+     * Find the latest OTP verification by request ID and verification type.
+     *
+     * @param requestId The request ID associated with the OTP verification
+     * @param verificationType The type of verification
+     * @return Optional containing the latest OTP verification if found, empty otherwise
+     */
+    @Query("SELECT o FROM OtpVerification o WHERE o.requestId = :requestId AND o.verificationType = :verificationType ORDER BY o.createdAt DESC")
+    Optional<OtpVerification> findLatestByRequestIdAndVerificationType(@Param("requestId") UUID requestId, @Param("verificationType") String verificationType);
+
+    /**
+     * Find all OTP verifications by request ID.
+     *
+     * @param requestId The request ID associated with the OTP verifications
+     * @return List of OTP verifications
+     */
+    List<OtpVerification> findAllByRequestId(UUID requestId);
+
+    /**
+     * Find all OTP verifications by verification type.
+     *
+     * @param verificationType The type of verification
+     * @return List of OTP verifications
+     */
+    List<OtpVerification> findAllByVerificationType(String verificationType);
+
+    /**
+     * Find all OTP verifications that have expired.
+     *
+     * @param expiryTime The time before which OTPs are considered expired
+     * @return List of expired OTP verifications
+     */
+    List<OtpVerification> findAllByExpiresAtBefore(LocalDateTime expiryTime);
+
+    /**
+     * Find all OTP verifications by status.
+     *
+     * @param status The status of the OTP verification
+     * @return List of OTP verifications with the specified status
+     */
+    List<OtpVerification> findAllByStatus(String status);
+
+    /**
+     * Count the number of OTP verification attempts for a specific request and verification type.
+     *
+     * @param requestId The request ID associated with the OTP verification
+     * @param verificationType The type of verification
+     * @param createdAfter The time after which to count attempts
+     * @return The count of OTP verification attempts
+     */
+    @Query("SELECT COUNT(o) FROM OtpVerification o WHERE o.requestId = :requestId AND o.verificationType = :verificationType AND o.createdAt > :createdAfter")
+    int countAttemptsByRequestIdAndVerificationTypeAfter(
+            @Param("requestId") UUID requestId,
+            @Param("verificationType") String verificationType,
+            @Param("createdAfter") LocalDateTime createdAfter);
+
+    /**
+     * Update the status of an OTP verification.
+     *
+     * @param id The ID of the OTP verification to update
+     * @param status The new status
+     * @return The number of records updated
+     */
+    @Modifying
+    @Transactional
+    @Query("UPDATE OtpVerification o SET o.status = :status WHERE o.id = :id")
+    int updateStatus(@Param("id") UUID id, @Param("status") String status);
+
+    /**
+     * Delete all expired OTP verifications.
+     *
+     * @param expiryTime The time before which OTPs are considered expired
+     * @return The number of records deleted
+     */
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM OtpVerification o WHERE o.expiresAt < :expiryTime")
+    int deleteExpiredOtps(@Param("expiryTime") LocalDateTime expiryTime);
+
+    /**
+     * Find all OTP verifications by request ID and status.
+     *
+     * @param requestId The request ID associated with the OTP verifications
+     * @param status The status of the OTP verification
+     * @return List of OTP verifications
+     */
+    List<OtpVerification> findAllByRequestIdAndStatus(UUID requestId, String status);
+}

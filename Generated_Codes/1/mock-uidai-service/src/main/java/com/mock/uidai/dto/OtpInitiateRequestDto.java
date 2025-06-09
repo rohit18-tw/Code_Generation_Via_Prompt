@@ -1,0 +1,153 @@
+package com.mock.uidai.dto;
+
+import java.io.Serializable;
+import java.util.Objects;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.springframework.validation.annotation.Validated;
+
+/**
+* Data Transfer Object for OTP initiation request in the mock UIDAI service.
+* This class represents the request payload when a client initiates an OTP request.
+* It includes validation to ensure data integrity and proper format.
+*/
+@Validated
+public class OtpInitiateRequestDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+    * Aadhaar number for which OTP is being requested.
+    * Must be a 12-digit number as per UIDAI standards.
+    */
+    @NotBlank(message = "Aadhaar number is required")
+    @Size(min = 12, max = 12, message = "Aadhaar number must be exactly 12 digits")
+    @Pattern(regexp = "^[0-9]{12}$", message = "Aadhaar number must contain only digits")
+    private String uidNumber;
+
+    /**
+    * Channel through which OTP should be delivered (SMS, EMAIL, etc.)
+    */
+    @NotBlank(message = "Channel is required")
+    @Pattern(regexp = "^(SMS|EMAIL|BOTH)$", message = "Channel must be SMS, EMAIL, or BOTH")
+    private String channel;
+
+    /**
+    * Transaction ID for tracking the OTP request.
+    * Optional field that may be provided by the client.
+    */
+    private String txnId;
+
+    /**
+    * Default constructor.
+    */
+    public OtpInitiateRequestDto() {
+    }
+
+    /**
+    * Parameterized constructor.
+    *
+    * @param uidNumber Aadhaar number
+    * @param channel   Delivery channel for OTP
+    * @param txnId     Transaction ID
+    */
+    public OtpInitiateRequestDto(String uidNumber, String channel, String txnId) {
+        this.uidNumber = uidNumber;
+        this.channel = channel;
+        this.txnId = txnId;
+    }
+
+    /**
+    * Gets the Aadhaar number.
+    *
+    * @return the Aadhaar number
+    */
+    public String getUidNumber() {
+        return uidNumber;
+    }
+
+    /**
+    * Sets the Aadhaar number.
+    *
+    * @param uidNumber the Aadhaar number to set
+    */
+    public void setUidNumber(String uidNumber) {
+        this.uidNumber = uidNumber;
+    }
+
+    /**
+    * Gets the channel for OTP delivery.
+    *
+    * @return the channel
+    */
+    public String getChannel() {
+        return channel;
+    }
+
+    /**
+    * Sets the channel for OTP delivery.
+    *
+    * @param channel the channel to set
+    */
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
+    /**
+    * Gets the transaction ID.
+    *
+    * @return the transaction ID
+    */
+    public String getTxnId() {
+        return txnId;
+    }
+
+    /**
+    * Sets the transaction ID.
+    *
+    * @param txnId the transaction ID to set
+    */
+    public void setTxnId(String txnId) {
+        this.txnId = txnId;
+    }
+
+    /**
+    * Returns a masked representation of the UID number for logging purposes.
+    * Only the last 4 digits are visible, the rest are masked with 'X'.
+    *
+    * @return masked UID number
+    */
+    public String getMaskedUidNumber() {
+        if (uidNumber == null || uidNumber.length() < 4) {
+            return "INVALID_UID";
+        }
+        return "XXXXXXXX" + uidNumber.substring(uidNumber.length() - 4);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OtpInitiateRequestDto that = (OtpInitiateRequestDto) o;
+        return Objects.equals(uidNumber, that.uidNumber) &&
+        Objects.equals(channel, that.channel) &&
+        Objects.equals(txnId, that.txnId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uidNumber, channel, txnId);
+    }
+
+    @Override
+    public String toString() {
+        return "OtpInitiateRequestDto{" +
+        "uidNumber='" + getMaskedUidNumber() + '\'' +
+        ", channel='" + channel + '\'' +
+        ", txnId='" + txnId + '\'' +
+        '}';
+    }
+}

@@ -1,0 +1,244 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:54:20
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_040
+# ==================================================
+
+package com.mock.uidai.service;
+
+import com.mock.uidai.dto.KycDataDto;
+import com.mock.uidai.dto.OtpInitiateRequestDto;
+import com.mock.uidai.dto.OtpInitiateResponseDto;
+import com.mock.uidai.dto.OtpVerifyRequestDto;
+import com.mock.uidai.dto.OtpVerifyResponseDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
+/**
+ * Service class that provides mock implementations of UIDAI (Aadhaar) services.
+ * This includes OTP generation, verification, and KYC data retrieval.
+ */
+@Service
+public class MockUidaiService {
+    private static final Logger logger = LoggerFactory.getLogger(MockUidaiService.class);
+    
+    // Default OTP for testing purposes
+    private static final String DEFAULT_OTP = "123456";
+    
+    // Store for transaction data
+    private final ConcurrentHashMap<String, String> otpTransactions = new ConcurrentHashMap<>();
+    
+    // Store for KYC data mapped by Aadhaar number
+    private final ConcurrentHashMap<String, KycDataDto> kycDataStore = new ConcurrentHashMap<>();
+    
+    // Error codes
+    private static final String SUCCESS_CODE = "0";
+    private static final String INVALID_OTP_ERROR = "AUTH_FAILED";
+    private static final String INVALID_AADHAAR_ERROR = "INVALID_AADHAAR";
+    private static final String TRANSACTION_NOT_FOUND_ERROR = "TXN_NOT_FOUND";
+    
+    /**
+     * Constructor that initializes some sample KYC data
+     */
+    public MockUidaiService() {
+        initializeSampleData();
+    }
+    
+    /**
+     * Initiates an OTP request for the given Aadhaar number
+     *
+     * @param request The OTP initiation request
+     * @return OTP initiation response with transaction ID
+     */
+    public OtpInitiateResponseDto initiateOtp(OtpInitiateRequestDto request) {
+        logger.info("Initiating OTP for Aadhaar: {}", maskAadhaar(request.getUid()));
+        
+        // Validate Aadhaar number
+        if (!isValidAadhaar(request.getUid())) {
+            logger.error("Invalid Aadhaar number format");
+            return createErrorResponse(INVALID_AADHAAR_ERROR, "Invalid Aadhaar number format");
+        }
+        
+        // Generate transaction ID if not provided
+        String txnId = request.getTxnId();
+        if (txnId == null || txnId.isEmpty()) {
+            txnId = UUID.randomUUID().toString();
+        }
+        
+        // Store the transaction with the Aadhaar number
+        otpTransactions.put(txnId, request.getUid());
+        
+        logger.info("OTP initiated successfully for transaction: {}", txnId);
+        
+        // In a real implementation, an actual OTP would be sent to the user
+        // For mock purposes, we'll use a default OTP
+        
+        return OtpInitiateResponseDto.builder()
+                .status("Success")
+                .txnId(txnId)
+                .errorCode(SUCCESS_CODE)
+                .errorMessage(null)
+                .build();
+    }
+    
+    /**
+     * Verifies the OTP for a given transaction
+     *
+     * @param request The OTP verification request
+     * @return OTP verification response with status
+     */
+    public OtpVerifyResponseDto verifyOtp(OtpVerifyRequestDto request) {
+        String txnId = request.getTransactionId();
+        logger.info("Verifying OTP for transaction: {}", txnId);
+        
+        // Check if transaction exists
+        if (!otpTransactions.containsKey(txnId)) {
+            logger.error("Transaction not found: {}", txnId);
+            return OtpVerifyResponseDto.builder()
+                    .status("Failure")
+                    .transactionId(txnId)
+                    .errorCode(TRANSACTION_NOT_FOUND_ERROR)
+                    .errorMessage("Transaction not found")
+                    .build();
+        }
+        
+        // Verify OTP (in mock, we accept the default OTP)
+        if (!DEFAULT_OTP.equals(request.getOtp())) {
+            logger.error("Invalid OTP provided for transaction: {}", txnId);
+            return OtpVerifyResponseDto.builder()
+                    .status("Failure")
+                    .transactionId(txnId)
+                    .errorCode(INVALID_OTP_ERROR)
+                    .errorMessage("Invalid OTP")
+                    .build();
+        }
+        
+        String aadhaarNumber = otpTransactions.get(txnId);
+        logger.info("OTP verified successfully for Aadhaar: {}", maskAadhaar(aadhaarNumber));
+        
+        return OtpVerifyResponseDto.builder()
+                .status("Success")
+                .transactionId(txnId)
+                .errorCode(SUCCESS_CODE)
+                .errorMessage(null)
+                .build();
+    }
+    
+    /**
+     * Retrieves KYC data for a verified transaction
+     *
+     * @param transactionId The transaction ID from a successful OTP verification
+     * @return KYC data for the associated Aadhaar number
+     */
+    public KycDataDto getKycData(String transactionId) {
+        logger.info("Retrieving KYC data for transaction: {}", transactionId);
+        
+        // Check if transaction exists
+        if (!otpTransactions.containsKey(transactionId)) {
+            logger.error("Transaction not found: {}", transactionId);
+            return null;
+        }
+        
+        String aadhaarNumber = otpTransactions.get(transactionId);
+        logger.info("Fetching KYC data for Aadhaar: {}", maskAadhaar(aadhaarNumber));
+        
+        // Return KYC data if available, otherwise return null
+        return kycDataStore.getOrDefault(aadhaarNumber, null);
+    }
+    
+    /**
+     * Validates if the provided Aadhaar number is in the correct format
+     *
+     * @param aadhaarNumber The Aadhaar number to validate
+     * @return true if valid, false otherwise
+     */
+    private boolean isValidAadhaar(String aadhaarNumber) {
+        if (aadhaarNumber == null) {
+            return false;
+        }
+        
+        // Basic validation: 12 digits
+        return aadhaarNumber.matches("^[0-9]{12}$");
+    }
+    
+    /**
+     * Creates an error response for OTP initiation
+     *
+     * @param errorCode The error code
+     * @param errorMessage The error message
+     * @return Error response DTO
+     */
+    private OtpInitiateResponseDto createErrorResponse(String errorCode, String errorMessage) {
+        return OtpInitiateResponseDto.builder()
+                .status("Failure")
+                .txnId(UUID.randomUUID().toString())
+                .errorCode(errorCode)
+                .errorMessage(errorMessage)
+                .build();
+    }
+    
+    /**
+     * Masks an Aadhaar number for logging purposes
+     *
+     * @param aadhaarNumber The Aadhaar number to mask
+     * @return Masked Aadhaar number
+     */
+    private String maskAadhaar(String aadhaarNumber) {
+        if (aadhaarNumber == null || aadhaarNumber.length() < 4) {
+            return "****";
+        }
+        return "XXXX-XXXX-" + aadhaarNumber.substring(aadhaarNumber.length() - 4);
+    }
+    
+    /**
+     * Initializes sample KYC data for testing
+     */
+    private void initializeSampleData() {
+        // Sample KYC data for testing
+        KycDataDto sampleData1 = KycDataDto.builder()
+                .aadhaarNumber("123456789012")
+                .name("John Doe")
+                .dateOfBirth("1990-01-01")
+                .gender("M")
+                .address("123 Main St, Bangalore, Karnataka, 560001")
+                .phone("9876543210")
+                .email("john.doe@example.com")
+                .photo(generateSamplePhoto())
+                .build();
+        
+        KycDataDto sampleData2 = KycDataDto.builder()
+                .aadhaarNumber("987654321098")
+                .name("Jane Smith")
+                .dateOfBirth("1985-05-15")
+                .gender("F")
+                .address("456 Park Ave, Mumbai, Maharashtra, 400001")
+                .phone("8765432109")
+                .email("jane.smith@example.com")
+                .photo(generateSamplePhoto())
+                .build();
+        
+        kycDataStore.put("123456789012", sampleData1);
+        kycDataStore.put("987654321098", sampleData2);
+        
+        logger.info("Initialized sample KYC data for {} records", kycDataStore.size());
+    }
+    
+    /**
+     * Generates a sample base64 encoded photo for testing
+     *
+     * @return Base64 encoded sample photo
+     */
+    private String generateSamplePhoto() {
+        // This is a tiny 1x1 pixel transparent PNG image encoded in Base64
+        return "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
+    }
+}

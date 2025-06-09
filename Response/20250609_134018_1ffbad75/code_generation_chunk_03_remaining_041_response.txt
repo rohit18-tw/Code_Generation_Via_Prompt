@@ -1,0 +1,126 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:54:34
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_041
+# ==================================================
+
+package com.mock.uidai.service;
+
+import com.mock.uidai.dto.ConfigOverrideDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+/**
+ * Service for managing mock configuration overrides.
+ * This service allows dynamic configuration of mock responses for testing purposes.
+ */
+@Service
+public class MockConfigService {
+    private static final Logger logger = LoggerFactory.getLogger(MockConfigService.class);
+    
+    // Thread-safe map to store configuration overrides by UID
+    private final Map<String, ConfigOverrideDto> configOverrides = new ConcurrentHashMap<>();
+    
+    /**
+     * Sets a configuration override for a specific UID.
+     *
+     * @param uid The UID for which to set the override
+     * @param configOverrideDto The configuration override details
+     * @return The saved configuration override
+     */
+    public ConfigOverrideDto setConfigOverride(String uid, ConfigOverrideDto configOverrideDto) {
+        if (uid == null || uid.trim().isEmpty()) {
+            logger.error("Cannot set config override: UID is null or empty");
+            throw new IllegalArgumentException("UID cannot be null or empty");
+        }
+        
+        if (configOverrideDto == null) {
+            logger.error("Cannot set config override: Config override is null for UID: {}", maskUid(uid));
+            throw new IllegalArgumentException("Config override cannot be null");
+        }
+        
+        logger.info("Setting config override for UID: {}", maskUid(uid));
+        configOverrides.put(uid, configOverrideDto);
+        return configOverrideDto;
+    }
+    
+    /**
+     * Gets the configuration override for a specific UID.
+     *
+     * @param uid The UID for which to get the override
+     * @return The configuration override or null if not found
+     */
+    public ConfigOverrideDto getConfigOverride(String uid) {
+        if (uid == null || uid.trim().isEmpty()) {
+            logger.error("Cannot get config override: UID is null or empty");
+            return null;
+        }
+        
+        ConfigOverrideDto override = configOverrides.get(uid);
+        if (override == null) {
+            logger.debug("No config override found for UID: {}", maskUid(uid));
+        } else {
+            logger.debug("Retrieved config override for UID: {}", maskUid(uid));
+        }
+        
+        return override;
+    }
+    
+    /**
+     * Removes the configuration override for a specific UID.
+     *
+     * @param uid The UID for which to remove the override
+     * @return true if an override was removed, false otherwise
+     */
+    public boolean removeConfigOverride(String uid) {
+        if (uid == null || uid.trim().isEmpty()) {
+            logger.error("Cannot remove config override: UID is null or empty");
+            return false;
+        }
+        
+        ConfigOverrideDto removed = configOverrides.remove(uid);
+        if (removed != null) {
+            logger.info("Removed config override for UID: {}", maskUid(uid));
+            return true;
+        } else {
+            logger.debug("No config override found to remove for UID: {}", maskUid(uid));
+            return false;
+        }
+    }
+    
+    /**
+     * Clears all configuration overrides.
+     */
+    public void clearAllConfigOverrides() {
+        logger.info("Clearing all config overrides. Count before clearing: {}", configOverrides.size());
+        configOverrides.clear();
+    }
+    
+    /**
+     * Gets the count of active configuration overrides.
+     *
+     * @return The number of active configuration overrides
+     */
+    public int getConfigOverrideCount() {
+        return configOverrides.size();
+    }
+    
+    /**
+     * Masks a UID for logging purposes to protect PII.
+     *
+     * @param uid The UID to mask
+     * @return The masked UID
+     */
+    private String maskUid(String uid) {
+        if (uid == null || uid.length() <= 4) {
+            return "****";
+        }
+        
+        // Show only last 4 characters, mask the rest
+        return "****" + uid.substring(Math.max(0, uid.length() - 4));
+    }
+}

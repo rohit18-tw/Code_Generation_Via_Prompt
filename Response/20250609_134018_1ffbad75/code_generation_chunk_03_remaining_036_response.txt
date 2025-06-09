@@ -1,0 +1,64 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:51:50
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_036
+# ==================================================
+
+package com.ekyc.service.service;
+
+import com.ekyc.service.dto.UidaiOtpInitiateRequestDto;
+import com.ekyc.service.dto.UidaiOtpInitiateResponseDto;
+import com.ekyc.service.dto.UidaiOtpVerifyRequestDto;
+import com.ekyc.service.dto.UidaiOtpVerifyResponseDto;
+
+import java.util.concurrent.CompletableFuture;
+
+/**
+ * Service interface for UIDAI (Unique Identification Authority of India) API operations.
+ * This service handles communication with the UIDAI API for Aadhaar-based verification processes.
+ */
+public interface UidaiApiService {
+
+    /**
+     * Initiates the OTP generation process by calling the UIDAI API.
+     * 
+     * @param requestDto The request containing Aadhaar number and other required parameters
+     * @return A CompletableFuture containing the response from UIDAI OTP initiation API
+     * @throws com.ekyc.service.exception.ExternalServiceException if there's an error communicating with UIDAI
+     * @throws com.ekyc.service.exception.ValidationException if the request parameters are invalid
+     */
+    CompletableFuture<UidaiOtpInitiateResponseDto> initiateOtp(UidaiOtpInitiateRequestDto requestDto);
+
+    /**
+     * Verifies the OTP provided by the user against the UIDAI API.
+     * 
+     * @param requestDto The request containing the OTP, transaction ID and other required parameters
+     * @return A CompletableFuture containing the response from UIDAI OTP verification API
+     * @throws com.ekyc.service.exception.ExternalServiceException if there's an error communicating with UIDAI
+     * @throws com.ekyc.service.exception.ValidationException if the request parameters are invalid
+     */
+    CompletableFuture<UidaiOtpVerifyResponseDto> verifyOtp(UidaiOtpVerifyRequestDto requestDto);
+
+    /**
+     * Checks the health/status of the UIDAI API service.
+     * 
+     * @return true if the UIDAI service is available and operational, false otherwise
+     */
+    boolean isServiceAvailable();
+
+    /**
+     * Retrieves the current rate limit status for UIDAI API calls.
+     * 
+     * @return The number of remaining API calls allowed in the current time window
+     */
+    int getRateLimitStatus();
+
+    /**
+     * Validates an Aadhaar number format without making an API call.
+     * This is a utility method for basic format validation before sending to UIDAI.
+     * 
+     * @param aadhaarNumber The Aadhaar number to validate
+     * @return true if the format is valid, false otherwise
+     */
+    boolean isValidAadhaarFormat(String aadhaarNumber);
+}

@@ -1,0 +1,99 @@
+[2025-06-05 20:42:16] [INFO] 🚀 Session started: 20250605_204216_171d021c
+[2025-06-05 20:42:16] [INFO] 📁 Session directory: Response/20250605_204216_171d021c
+[2025-06-05 20:42:16] [INFO] 🚀 Starting Agentic Workflow
+[2025-06-05 20:42:16] [INFO]    Input: ./Prompts/
+[2025-06-05 20:42:16] [INFO]    Max iterations: 5
+[2025-06-05 20:42:16] [INFO]    Session ID: 20250605_204216_171d021c
+[2025-06-05 20:42:16] [INFO] --------------------------------------------------
+[2025-06-05 20:42:16] [INFO] 🔍 Processing input: ./Prompts/
+[2025-06-05 20:42:16] [SUCCESS] ✅ SUCCESS in input_processing: Input processed - Type: folder, Source: Prompts
+[2025-06-05 20:42:16] [INFO] 🎯 Starting development plan generation...
+[2025-06-05 20:42:16] [INFO] 🎯 Sending plan generation request to Claude...
+[2025-06-05 20:43:15] [INFO] 💬 LLM Interaction: plan_generation -> plan_generation_001_response.txt
+[2025-06-05 20:43:15] [INFO] 📝 Plan generation response saved to: plan_generation_001_response.txt
+[2025-06-05 20:43:15] [SUCCESS] ✅ SUCCESS in plan_generation: Plan successfully parsed and structured
+[2025-06-05 20:43:15] [INFO] 🌳 Project tree structure saved to: project_structure.txt
+[2025-06-05 20:43:15] [INFO] 📊 Code generation analysis saved to: code_generation_analysis.json
+[2025-06-05 20:43:15] [INFO] 📋 Code Generation Insights:
+[2025-06-05 20:43:15] [INFO]    Strategy: file_by_file
+[2025-06-05 20:43:15] [INFO]    Total Files: 40
+[2025-06-05 20:43:15] [INFO]    Generation Order: config → entities → repositories → services → controllers → middleware → validators → tests
+[2025-06-05 20:43:15] [INFO]    High Priority Files: 26
+[2025-06-05 20:43:15] [INFO] 📋 Plan Summary:
+[2025-06-05 20:43:15] [INFO]    🎯 **Enhanced Project Plan Generated**
+[2025-06-05 20:43:15] [INFO]    **Title**: eKYC Verification System
+[2025-06-05 20:43:15] [INFO]    **Language**: csharp
+[2025-06-05 20:43:15] [INFO]    **Framework**: dotnet-webapi
+[2025-06-05 20:43:15] [INFO]    **Type**: api
+[2025-06-05 20:43:15] [INFO]    **Code Generation Strategy**: file_by_file
+[2025-06-05 20:43:15] [INFO]    **Generation Order**: config → entities → repositories → services → controllers → middleware → validators → tests
+[2025-06-05 20:43:15] [INFO]    **Implementation Steps**: 12 steps planned
+[2025-06-05 20:43:15] [INFO]    **Files to Create**: 40 files
+[2025-06-05 20:43:15] [INFO]    Ready for enhanced code generation!
+[2025-06-05 20:43:15] [INFO] 
+🌳 Project Structure:
+[2025-06-05 20:43:15] [INFO]    ekyc-verification-system/
+[2025-06-05 20:43:15] [INFO]    ├── MockUidai.API/
+[2025-06-05 20:43:15] [INFO]    │   ├── Controllers/
+[2025-06-05 20:43:15] [INFO]    │   │   ├── AdminController.cs
+[2025-06-05 20:43:15] [INFO]    │   │   └── UidaiController.cs
+[2025-06-05 20:43:15] [INFO]    │   ├── Models/
+[2025-06-05 20:43:15] [INFO]    │   │   ├── ConfigOverrideRequest.cs
+[2025-06-05 20:43:15] [INFO]    │   │   ├── EkycInitiateRequest.cs
+[2025-06-05 20:43:15] [INFO]    │   │   ├── EkycInitiateResponse.cs
+[2025-06-05 20:43:15] [INFO]    │   │   ├── KycData.cs
+[2025-06-05 20:43:15] [INFO]    │   │   ├── OtpVerifyRequest.cs
+[2025-06-05 20:43:15] [INFO]    │   │   └── OtpVerifyResponse.cs
+[2025-06-05 20:43:15] [INFO]    │   ├── Program.cs
+[2025-06-05 20:43:15] [INFO]    │   ├── Services/
+[2025-06-05 20:43:15] [INFO]    │   │   ├── MockConfigService.cs
+[2025-06-05 20:43:15] [INFO]    │   │   ├── MockUidaiService.cs
+[2025-06-05 20:43:15] [INFO]    │   │   └── TraceLoggerService.cs
+[2025-06-05 20:43:15] [INFO]    │   └── appsettings.json
+[2025-06-05 20:43:15] [INFO]    ├── eKYC.API/
+[2025-06-05 20:43:15] [INFO]    │   ├── Configuration/
+[2025-06-05 20:43:15] [INFO]    │   │   ├── DatabaseContext.cs
+[2025-06-05 20:43:15] [INFO]    │   │   └── LoggingConfiguration.cs
+[2025-06-05 20:43:15] [INFO]    │   ├── Controllers/
+[2025-06-05 20:43:15] [INFO]    │   │   └── EkycController.cs
+[2025-06-05 20:43:15] [INFO]    │   ├── Middleware/
+[2025-06-05 20:43:15] [INFO]    │   │   ├── CorrelationIdMiddleware.cs
+[2025-06-05 20:43:15] [INFO]    │   │   └── ExceptionHandlingMiddleware.cs
+[2025-06-05 20:43:15] [INFO]    │   ├── Models/
+[2025-06-05 20:43:15] [INFO]    │   │   ├── DTOs/
+[2025-06-05 20:43:15] [INFO]    │   │   │   ├── EkycRequestDto.cs
+[2025-06-05 20:43:15] [INFO]    │   │   │   ├── EkycResponseDto.cs
+[2025-06-05 20:43:15] [INFO]    │   │   │   └── OtpVerificationDto.cs
+[2025-06-05 20:43:15] [INFO]    │   │   ├── Entities/
+[2025-06-05 20:43:15] [INFO]    │   │   │   ├── EkycRequest.cs
+[2025-06-05 20:43:15] [INFO]    │   │   │   └── OtpVerification.cs
+[2025-06-05 20:43:15] [INFO]    │   │   ├── Enums/
+[2025-06-05 20:43:15] [INFO]    │   │   │   ├── ConsentType.cs
+[2025-06-05 20:43:15] [INFO]    │   │   │   ├── IdType.cs
+[2025-06-05 20:43:15] [INFO]    │   │   │   └── VerificationStatus.cs
+[2025-06-05 20:43:15] [INFO]    │   │   └── ErrorResponse.cs
+[2025-06-05 20:43:15] [INFO]    │   ├── Program.cs
+[2025-06-05 20:43:15] [INFO]    │   ├── Repositories/
+[2025-06-05 20:43:15] [INFO]    │   │   └── EkycRepository.cs
+[2025-06-05 20:43:15] [INFO]    │   ├── Services/
+[2025-06-05 20:43:15] [INFO]    │   │   ├── EkycService.cs
+[2025-06-05 20:43:15] [INFO]    │   │   └── UidaiApiService.cs
+[2025-06-05 20:43:15] [INFO]    │   ├── Validators/
+[2025-06-05 20:43:15] [INFO]    │   │   ├── EkycRequestValidator.cs
+[2025-06-05 20:43:15] [INFO]    │   │   └── OtpVerificationValidator.cs
+[2025-06-05 20:43:15] [INFO]    │   └── appsettings.json
+[2025-06-05 20:43:15] [INFO]    └── eKYC.Tests/
+[2025-06-05 20:43:15] [INFO]        ├── Integration/
+[2025-06-05 20:43:15] [INFO]        │   ├── EkycControllerTests.cs
+[2025-06-05 20:43:15] [INFO]        │   └── EkycRepositoryTests.cs
+[2025-06-05 20:43:15] [INFO]        └── Unit/
+[2025-06-05 20:43:15] [INFO]            ├── EkycRequestValidatorTests.cs
+[2025-06-05 20:43:15] [INFO]            ├── EkycServiceTests.cs
+[2025-06-05 20:43:15] [INFO]            ├── OtpVerificationValidatorTests.cs
+[2025-06-05 20:43:15] [INFO]            └── UidaiApiServiceTests.cs
+[2025-06-05 20:43:15] [SUCCESS] ✅ SUCCESS in plan_generation: Development plan generated and saved to development_plan.json
+[2025-06-05 20:43:15] [INFO] --------------------------------------------------
+[2025-06-05 20:43:15] [SUCCESS] ✅ SUCCESS in workflow: Workflow completed!
+[2025-06-05 20:43:15] [INFO]    Final step: git_complete
+[2025-06-05 20:43:15] [INFO]    Iterations: 0
+[2025-06-05 20:43:15] [INFO]    Errors: 0

@@ -1,0 +1,241 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:57:40
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_048
+# ==================================================
+
+package com.ekyc.service.util;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+import org.springframework.stereotype.Component;
+
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
+
+/**
+ * Utility class for audit-ready logging with PII masking capabilities.
+ * This class provides methods to log messages with proper masking of sensitive information
+ * and maintains a consistent logging format across the application.
+ */
+@Component
+public class LoggingUtil {
+
+    private static final Map<Class<?>, Logger> LOGGERS = new ConcurrentHashMap<>();
+    
+    // Constants for MDC keys
+    public static final String REQUEST_ID = "requestId";
+    public static final String USER_ID = "userId";
+    public static final String SESSION_ID = "sessionId";
+    
+    // Masking patterns for sensitive information
+    private static final Pattern EMAIL_PATTERN = 
+            Pattern.compile("([a-zA-Z0-9_.-]+)@([a-zA-Z0-9_.-]+)\\.([a-zA-Z]{2,})");
+    private static final Pattern PHONE_PATTERN = 
+            Pattern.compile("\\b(\\d{3})[-.\\s]?(\\d{3})[-.\\s]?(\\d{4})\\b");
+    private static final Pattern SSN_PATTERN = 
+            Pattern.compile("\\b(\\d{3})[-.\\s]?(\\d{2})[-.\\s]?(\\d{4})\\b");
+    private static final Pattern CREDIT_CARD_PATTERN = 
+            Pattern.compile("\\b(\\d{4})[-.\\s]?(\\d{4})[-.\\s]?(\\d{4})[-.\\s]?(\\d{4})\\b");
+    private static final Pattern NATIONAL_ID_PATTERN = 
+            Pattern.compile("\\b([A-Z0-9]{2,})[-.\\s]?([A-Z0-9]{2,})[-.\\s]?([A-Z0-9]{2,})\\b");
+
+    /**
+     * Get a logger for the specified class.
+     * 
+     * @param clazz The class to get the logger for
+     * @return The logger instance
+     */
+    public static Logger getLogger(Class<?> clazz) {
+        return LOGGERS.computeIfAbsent(clazz, LoggerFactory::getLogger);
+    }
+
+    /**
+     * Initialize a request context with a unique request ID.
+     * 
+     * @return The generated request ID
+     */
+    public static String initializeRequestContext() {
+        String requestId = UUID.randomUUID().toString();
+        MDC.put(REQUEST_ID, requestId);
+        return requestId;
+    }
+
+    /**
+     * Set user context information in MDC.
+     * 
+     * @param userId The user ID
+     * @param sessionId The session ID
+     */
+    public static void setUserContext(String userId, String sessionId) {
+        if (userId != null) {
+            MDC.put(USER_ID, userId);
+        }
+        if (sessionId != null) {
+            MDC.put(SESSION_ID, sessionId);
+        }
+    }
+
+    /**
+     * Clear all context information from MDC.
+     */
+    public static void clearContext() {
+        MDC.clear();
+    }
+
+    /**
+     * Mask sensitive information in the provided text.
+     * 
+     * @param text The text to mask
+     * @return The masked text
+     */
+    public static String maskSensitiveInfo(String text) {
+        if (text == null) {
+            return null;
+        }
+        
+        // Mask email addresses
+        String masked = EMAIL_PATTERN.matcher(text).replaceAll(match -> {
+            String[] parts = match.group().split("@");
+            if (parts.length == 2) {
+                return maskString(parts[0], 2) + "@" + parts[1];
+            }
+            return match.group();
+        });
+        
+        // Mask phone numbers
+        masked = PHONE_PATTERN.matcher(masked).replaceAll("XXX-XXX-$3");
+        
+        // Mask SSNs
+        masked = SSN_PATTERN.matcher(masked).replaceAll("XXX-XX-$3");
+        
+        // Mask credit card numbers
+        masked = CREDIT_CARD_PATTERN.matcher(masked).replaceAll("XXXX-XXXX-XXXX-$4");
+        
+        // Mask national IDs
+        masked = NATIONAL_ID_PATTERN.matcher(masked).replaceAll("$1-XX-XXXX");
+        
+        return masked;
+    }
+
+    /**
+     * Mask a string by replacing characters with asterisks, keeping the specified number of characters visible.
+     * 
+     * @param input The string to mask
+     * @param visibleChars The number of characters to keep visible
+     * @return The masked string
+     */
+    public static String maskString(String input, int visibleChars) {
+        if (input == null || input.isEmpty() || input.length() <= visibleChars) {
+            return input;
+        }
+        
+        StringBuilder masked = new StringBuilder();
+        masked.append(input.substring(0, visibleChars));
+        for (int i = visibleChars; i < input.length(); i++) {
+            masked.append('*');
+        }
+        
+        return masked.toString();
+    }
+
+    /**
+     * Log an info message with masked sensitive information.
+     * 
+     * @param logger The logger to use
+     * @param message The message to log
+     * @param args The arguments for the message
+     */
+    public static void info(Logger logger, String message, Object... args) {
+        if (logger.isInfoEnabled()) {
+            String maskedMessage = maskSensitiveInfo(message);
+            Object[] maskedArgs = maskArgs(args);
+            logger.info(maskedMessage, maskedArgs);
+        }
+    }
+
+    /**
+     * Log a debug message with masked sensitive information.
+     * 
+     * @param logger The logger to use
+     * @param message The message to log
+     * @param args The arguments for the message
+     */
+    public static void debug(Logger logger, String message, Object... args) {
+        if (logger.isDebugEnabled()) {
+            String maskedMessage = maskSensitiveInfo(message);
+            Object[] maskedArgs = maskArgs(args);
+            logger.debug(maskedMessage, maskedArgs);
+        }
+    }
+
+    /**
+     * Log a warning message with masked sensitive information.
+     * 
+     * @param logger The logger to use
+     * @param message The message to log
+     * @param args The arguments for the message
+     */
+    public static void warn(Logger logger, String message, Object... args) {
+        if (logger.isWarnEnabled()) {
+            String maskedMessage = maskSensitiveInfo(message);
+            Object[] maskedArgs = maskArgs(args);
+            logger.warn(maskedMessage, maskedArgs);
+        }
+    }
+
+    /**
+     * Log an error message with masked sensitive information.
+     * 
+     * @param logger The logger to use
+     * @param message The message to log
+     * @param args The arguments for the message
+     */
+    public static void error(Logger logger, String message, Object... args) {
+        if (logger.isErrorEnabled()) {
+            String maskedMessage = maskSensitiveInfo(message);
+            Object[] maskedArgs = maskArgs(args);
+            logger.error(maskedMessage, maskedArgs);
+        }
+    }
+
+    /**
+     * Log an error message with an exception and masked sensitive information.
+     * 
+     * @param logger The logger to use
+     * @param message The message to log
+     * @param throwable The exception to log
+     */
+    public static void error(Logger logger, String message, Throwable throwable) {
+        if (logger.isErrorEnabled()) {
+            String maskedMessage = maskSensitiveInfo(message);
+            logger.error(maskedMessage, throwable);
+        }
+    }
+
+    /**
+     * Mask sensitive information in the provided arguments.
+     * 
+     * @param args The arguments to mask
+     * @return The masked arguments
+     */
+    private static Object[] maskArgs(Object[] args) {
+        if (args == null || args.length == 0) {
+            return args;
+        }
+        
+        Object[] maskedArgs = new Object[args.length];
+        for (int i = 0; i < args.length; i++) {
+            if (args[i] instanceof String) {
+                maskedArgs[i] = maskSensitiveInfo((String) args[i]);
+            } else {
+                maskedArgs[i] = args[i];
+            }
+        }
+        
+        return maskedArgs;
+    }
+}

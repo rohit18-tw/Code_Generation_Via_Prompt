@@ -1,0 +1,204 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:48:58
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_025
+# ==================================================
+
+package com.mock.uidai.dto;
+
+import java.io.Serializable;
+import java.util.Objects;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Data Transfer Object for OTP initiation response.
+ * This class represents the response structure when an OTP initiation request is processed.
+ * It contains information about the transaction ID and status of the OTP request.
+ */
+public class OtpInitiateResponseDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Transaction ID associated with the OTP request.
+     * This ID can be used for subsequent verification operations.
+     */
+    @NotBlank(message = "Transaction ID cannot be blank")
+    @Pattern(regexp = "^[a-zA-Z0-9-]*$", message = "Transaction ID must contain only alphanumeric characters and hyphens")
+    @JsonProperty("txnId")
+    private String transactionId;
+
+    /**
+     * Status of the OTP initiation request.
+     * Indicates whether the OTP was successfully sent or if there was an error.
+     */
+    @NotBlank(message = "Status cannot be blank")
+    private String status;
+
+    /**
+     * Error code in case of failure.
+     * This field will be populated only if the OTP initiation failed.
+     */
+    private String errorCode;
+
+    /**
+     * Error message providing details about the failure.
+     * This field will be populated only if the OTP initiation failed.
+     */
+    private String errorMessage;
+
+    /**
+     * Default constructor for OtpInitiateResponseDto.
+     */
+    public OtpInitiateResponseDto() {
+    }
+
+    /**
+     * Parameterized constructor for OtpInitiateResponseDto.
+     *
+     * @param transactionId The transaction ID associated with the OTP request
+     * @param status        The status of the OTP initiation request
+     */
+    public OtpInitiateResponseDto(String transactionId, String status) {
+        this.transactionId = transactionId;
+        this.status = status;
+    }
+
+    /**
+     * Parameterized constructor for OtpInitiateResponseDto including error details.
+     *
+     * @param transactionId The transaction ID associated with the OTP request
+     * @param status        The status of the OTP initiation request
+     * @param errorCode     The error code in case of failure
+     * @param errorMessage  The error message providing details about the failure
+     */
+    public OtpInitiateResponseDto(String transactionId, String status, String errorCode, String errorMessage) {
+        this.transactionId = transactionId;
+        this.status = status;
+        this.errorCode = errorCode;
+        this.errorMessage = errorMessage;
+    }
+
+    /**
+     * Gets the transaction ID.
+     *
+     * @return The transaction ID
+     */
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    /**
+     * Sets the transaction ID.
+     *
+     * @param transactionId The transaction ID to set
+     */
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    /**
+     * Gets the status.
+     *
+     * @return The status
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * Sets the status.
+     *
+     * @param status The status to set
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    /**
+     * Gets the error code.
+     *
+     * @return The error code
+     */
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    /**
+     * Sets the error code.
+     *
+     * @param errorCode The error code to set
+     */
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    /**
+     * Gets the error message.
+     *
+     * @return The error message
+     */
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    /**
+     * Sets the error message.
+     *
+     * @param errorMessage The error message to set
+     */
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    /**
+     * Checks if this OtpInitiateResponseDto is equal to another object.
+     *
+     * @param o The object to compare with
+     * @return true if the objects are equal, false otherwise
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OtpInitiateResponseDto that = (OtpInitiateResponseDto) o;
+        return Objects.equals(transactionId, that.transactionId) &&
+                Objects.equals(status, that.status) &&
+                Objects.equals(errorCode, that.errorCode) &&
+                Objects.equals(errorMessage, that.errorMessage);
+    }
+
+    /**
+     * Generates a hash code for this OtpInitiateResponseDto.
+     *
+     * @return The hash code
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(transactionId, status, errorCode, errorMessage);
+    }
+
+    /**
+     * Returns a string representation of this OtpInitiateResponseDto.
+     * Note: The transaction ID is partially masked for security reasons.
+     *
+     * @return A string representation of this OtpInitiateResponseDto
+     */
+    @Override
+    public String toString() {
+        String maskedTransactionId = transactionId != null && transactionId.length() > 4 ?
+                transactionId.substring(0, 2) + "****" + transactionId.substring(transactionId.length() - 2) :
+                transactionId;
+        
+        return "OtpInitiateResponseDto{" +
+                "transactionId='" + maskedTransactionId + '\'' +
+                ", status='" + status + '\'' +
+                ", errorCode='" + errorCode + '\'' +
+                ", errorMessage='" + errorMessage + '\'' +
+                '}';
+    }
+}

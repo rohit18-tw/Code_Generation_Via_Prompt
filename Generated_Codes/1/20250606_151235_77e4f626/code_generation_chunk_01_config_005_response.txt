@@ -1,0 +1,118 @@
+# LLM Response - code_generation_chunk_01_config
+# Timestamp: 2025-06-06 15:15:44
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_01_config_005
+# ==================================================
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api/v1
+
+spring:
+  application:
+    name: ekyc-service
+  
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:ekyc}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 600000
+      max-lifetime: 1800000
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+    default-property-inclusion: non_null
+    date-format: yyyy-MM-dd'T'HH:mm:ss.SSSZ
+  
+  webflux:
+    client:
+      max-in-memory-size: 16MB
+
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+    com.example.ekyc: DEBUG
+    org.hibernate.SQL: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/ekyc-service.log
+    max-size: 10MB
+    max-history: 7
+
+# External service configurations
+external-services:
+  identity-verification:
+    base-url: ${IDENTITY_VERIFICATION_URL:http://localhost:8081}
+    api-key: ${IDENTITY_VERIFICATION_API_KEY:test-api-key}
+    timeout: 30000
+  document-verification:
+    base-url: ${DOCUMENT_VERIFICATION_URL:http://localhost:8082}
+    api-key: ${DOCUMENT_VERIFICATION_API_KEY:test-api-key}
+    timeout: 30000
+  face-recognition:
+    base-url: ${FACE_RECOGNITION_URL:http://localhost:8083}
+    api-key: ${FACE_RECOGNITION_API_KEY:test-api-key}
+    timeout: 60000
+
+# Security configurations
+security:
+  jwt:
+    secret-key: ${JWT_SECRET_KEY:default-secret-key-for-development-only-please-change-in-production}
+    expiration-time: 86400000 # 24 hours in milliseconds
+    token-prefix: "Bearer "
+    header-name: "Authorization"
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:*}
+    allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+    allowed-headers: Authorization,Content-Type,X-Requested-With,Accept
+    max-age: 3600
+
+# Application specific configurations
+ekyc:
+  verification:
+    max-attempts: 3
+    session-timeout: 1800 # 30 minutes in seconds
+  document:
+    allowed-types: jpg,jpeg,png,pdf
+    max-size: 5242880 # 5MB in bytes
+  storage:
+    location: ${STORAGE_LOCATION:./uploads}
+    temp-dir: ${TEMP_DIR:./temp}
+
+# Management endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when_authorized
+  health:
+    db:
+      enabled: true

@@ -1,0 +1,460 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:45:00
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_011
+# ==================================================
+
+package com.ekyc.service.entity;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.UUID;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+
+/**
+ * Entity class representing an eKYC request in the system.
+ * This class stores all information related to a customer's KYC verification request.
+ */
+@Entity
+@Table(name = "ekyc_requests")
+public class EkycRequest {
+
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Type(type = "org.hibernate.type.UUIDCharType")
+    @Column(name = "id", updatable = false, nullable = false, length = 36)
+    private UUID id;
+
+    @NotBlank(message = "Customer ID is required")
+    @Column(name = "customer_id", nullable = false)
+    private String customerId;
+
+    @NotBlank(message = "First name is required")
+    @Size(min = 2, max = 100, message = "First name must be between 2 and 100 characters")
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+
+    @NotBlank(message = "Last name is required")
+    @Size(min = 2, max = 100, message = "Last name must be between 2 and 100 characters")
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
+
+    @Email(message = "Email should be valid")
+    @NotBlank(message = "Email is required")
+    @Column(name = "email", nullable = false)
+    private String email;
+
+    @NotBlank(message = "Phone number is required")
+    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Phone number should be valid")
+    @Column(name = "phone_number", nullable = false)
+    private String phoneNumber;
+
+    @NotBlank(message = "ID document number is required")
+    @Column(name = "id_document_number", nullable = false)
+    private String idDocumentNumber;
+
+    @NotNull(message = "ID document type is required")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "id_document_type", nullable = false)
+    private DocumentType idDocumentType;
+
+    @Column(name = "id_document_front_url")
+    private String idDocumentFrontUrl;
+
+    @Column(name = "id_document_back_url")
+    private String idDocumentBackUrl;
+
+    @Column(name = "selfie_url")
+    private String selfieUrl;
+
+    @NotNull(message = "Status is required")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private EkycStatus status;
+
+    @Column(name = "rejection_reason")
+    private String rejectionReason;
+
+    @Column(name = "verification_notes")
+    private String verificationNotes;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
+
+    @Column(name = "completed_at")
+    private LocalDateTime completedAt;
+
+    @Column(name = "address_line_1")
+    private String addressLine1;
+
+    @Column(name = "address_line_2")
+    private String addressLine2;
+
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "state")
+    private String state;
+
+    @Column(name = "postal_code")
+    private String postalCode;
+
+    @Column(name = "country")
+    private String country;
+
+    @Column(name = "date_of_birth")
+    private String dateOfBirth;
+
+    /**
+     * Enum representing the types of identity documents accepted for KYC verification.
+     */
+    public enum DocumentType {
+        PASSPORT,
+        DRIVERS_LICENSE,
+        NATIONAL_ID,
+        RESIDENCE_PERMIT,
+        OTHER
+    }
+
+    /**
+     * Enum representing the possible statuses of an eKYC request.
+     */
+    public enum EkycStatus {
+        PENDING,
+        IN_PROGRESS,
+        APPROVED,
+        REJECTED,
+        ADDITIONAL_INFO_REQUIRED,
+        EXPIRED
+    }
+
+    /**
+     * Default constructor required by JPA.
+     */
+    public EkycRequest() {
+        // Required by JPA
+    }
+
+    /**
+     * Sets timestamps before persisting the entity.
+     */
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = this.createdAt;
+        if (this.status == null) {
+            this.status = EkycStatus.PENDING;
+        }
+    }
+
+    /**
+     * Updates the updatedAt timestamp before updating the entity.
+     */
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+        if (this.status == EkycStatus.APPROVED || this.status == EkycStatus.REJECTED) {
+            if (this.completedAt == null) {
+                this.completedAt = this.updatedAt;
+            }
+        }
+    }
+
+    // Getters and Setters
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getIdDocumentNumber() {
+        return idDocumentNumber;
+    }
+
+    public void setIdDocumentNumber(String idDocumentNumber) {
+        this.idDocumentNumber = idDocumentNumber;
+    }
+
+    public DocumentType getIdDocumentType() {
+        return idDocumentType;
+    }
+
+    public void setIdDocumentType(DocumentType idDocumentType) {
+        this.idDocumentType = idDocumentType;
+    }
+
+    public String getIdDocumentFrontUrl() {
+        return idDocumentFrontUrl;
+    }
+
+    public void setIdDocumentFrontUrl(String idDocumentFrontUrl) {
+        this.idDocumentFrontUrl = idDocumentFrontUrl;
+    }
+
+    public String getIdDocumentBackUrl() {
+        return idDocumentBackUrl;
+    }
+
+    public void setIdDocumentBackUrl(String idDocumentBackUrl) {
+        this.idDocumentBackUrl = idDocumentBackUrl;
+    }
+
+    public String getSelfieUrl() {
+        return selfieUrl;
+    }
+
+    public void setSelfieUrl(String selfieUrl) {
+        this.selfieUrl = selfieUrl;
+    }
+
+    public EkycStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(EkycStatus status) {
+        this.status = status;
+    }
+
+    public String getRejectionReason() {
+        return rejectionReason;
+    }
+
+    public void setRejectionReason(String rejectionReason) {
+        this.rejectionReason = rejectionReason;
+    }
+
+    public String getVerificationNotes() {
+        return verificationNotes;
+    }
+
+    public void setVerificationNotes(String verificationNotes) {
+        this.verificationNotes = verificationNotes;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public LocalDateTime getCompletedAt() {
+        return completedAt;
+    }
+
+    public void setCompletedAt(LocalDateTime completedAt) {
+        this.completedAt = completedAt;
+    }
+
+    public String getAddressLine1() {
+        return addressLine1;
+    }
+
+    public void setAddressLine1(String addressLine1) {
+        this.addressLine1 = addressLine1;
+    }
+
+    public String getAddressLine2() {
+        return addressLine2;
+    }
+
+    public void setAddressLine2(String addressLine2) {
+        this.addressLine2 = addressLine2;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EkycRequest that = (EkycRequest) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(customerId, that.customerId) &&
+                Objects.equals(idDocumentNumber, that.idDocumentNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, customerId, idDocumentNumber);
+    }
+
+    @Override
+    public String toString() {
+        return "EkycRequest{" +
+                "id=" + id +
+                ", customerId='" + customerId + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + maskEmail(email) + '\'' +
+                ", phoneNumber='" + maskPhoneNumber(phoneNumber) + '\'' +
+                ", idDocumentNumber='" + maskDocumentNumber(idDocumentNumber) + '\'' +
+                ", idDocumentType=" + idDocumentType +
+                ", status=" + status +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", completedAt=" + completedAt +
+                '}';
+    }
+
+    /**
+     * Masks an email address for privacy in logs.
+     * 
+     * @param email The email to mask
+     * @return Masked email (e.g., j***@example.com)
+     */
+    private String maskEmail(String email) {
+        if (email == null || email.isEmpty() || !email.contains("@")) {
+            return email;
+        }
+        
+        String[] parts = email.split("@");
+        String name = parts[0];
+        String domain = parts[1];
+        
+        if (name.length() <= 1) {
+            return email;
+        }
+        
+        return name.charAt(0) + "***@" + domain;
+    }
+
+    /**
+     * Masks a phone number for privacy in logs.
+     * 
+     * @param phoneNumber The phone number to mask
+     * @return Masked phone number (e.g., ******7890)
+     */
+    private String maskPhoneNumber(String phoneNumber) {
+        if (phoneNumber == null || phoneNumber.length() <= 4) {
+            return phoneNumber;
+        }
+        
+        return "******" + phoneNumber.substring(phoneNumber.length() - 4);
+    }
+
+    /**
+     * Masks a document number for privacy in logs.
+     * 
+     * @param documentNumber The document number to mask
+     * @return Masked document number (e.g., ****3456)
+     */
+    private String maskDocumentNumber(String documentNumber) {
+        if (documentNumber == null || documentNumber.length() <= 4) {
+            return documentNumber;
+        }
+        
+        return "****" + documentNumber.substring(documentNumber.length() - 4);
+    }
+}

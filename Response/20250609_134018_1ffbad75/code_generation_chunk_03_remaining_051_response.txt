@@ -1,0 +1,221 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:59:06
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_051
+# ==================================================
+
+package com.ekyc.service.controller;
+
+import com.ekyc.service.dto.EkycRequestDto;
+import com.ekyc.service.dto.EkycResponseDto;
+import com.ekyc.service.enums.VerificationStatus;
+import com.ekyc.service.service.EkycService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@ExtendWith(SpringExtension.class)
+@WebMvcTest(EkycController.class)
+public class EkycControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private EkycService ekycService;
+
+    @TestConfiguration
+    static class TestConfig {
+        @Bean
+        public EkycService ekycService() {
+            return new TestEkycService();
+        }
+    }
+
+    @BeforeEach
+    public void setup() {
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    }
+
+    @Test
+    @DisplayName("Should successfully verify eKYC request")
+    public void testVerifyEkyc_Success() throws Exception {
+        // Arrange
+        EkycRequestDto requestDto = new EkycRequestDto();
+        requestDto.setFirstName("John");
+        requestDto.setLastName("Doe");
+        requestDto.setDateOfBirth("1990-01-01");
+        requestDto.setIdNumber("ABC123456");
+        requestDto.setIdType("PASSPORT");
+        requestDto.setCountry("USA");
+        requestDto.setDocumentImage("base64EncodedImage");
+
+        // Act & Assert
+        mockMvc.perform(post("/api/v1/ekyc/verify")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.verificationId").exists())
+                .andExpect(jsonPath("$.status").value("VERIFIED"))
+                .andExpect(jsonPath("$.message").value("Verification successful"));
+    }
+
+    @Test
+    @DisplayName("Should return bad request for invalid eKYC request")
+    public void testVerifyEkyc_InvalidRequest() throws Exception {
+        // Arrange
+        EkycRequestDto requestDto = new EkycRequestDto();
+        // Missing required fields
+
+        // Act & Assert
+        mockMvc.perform(post("/api/v1/ekyc/verify")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").exists())
+                .andExpect(jsonPath("$.errors").exists());
+    }
+
+    @Test
+    @DisplayName("Should get verification status by ID")
+    public void testGetVerificationStatus() throws Exception {
+        // Arrange
+        String verificationId = UUID.randomUUID().toString();
+
+        // Act & Assert
+        mockMvc.perform(get("/api/v1/ekyc/status/{verificationId}", verificationId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.verificationId").value(verificationId))
+                .andExpect(jsonPath("$.status").value("VERIFIED"));
+    }
+
+    @Test
+    @DisplayName("Should return not found for non-existent verification ID")
+    public void testGetVerificationStatus_NotFound() throws Exception {
+        // Arrange
+        String nonExistentId = "non-existent-id";
+
+        // Act & Assert
+        mockMvc.perform(get("/api/v1/ekyc/status/{verificationId}", nonExistentId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Verification not found"));
+    }
+
+    @Test
+    @DisplayName("Should get verification metrics")
+    public void testGetVerificationMetrics() throws Exception {
+        // Arrange
+        String startDate = LocalDate.now().minusDays(30).toString();
+        String endDate = LocalDate.now().toString();
+
+        // Act & Assert
+        mockMvc.perform(get("/api/v1/ekyc/metrics")
+                .param("startDate", startDate)
+                .param("endDate", endDate)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalVerifications").exists())
+                .andExpect(jsonPath("$.successfulVerifications").exists())
+                .andExpect(jsonPath("$.failedVerifications").exists());
+    }
+
+    @Test
+    @DisplayName("Should return bad request for invalid date range")
+    public void testGetVerificationMetrics_InvalidDateRange() throws Exception {
+        // Arrange
+        String startDate = LocalDate.now().toString();
+        String endDate = LocalDate.now().minusDays(30).toString(); // End date before start date
+
+        // Act & Assert
+        mockMvc.perform(get("/api/v1/ekyc/metrics")
+                .param("startDate", startDate)
+                .param("endDate", endDate)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Invalid date range: end date must be after start date"));
+    }
+
+    /**
+     * Test implementation of EkycService for controller tests
+     */
+    static class TestEkycService implements EkycService {
+        private final Map<String, EkycResponseDto> verifications = new HashMap<>();
+
+        @Override
+        public EkycResponseDto verifyEkyc(EkycRequestDto request) {
+            if (request.getFirstName() == null || request.getLastName() == null || 
+                request.getIdNumber() == null || request.getIdType() == null) {
+                throw new IllegalArgumentException("Missing required fields");
+            }
+
+            String verificationId = UUID.randomUUID().toString();
+            EkycResponseDto response = new EkycResponseDto();
+            response.setVerificationId(verificationId);
+            response.setStatus(VerificationStatus.VERIFIED);
+            response.setMessage("Verification successful");
+            
+            verifications.put(verificationId, response);
+            return response;
+        }
+
+        @Override
+        public EkycResponseDto getVerificationStatus(String verificationId) {
+            if ("non-existent-id".equals(verificationId)) {
+                return null;
+            }
+            
+            EkycResponseDto response = new EkycResponseDto();
+            response.setVerificationId(verificationId);
+            response.setStatus(VerificationStatus.VERIFIED);
+            response.setMessage("Verification successful");
+            return response;
+        }
+
+        @Override
+        public Object getVerificationMetrics(String startDate, String endDate) {
+            LocalDate start = LocalDate.parse(startDate);
+            LocalDate end = LocalDate.parse(endDate);
+            
+            if (end.isBefore(start)) {
+                throw new IllegalArgumentException("Invalid date range: end date must be after start date");
+            }
+            
+            Map<String, Integer> metrics = new HashMap<>();
+            metrics.put("totalVerifications", 100);
+            metrics.put("successfulVerifications", 85);
+            metrics.put("failedVerifications", 15);
+            return metrics;
+        }
+    }
+}

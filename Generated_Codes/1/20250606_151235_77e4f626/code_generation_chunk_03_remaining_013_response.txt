@@ -1,0 +1,97 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-06 15:18:09
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_013
+# ==================================================
+
+package com.ekyc.service.enums;
+
+import java.util.Arrays;
+import java.util.Optional;
+
+/**
+ * Enumeration representing the types of identification documents supported by the eKYC system.
+ * Currently supports AADHAAR and VID (Virtual ID) document types.
+ */
+public enum IdType {
+    
+    /**
+     * Represents the Aadhaar card issued by UIDAI (Unique Identification Authority of India).
+     * A 12-digit unique identity number.
+     */
+    AADHAAR("aadhaar", "Aadhaar Card"),
+    
+    /**
+     * Represents the Virtual ID (VID) which is a temporary, revocable 16-digit random number
+     * mapped with the Aadhaar number.
+     */
+    VID("vid", "Virtual ID");
+    
+    private final String code;
+    private final String description;
+    
+    /**
+     * Constructor for IdType enum.
+     * 
+     * @param code The code representation of the ID type
+     * @param description A human-readable description of the ID type
+     */
+    IdType(String code, String description) {
+        this.code = code;
+        this.description = description;
+    }
+    
+    /**
+     * Gets the code representation of the ID type.
+     * 
+     * @return The code as a String
+     */
+    public String getCode() {
+        return code;
+    }
+    
+    /**
+     * Gets the description of the ID type.
+     * 
+     * @return The description as a String
+     */
+    public String getDescription() {
+        return description;
+    }
+    
+    /**
+     * Finds an IdType by its code.
+     * 
+     * @param code The code to search for
+     * @return An Optional containing the matching IdType, or empty if not found
+     */
+    public static Optional<IdType> findByCode(String code) {
+        if (code == null || code.isEmpty()) {
+            return Optional.empty();
+        }
+        
+        return Arrays.stream(IdType.values())
+                .filter(idType -> idType.getCode().equalsIgnoreCase(code))
+                .findFirst();
+    }
+    
+    /**
+     * Checks if the provided code is valid.
+     * 
+     * @param code The code to validate
+     * @return true if the code matches any IdType, false otherwise
+     */
+    public static boolean isValidCode(String code) {
+        return findByCode(code).isPresent();
+    }
+    
+    /**
+     * Returns a string representation of the enum value.
+     * 
+     * @return The code of this ID type
+     */
+    @Override
+    public String toString() {
+        return this.code;
+    }
+}

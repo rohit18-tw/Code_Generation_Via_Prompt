@@ -1,0 +1,1482 @@
+[2025-06-06 15:12:35] [INFO] 🚀 Session started: 20250606_151235_77e4f626
+[2025-06-06 15:12:35] [INFO] 📁 Session directory: Response/20250606_151235_77e4f626
+[2025-06-06 15:12:35] [INFO] 🧠 CTX Manager initialized with intelligent context optimization
+[2025-06-06 15:12:35] [INFO] 🔗 MCP Integration initialized with file system tools
+[2025-06-06 15:12:35] [INFO] 🔗 MCP Integration initialized with file system tools
+[2025-06-06 15:12:35] [INFO] 📁 File Creator initialized - Output: generated_code, Dry Run: False, Validation: True
+[2025-06-06 15:12:35] [INFO] 🚀 Code Generator initialized with CTX and MCP integration
+[2025-06-06 15:12:35] [INFO] 🔗 MCP Integration initialized with file system tools
+[2025-06-06 15:12:35] [INFO] 📁 File Creator initialized - Output: generated_code, Dry Run: False, Validation: True
+[2025-06-06 15:12:35] [INFO] 🚀 Starting Agentic Workflow
+[2025-06-06 15:12:35] [INFO]    Input: ./Prompts/
+[2025-06-06 15:12:35] [INFO]    Max iterations: 5
+[2025-06-06 15:12:35] [INFO]    Session ID: 20250606_151235_77e4f626
+[2025-06-06 15:12:35] [INFO] --------------------------------------------------
+[2025-06-06 15:12:35] [INFO] 🔍 Processing input: ./Prompts/
+[2025-06-06 15:12:35] [SUCCESS] ✅ SUCCESS in input_processing: Input processed - Type: folder, Source: Prompts
+[2025-06-06 15:12:35] [INFO] 🎯 Starting development plan generation...
+[2025-06-06 15:12:35] [INFO] 🎯 Sending plan generation request to Claude...
+[2025-06-06 15:14:22] [INFO] 💬 LLM Interaction: plan_generation -> plan_generation_001_response.txt
+[2025-06-06 15:14:22] [INFO] 📝 Plan generation response saved to: plan_generation_001_response.txt
+[2025-06-06 15:14:22] [ERROR] ❌ ERROR in plan_generation: Response appears to be truncated - increase MAX_TOKENS in config
+[2025-06-06 15:14:22] [ERROR] ❌ ERROR in plan_generation: JSON parsing failed: Expecting value: line 1 column 1 (char 0)
+[2025-06-06 15:14:22] [WARNING] ⚠️ Failed to parse JSON, attempting text extraction...
+[2025-06-06 15:14:22] [INFO] 🌳 Project tree structure saved to: project_structure.txt
+[2025-06-06 15:14:22] [INFO] 📊 Code generation analysis saved to: code_generation_analysis.json
+[2025-06-06 15:14:22] [INFO] 📋 Code Generation Insights:
+[2025-06-06 15:14:22] [INFO]    Strategy: file_by_file
+[2025-06-06 15:14:22] [INFO]    Total Files: 56
+[2025-06-06 15:14:22] [INFO]    Generation Order: config → entities → repositories → services → controllers → tests
+[2025-06-06 15:14:22] [INFO]    High Priority Files: 56
+[2025-06-06 15:14:22] [INFO] 📋 Plan Summary:
+[2025-06-06 15:14:22] [INFO]    🎯 **Enhanced Project Plan Generated**
+[2025-06-06 15:14:22] [INFO]    **Title**: eKYC Verification System with Mock UIDAI API
+[2025-06-06 15:14:22] [INFO]    **Language**: java
+[2025-06-06 15:14:22] [INFO]    **Framework**: spring-boot
+[2025-06-06 15:14:22] [INFO]    **Type**: api
+[2025-06-06 15:14:22] [INFO]    **Code Generation Strategy**: file_by_file
+[2025-06-06 15:14:22] [INFO]    **Generation Order**: config → entities → repositories → services → controllers → tests
+[2025-06-06 15:14:22] [INFO]    **Implementation Steps**: 13 steps planned
+[2025-06-06 15:14:22] [INFO]    **Files to Create**: 56 files
+[2025-06-06 15:14:22] [INFO]    Ready for enhanced code generation!
+[2025-06-06 15:14:22] [INFO] 
+🌳 Project Structure:
+[2025-06-06 15:14:22] [INFO]    ekyc-verification-system-with-mock-uidai-api/
+[2025-06-06 15:14:22] [INFO]    ├── ekyc-service/
+[2025-06-06 15:14:22] [INFO]    │   ├── pom.xml
+[2025-06-06 15:14:22] [INFO]    │   └── src/
+[2025-06-06 15:14:22] [INFO]    │       ├── main/
+[2025-06-06 15:14:22] [INFO]    │       │   ├── java/
+[2025-06-06 15:14:22] [INFO]    │       │   │   └── com/
+[2025-06-06 15:14:22] [INFO]    │       │   │       └── ekyc/
+[2025-06-06 15:14:22] [INFO]    │       │   │           └── service/
+[2025-06-06 15:14:22] [INFO]    │       │   │               ├── EkycServiceApplication.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               ├── config/
+[2025-06-06 15:14:22] [INFO]    │       │   │               │   └── WebClientConfig.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               ├── controller/
+[2025-06-06 15:14:22] [INFO]    │       │   │               │   ├── EkycController.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               │   └── OtpVerificationController.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               ├── dto/
+[2025-06-06 15:14:22] [INFO]    │       │   │               │   ├── EkycRequestDto.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               │   ├── EkycResponseDto.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               │   ├── ErrorResponseDto.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               │   ├── OtpVerificationDto.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               │   ├── UidaiOtpInitiateRequestDto.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               │   ├── UidaiOtpInitiateResponseDto.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               │   ├── UidaiOtpVerifyRequestDto.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               │   └── UidaiOtpVerifyResponseDto.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               ├── entity/
+[2025-06-06 15:14:22] [INFO]    │       │   │               │   ├── EkycRequest.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               │   └── OtpVerification.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               ├── enums/
+[2025-06-06 15:14:22] [INFO]    │       │   │               │   ├── ConsentType.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               │   ├── IdType.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               │   └── VerificationStatus.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               ├── exception/
+[2025-06-06 15:14:22] [INFO]    │       │   │               │   ├── EkycException.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               │   └── GlobalExceptionHandler.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               ├── repository/
+[2025-06-06 15:14:22] [INFO]    │       │   │               │   ├── EkycRequestRepository.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               │   └── OtpVerificationRepository.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               ├── service/
+[2025-06-06 15:14:22] [INFO]    │       │   │               │   ├── EkycService.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               │   ├── OtpVerificationService.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               │   ├── UidaiApiService.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               │   └── impl/
+[2025-06-06 15:14:22] [INFO]    │       │   │               │       ├── EkycServiceImpl.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               │       ├── OtpVerificationServiceImpl.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               │       └── UidaiApiServiceImpl.java
+[2025-06-06 15:14:22] [INFO]    │       │   │               └── util/
+[2025-06-06 15:14:22] [INFO]    │       │   │                   ├── AuditLogger.java
+[2025-06-06 15:14:22] [INFO]    │       │   │                   └── ValidationUtils.java
+[2025-06-06 15:14:22] [INFO]    │       │   └── resources/
+[2025-06-06 15:14:22] [INFO]    │       │       ├── application.yml
+[2025-06-06 15:14:22] [INFO]    │       │       └── db/
+[2025-06-06 15:14:22] [INFO]    │       │           └── migration/
+[2025-06-06 15:14:22] [INFO]    │       │               └── V1__init_schema.sql
+[2025-06-06 15:14:22] [INFO]    │       └── test/
+[2025-06-06 15:14:22] [INFO]    │           └── java/
+[2025-06-06 15:14:22] [INFO]    │               └── com/
+[2025-06-06 15:14:22] [INFO]    │                   └── ekyc/
+[2025-06-06 15:14:22] [INFO]    │                       └── service/
+[2025-06-06 15:14:22] [INFO]    │                           ├── controller/
+[2025-06-06 15:14:22] [INFO]    │                           │   ├── EkycControllerTest.java
+[2025-06-06 15:14:22] [INFO]    │                           │   └── OtpVerificationControllerTest.java
+[2025-06-06 15:14:22] [INFO]    │                           ├── integration/
+[2025-06-06 15:14:22] [INFO]    │                           │   └── EkycIntegrationTest.java
+[2025-06-06 15:14:22] [INFO]    │                           └── service/
+[2025-06-06 15:14:22] [INFO]    │                               ├── EkycServiceImplTest.java
+[2025-06-06 15:14:22] [INFO]    │                               ├── OtpVerificationServiceImplTest.java
+[2025-06-06 15:14:22] [INFO]    │                               └── UidaiApiServiceImplTest.java
+[2025-06-06 15:14:22] [INFO]    └── mock-uidai-service/
+[2025-06-06 15:14:22] [INFO]        ├── pom.xml
+[2025-06-06 15:14:22] [INFO]        └── src/
+[2025-06-06 15:14:22] [INFO]            ├── main/
+[2025-06-06 15:14:22] [INFO]            │   ├── java/
+[2025-06-06 15:14:22] [INFO]            │   │   └── com/
+[2025-06-06 15:14:22] [INFO]            │   │       └── mock/
+[2025-06-06 15:14:22] [INFO]            │   │           └── uidai/
+[2025-06-06 15:14:22] [INFO]            │   │               ├── MockUidaiServiceApplication.java
+[2025-06-06 15:14:22] [INFO]            │   │               ├── config/
+[2025-06-06 15:14:22] [INFO]            │   │               │   └── OpenApiConfig.java
+[2025-06-06 15:14:22] [INFO]            │   │               ├── controller/
+[2025-06-06 15:14:22] [INFO]            │   │               │   ├── MockAdminController.java
+[2025-06-06 15:14:22] [INFO]            │   │               │   └── MockUidaiController.java
+[2025-06-06 15:14:22] [INFO]            │   │               ├── dto/
+[2025-06-06 15:14:22] [INFO]            │   │               │   ├── ConfigRequestDto.java
+[2025-06-06 15:14:22] [INFO]            │   │               │   ├── ErrorResponseDto.java
+[2025-06-06 15:14:22] [INFO]            │   │               │   ├── KycDataDto.java
+[2025-06-06 15:14:22] [INFO]            │   │               │   ├── OtpInitiateRequestDto.java
+[2025-06-06 15:14:22] [INFO]            │   │               │   ├── OtpInitiateResponseDto.java
+[2025-06-06 15:14:22] [INFO]            │   │               │   ├── OtpVerifyRequestDto.java
+[2025-06-06 15:14:22] [INFO]            │   │               │   └── OtpVerifyResponseDto.java
+[2025-06-06 15:14:22] [INFO]            │   │               ├── service/
+[2025-06-06 15:14:22] [INFO]            │   │               │   ├── MockConfigService.java
+[2025-06-06 15:14:22] [INFO]            │   │               │   ├── MockUidaiService.java
+[2025-06-06 15:14:22] [INFO]            │   │               │   └── TraceLoggerService.java
+[2025-06-06 15:14:22] [INFO]            │   │               └── util/
+[2025-06-06 15:14:22] [INFO]            │   └── resources/
+[2025-06-06 15:14:22] [INFO]            │       └── application.yml
+[2025-06-06 15:14:22] [INFO]            └── test/
+[2025-06-06 15:14:22] [INFO]                └── java/
+[2025-06-06 15:14:22] [INFO]                    └── com/
+[2025-06-06 15:14:22] [INFO]                        └── mock/
+[2025-06-06 15:14:22] [INFO]                            └── uidai/
+[2025-06-06 15:14:22] [INFO]                                ├── controller/
+[2025-06-06 15:14:22] [INFO]                                │   └── MockUidaiControllerTest.java
+[2025-06-06 15:14:22] [INFO]                                └── service/
+[2025-06-06 15:14:22] [INFO]                                    └── MockUidaiServiceTest.java
+[2025-06-06 15:14:22] [SUCCESS] ✅ SUCCESS in plan_generation: Development plan generated and saved to development_plan.json
+[2025-06-06 15:14:22] [INFO] 🔨 Starting code generation...
+[2025-06-06 15:14:22] [INFO] 🎯 Starting code generation from enhanced plan
+[2025-06-06 15:14:22] [INFO] 📁 Created directory: ekyc-service/src/main/java/com/ekyc/service
+[2025-06-06 15:14:22] [INFO] 📁 Created directory: ekyc-service/src/main/java/com/ekyc/service/config
+[2025-06-06 15:14:22] [INFO] 📁 Created directory: ekyc-service/src/main/java/com/ekyc/service/controller
+[2025-06-06 15:14:22] [INFO] 📁 Created directory: ekyc-service/src/main/java/com/ekyc/service/dto
+[2025-06-06 15:14:22] [INFO] 📁 Created directory: ekyc-service/src/main/java/com/ekyc/service/entity
+[2025-06-06 15:14:22] [INFO] 📁 Created directory: ekyc-service/src/main/java/com/ekyc/service/enums
+[2025-06-06 15:14:22] [INFO] 📁 Created directory: ekyc-service/src/main/java/com/ekyc/service/exception
+[2025-06-06 15:14:22] [INFO] 📁 Created directory: ekyc-service/src/main/java/com/ekyc/service/repository
+[2025-06-06 15:14:22] [INFO] 📁 Created directory: ekyc-service/src/main/java/com/ekyc/service/service
+[2025-06-06 15:14:22] [INFO] 📁 Created directory: ekyc-service/src/main/java/com/ekyc/service/util
+[2025-06-06 15:14:22] [INFO] 📁 Created directory: ekyc-service/src/main/resources
+[2025-06-06 15:14:22] [INFO] 📁 Created directory: ekyc-service/src/main/resources/db/migration
+[2025-06-06 15:14:22] [INFO] 📁 Created directory: ekyc-service/src/test/java/com/ekyc/service
+[2025-06-06 15:14:22] [INFO] 📁 Created directory: mock-uidai-service/src/main/java/com/mock/uidai
+[2025-06-06 15:14:22] [INFO] 📁 Created directory: mock-uidai-service/src/main/java/com/mock/uidai/config
+[2025-06-06 15:14:22] [INFO] 📁 Created directory: mock-uidai-service/src/main/java/com/mock/uidai/controller
+[2025-06-06 15:14:22] [INFO] 📁 Created directory: mock-uidai-service/src/main/java/com/mock/uidai/dto
+[2025-06-06 15:14:22] [INFO] 📁 Created directory: mock-uidai-service/src/main/java/com/mock/uidai/service
+[2025-06-06 15:14:22] [INFO] 📁 Created directory: mock-uidai-service/src/main/java/com/mock/uidai/util
+[2025-06-06 15:14:22] [INFO] 📁 Created directory: mock-uidai-service/src/main/resources
+[2025-06-06 15:14:22] [INFO] 📁 Created directory: mock-uidai-service/src/test/java/com/mock/uidai
+[2025-06-06 15:14:22] [INFO] 📁 Created 21 directories
+[2025-06-06 15:14:22] [INFO] 📦 Created 3 generation chunks
+[2025-06-06 15:14:22] [INFO] 🔨 Generating chunk: chunk_01_config (6 files)
+[2025-06-06 15:14:22] [INFO] 📝 Generating: ekyc-service/pom.xml
+[2025-06-06 15:14:22] [INFO] 🎯 Building context for: ekyc-service/pom.xml
+[2025-06-06 15:14:22] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:14:22] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:14:22] [INFO] 📊 Scanned: 45 dirs, 0 files, 0 bytes
+[2025-06-06 15:14:51] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:14:51] [INFO] 💬 LLM Interaction: code_generation_chunk_01_config -> code_generation_chunk_01_config_002_response.txt
+[2025-06-06 15:14:51] [INFO] 📁 Creating file immediately: ekyc-service/pom.xml
+[2025-06-06 15:14:51] [INFO] 📄 Creating file: ekyc-service/pom.xml
+[2025-06-06 15:14:51] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:14:51] [INFO] ✅ Created: ekyc-service/pom.xml (6,797 bytes)
+[2025-06-06 15:14:51] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:14:51] [INFO] ✅ File created: ekyc-service/pom.xml (6,797 bytes)
+[2025-06-06 15:14:51] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:14:51] [INFO] 📊 Scanned: 45 dirs, 1 files, 6,797 bytes
+[2025-06-06 15:14:51] [INFO] 📚 Learned patterns for unknown_config
+[2025-06-06 15:14:51] [INFO] 🔄 Updated context with: ekyc-service/pom.xml
+[2025-06-06 15:14:51] [INFO] 📝 Generating: mock-uidai-service/pom.xml
+[2025-06-06 15:14:51] [INFO] 🎯 Building context for: mock-uidai-service/pom.xml
+[2025-06-06 15:14:51] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:14:51] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:14:51] [INFO] 📊 Scanned: 45 dirs, 1 files, 6,797 bytes
+[2025-06-06 15:15:11] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:15:11] [INFO] 💬 LLM Interaction: code_generation_chunk_01_config -> code_generation_chunk_01_config_003_response.txt
+[2025-06-06 15:15:11] [INFO] 📁 Creating file immediately: mock-uidai-service/pom.xml
+[2025-06-06 15:15:11] [INFO] 📄 Creating file: mock-uidai-service/pom.xml
+[2025-06-06 15:15:11] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:15:11] [INFO] ✅ Created: mock-uidai-service/pom.xml (4,404 bytes)
+[2025-06-06 15:15:11] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:15:11] [INFO] ✅ File created: mock-uidai-service/pom.xml (4,404 bytes)
+[2025-06-06 15:15:11] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:15:11] [INFO] 📊 Scanned: 45 dirs, 2 files, 11,201 bytes
+[2025-06-06 15:15:11] [INFO] 📚 Learned patterns for unknown_config
+[2025-06-06 15:15:11] [INFO] 🔄 Updated context with: mock-uidai-service/pom.xml
+[2025-06-06 15:15:11] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/config/WebClientConfig.java
+[2025-06-06 15:15:11] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/config/WebClientConfig.java
+[2025-06-06 15:15:11] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:15:11] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:15:11] [INFO] 📊 Scanned: 45 dirs, 2 files, 11,201 bytes
+[2025-06-06 15:15:30] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:15:30] [INFO] 💬 LLM Interaction: code_generation_chunk_01_config -> code_generation_chunk_01_config_004_response.txt
+[2025-06-06 15:15:30] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/config/WebClientConfig.java
+[2025-06-06 15:15:30] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/config/WebClientConfig.java
+[2025-06-06 15:15:30] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:15:30] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/config/WebClientConfig.java (5,540 bytes)
+[2025-06-06 15:15:30] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:15:30] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/config/WebClientConfig.java (5,540 bytes)
+[2025-06-06 15:15:30] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:15:30] [INFO] 📊 Scanned: 42 dirs, 3 files, 16,741 bytes
+[2025-06-06 15:15:30] [INFO] 📚 Learned patterns for unknown_config
+[2025-06-06 15:15:30] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/config/WebClientConfig.java
+[2025-06-06 15:15:30] [INFO] 📝 Generating: ekyc-service/src/main/resources/application.yml
+[2025-06-06 15:15:30] [INFO] 🎯 Building context for: ekyc-service/src/main/resources/application.yml
+[2025-06-06 15:15:30] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:15:30] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:15:30] [INFO] 📊 Scanned: 42 dirs, 3 files, 16,741 bytes
+[2025-06-06 15:15:44] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:15:44] [INFO] 💬 LLM Interaction: code_generation_chunk_01_config -> code_generation_chunk_01_config_005_response.txt
+[2025-06-06 15:15:44] [INFO] 📁 Creating file immediately: ekyc-service/src/main/resources/application.yml
+[2025-06-06 15:15:44] [INFO] 📄 Creating file: ekyc-service/src/main/resources/application.yml
+[2025-06-06 15:15:44] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:15:44] [INFO] ✅ Created: ekyc-service/src/main/resources/application.yml (2,548 bytes)
+[2025-06-06 15:15:44] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:15:44] [INFO] ✅ File created: ekyc-service/src/main/resources/application.yml (2,548 bytes)
+[2025-06-06 15:15:44] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:15:44] [INFO] 📊 Scanned: 42 dirs, 4 files, 19,289 bytes
+[2025-06-06 15:15:44] [INFO] 📚 Learned patterns for unknown_config
+[2025-06-06 15:15:44] [INFO] 🔄 Updated context with: ekyc-service/src/main/resources/application.yml
+[2025-06-06 15:15:44] [INFO] 📝 Generating: ekyc-service/src/main/resources/db/migration/V1__init_schema.sql
+[2025-06-06 15:15:44] [INFO] 🎯 Building context for: ekyc-service/src/main/resources/db/migration/V1__init_schema.sql
+[2025-06-06 15:15:44] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:15:44] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:15:44] [INFO] 📊 Scanned: 42 dirs, 4 files, 19,289 bytes
+[2025-06-06 15:16:01] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:16:01] [INFO] 💬 LLM Interaction: code_generation_chunk_01_config -> code_generation_chunk_01_config_006_response.txt
+[2025-06-06 15:16:01] [INFO] 📁 Creating file immediately: ekyc-service/src/main/resources/db/migration/V1__init_schema.sql
+[2025-06-06 15:16:01] [INFO] 📄 Creating file: ekyc-service/src/main/resources/db/migration/V1__init_schema.sql
+[2025-06-06 15:16:01] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:16:01] [INFO] ✅ Created: ekyc-service/src/main/resources/db/migration/V1__init_schema.sql (5,024 bytes)
+[2025-06-06 15:16:01] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:16:01] [INFO] ✅ File created: ekyc-service/src/main/resources/db/migration/V1__init_schema.sql (5,024 bytes)
+[2025-06-06 15:16:01] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:16:01] [INFO] 📊 Scanned: 42 dirs, 5 files, 24,313 bytes
+[2025-06-06 15:16:01] [INFO] 📚 Learned patterns for unknown_config
+[2025-06-06 15:16:01] [INFO] 🔄 Updated context with: ekyc-service/src/main/resources/db/migration/V1__init_schema.sql
+[2025-06-06 15:16:01] [INFO] 📝 Generating: mock-uidai-service/src/main/java/com/mock/uidai/config/OpenApiConfig.java
+[2025-06-06 15:16:01] [INFO] 🎯 Building context for: mock-uidai-service/src/main/java/com/mock/uidai/config/OpenApiConfig.java
+[2025-06-06 15:16:01] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:16:01] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:16:01] [INFO] 📊 Scanned: 42 dirs, 5 files, 24,313 bytes
+[2025-06-06 15:16:13] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:16:13] [INFO] 💬 LLM Interaction: code_generation_chunk_01_config -> code_generation_chunk_01_config_007_response.txt
+[2025-06-06 15:16:13] [INFO] 📁 Creating file immediately: mock-uidai-service/src/main/java/com/mock/uidai/config/OpenApiConfig.java
+[2025-06-06 15:16:13] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/config/OpenApiConfig.java
+[2025-06-06 15:16:13] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:16:13] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/config/OpenApiConfig.java (3,186 bytes)
+[2025-06-06 15:16:13] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:16:13] [INFO] ✅ File created: mock-uidai-service/src/main/java/com/mock/uidai/config/OpenApiConfig.java (3,186 bytes)
+[2025-06-06 15:16:13] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:16:13] [INFO] 📊 Scanned: 42 dirs, 6 files, 27,499 bytes
+[2025-06-06 15:16:13] [INFO] 📚 Learned patterns for unknown_config
+[2025-06-06 15:16:13] [INFO] 🔄 Updated context with: mock-uidai-service/src/main/java/com/mock/uidai/config/OpenApiConfig.java
+[2025-06-06 15:16:13] [INFO] ✅ Chunk chunk_01_config complete: 100.0% success rate
+[2025-06-06 15:16:13] [INFO] 🔨 Generating chunk: chunk_02_config (1 files)
+[2025-06-06 15:16:13] [INFO] 📝 Generating: mock-uidai-service/src/main/resources/application.yml
+[2025-06-06 15:16:13] [INFO] 🎯 Building context for: mock-uidai-service/src/main/resources/application.yml
+[2025-06-06 15:16:13] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:16:13] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:16:13] [INFO] 📊 Scanned: 42 dirs, 6 files, 27,499 bytes
+[2025-06-06 15:16:22] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:16:22] [INFO] 💬 LLM Interaction: code_generation_chunk_02_config -> code_generation_chunk_02_config_008_response.txt
+[2025-06-06 15:16:22] [INFO] 📁 Creating file immediately: mock-uidai-service/src/main/resources/application.yml
+[2025-06-06 15:16:22] [INFO] 📄 Creating file: mock-uidai-service/src/main/resources/application.yml
+[2025-06-06 15:16:22] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:16:22] [INFO] ✅ Created: mock-uidai-service/src/main/resources/application.yml (1,346 bytes)
+[2025-06-06 15:16:22] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:16:22] [INFO] ✅ File created: mock-uidai-service/src/main/resources/application.yml (1,346 bytes)
+[2025-06-06 15:16:22] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:16:22] [INFO] 📊 Scanned: 42 dirs, 7 files, 28,845 bytes
+[2025-06-06 15:16:22] [INFO] 📚 Learned patterns for unknown_config
+[2025-06-06 15:16:22] [INFO] 🔄 Updated context with: mock-uidai-service/src/main/resources/application.yml
+[2025-06-06 15:16:22] [INFO] ✅ Chunk chunk_02_config complete: 100.0% success rate
+[2025-06-06 15:16:22] [INFO] 🔨 Generating chunk: chunk_03_remaining (49 files)
+[2025-06-06 15:16:22] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/EkycServiceApplication.java
+[2025-06-06 15:16:22] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/EkycServiceApplication.java
+[2025-06-06 15:16:22] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:16:22] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:16:22] [INFO] 📊 Scanned: 42 dirs, 7 files, 28,845 bytes
+[2025-06-06 15:16:22] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/config/WebClientConfig.java
+[2025-06-06 15:16:22] [INFO] 🔗 MCP found 1 related files for context
+[2025-06-06 15:16:33] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:16:33] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_009_response.txt
+[2025-06-06 15:16:33] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/EkycServiceApplication.java
+[2025-06-06 15:16:33] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/EkycServiceApplication.java
+[2025-06-06 15:16:33] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:16:33] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/EkycServiceApplication.java (3,503 bytes)
+[2025-06-06 15:16:33] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:16:33] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/EkycServiceApplication.java (3,503 bytes)
+[2025-06-06 15:16:33] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:16:33] [INFO] 📊 Scanned: 42 dirs, 8 files, 32,348 bytes
+[2025-06-06 15:16:33] [INFO] 📚 Learned patterns for unknown_main
+[2025-06-06 15:16:33] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/EkycServiceApplication.java
+[2025-06-06 15:16:33] [INFO] 📝 Generating: mock-uidai-service/src/main/java/com/mock/uidai/MockUidaiServiceApplication.java
+[2025-06-06 15:16:33] [INFO] 🎯 Building context for: mock-uidai-service/src/main/java/com/mock/uidai/MockUidaiServiceApplication.java
+[2025-06-06 15:16:33] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:16:33] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:16:33] [INFO] 📊 Scanned: 42 dirs, 8 files, 32,348 bytes
+[2025-06-06 15:16:33] [INFO] 📖 Read file: mock-uidai-service/src/main/java/com/mock/uidai/config/OpenApiConfig.java
+[2025-06-06 15:16:33] [INFO] 🔗 MCP found 1 related files for context
+[2025-06-06 15:16:43] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:16:43] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_010_response.txt
+[2025-06-06 15:16:43] [INFO] 📁 Creating file immediately: mock-uidai-service/src/main/java/com/mock/uidai/MockUidaiServiceApplication.java
+[2025-06-06 15:16:43] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/MockUidaiServiceApplication.java
+[2025-06-06 15:16:43] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:16:43] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/MockUidaiServiceApplication.java (1,802 bytes)
+[2025-06-06 15:16:43] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:16:43] [INFO] ✅ File created: mock-uidai-service/src/main/java/com/mock/uidai/MockUidaiServiceApplication.java (1,802 bytes)
+[2025-06-06 15:16:43] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:16:43] [INFO] 📊 Scanned: 42 dirs, 9 files, 34,150 bytes
+[2025-06-06 15:16:43] [INFO] 📚 Learned patterns for unknown_main
+[2025-06-06 15:16:43] [INFO] 🔄 Updated context with: mock-uidai-service/src/main/java/com/mock/uidai/MockUidaiServiceApplication.java
+[2025-06-06 15:16:43] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/entity/EkycRequest.java
+[2025-06-06 15:16:43] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/entity/EkycRequest.java
+[2025-06-06 15:16:43] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:16:43] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:16:43] [INFO] 📊 Scanned: 42 dirs, 9 files, 34,150 bytes
+[2025-06-06 15:17:36] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:17:36] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_011_response.txt
+[2025-06-06 15:17:36] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/entity/EkycRequest.java
+[2025-06-06 15:17:36] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/entity/EkycRequest.java
+[2025-06-06 15:17:36] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:17:36] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/entity/EkycRequest.java (17,640 bytes)
+[2025-06-06 15:17:36] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:17:36] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/entity/EkycRequest.java (17,640 bytes)
+[2025-06-06 15:17:36] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:17:36] [INFO] 📊 Scanned: 42 dirs, 10 files, 51,790 bytes
+[2025-06-06 15:17:36] [INFO] 📚 Learned patterns for unknown_entity
+[2025-06-06 15:17:36] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/entity/EkycRequest.java
+[2025-06-06 15:17:36] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/entity/OtpVerification.java
+[2025-06-06 15:17:36] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/entity/OtpVerification.java
+[2025-06-06 15:17:36] [INFO] 📊 Context built: 1 items, 347 tokens, 1.00 compression
+[2025-06-06 15:17:36] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:17:36] [INFO] 📊 Scanned: 42 dirs, 10 files, 51,790 bytes
+[2025-06-06 15:17:36] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/entity/EkycRequest.java
+[2025-06-06 15:17:36] [INFO] 🔗 MCP found 1 related files for context
+[2025-06-06 15:17:59] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:17:59] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_012_response.txt
+[2025-06-06 15:17:59] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/entity/OtpVerification.java
+[2025-06-06 15:17:59] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/entity/OtpVerification.java
+[2025-06-06 15:17:59] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:17:59] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/entity/OtpVerification.java (6,714 bytes)
+[2025-06-06 15:17:59] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:17:59] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/entity/OtpVerification.java (6,714 bytes)
+[2025-06-06 15:17:59] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:17:59] [INFO] 📊 Scanned: 42 dirs, 11 files, 58,504 bytes
+[2025-06-06 15:17:59] [INFO] 📚 Learned patterns for unknown_entity
+[2025-06-06 15:17:59] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/entity/OtpVerification.java
+[2025-06-06 15:17:59] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/enums/IdType.java
+[2025-06-06 15:17:59] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/enums/IdType.java
+[2025-06-06 15:17:59] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:17:59] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:17:59] [INFO] 📊 Scanned: 42 dirs, 11 files, 58,504 bytes
+[2025-06-06 15:18:09] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:18:09] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_013_response.txt
+[2025-06-06 15:18:09] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/enums/IdType.java
+[2025-06-06 15:18:09] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/enums/IdType.java
+[2025-06-06 15:18:09] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:18:09] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/enums/IdType.java (2,303 bytes)
+[2025-06-06 15:18:09] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:18:09] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/enums/IdType.java (2,303 bytes)
+[2025-06-06 15:18:09] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:18:09] [INFO] 📊 Scanned: 42 dirs, 12 files, 60,807 bytes
+[2025-06-06 15:18:09] [INFO] 📚 Learned patterns for unknown_entity
+[2025-06-06 15:18:09] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/enums/IdType.java
+[2025-06-06 15:18:09] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/enums/VerificationStatus.java
+[2025-06-06 15:18:09] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/enums/VerificationStatus.java
+[2025-06-06 15:18:09] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:18:09] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:18:09] [INFO] 📊 Scanned: 42 dirs, 12 files, 60,807 bytes
+[2025-06-06 15:18:09] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/enums/IdType.java
+[2025-06-06 15:18:09] [INFO] 🔗 MCP found 1 related files for context
+[2025-06-06 15:18:19] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:18:19] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_014_response.txt
+[2025-06-06 15:18:19] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/enums/VerificationStatus.java
+[2025-06-06 15:18:19] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/enums/VerificationStatus.java
+[2025-06-06 15:18:19] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:18:19] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/enums/VerificationStatus.java (2,425 bytes)
+[2025-06-06 15:18:19] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:18:19] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/enums/VerificationStatus.java (2,425 bytes)
+[2025-06-06 15:18:19] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:18:19] [INFO] 📊 Scanned: 42 dirs, 13 files, 63,232 bytes
+[2025-06-06 15:18:19] [INFO] 📚 Learned patterns for unknown_entity
+[2025-06-06 15:18:19] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/enums/VerificationStatus.java
+[2025-06-06 15:18:19] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/enums/ConsentType.java
+[2025-06-06 15:18:19] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/enums/ConsentType.java
+[2025-06-06 15:18:19] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:18:19] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:18:19] [INFO] 📊 Scanned: 42 dirs, 13 files, 63,232 bytes
+[2025-06-06 15:18:19] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/enums/IdType.java
+[2025-06-06 15:18:19] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/enums/VerificationStatus.java
+[2025-06-06 15:18:19] [INFO] 🔗 MCP found 2 related files for context
+[2025-06-06 15:18:25] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:18:25] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_015_response.txt
+[2025-06-06 15:18:25] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/enums/ConsentType.java
+[2025-06-06 15:18:25] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/enums/ConsentType.java
+[2025-06-06 15:18:25] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:18:25] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/enums/ConsentType.java (1,634 bytes)
+[2025-06-06 15:18:25] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:18:25] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/enums/ConsentType.java (1,634 bytes)
+[2025-06-06 15:18:25] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:18:25] [INFO] 📊 Scanned: 42 dirs, 14 files, 64,866 bytes
+[2025-06-06 15:18:25] [INFO] 📚 Learned patterns for unknown_entity
+[2025-06-06 15:18:25] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/enums/ConsentType.java
+[2025-06-06 15:18:25] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/dto/EkycRequestDto.java
+[2025-06-06 15:18:25] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/dto/EkycRequestDto.java
+[2025-06-06 15:18:25] [INFO] 📊 Context built: 2 items, 366 tokens, 1.00 compression
+[2025-06-06 15:18:25] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:18:25] [INFO] 📊 Scanned: 42 dirs, 14 files, 64,866 bytes
+[2025-06-06 15:19:59] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:19:59] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_016_response.txt
+[2025-06-06 15:19:59] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/dto/EkycRequestDto.java
+[2025-06-06 15:19:59] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/dto/EkycRequestDto.java
+[2025-06-06 15:19:59] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:19:59] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/dto/EkycRequestDto.java (10,950 bytes)
+[2025-06-06 15:19:59] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:19:59] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/dto/EkycRequestDto.java (10,950 bytes)
+[2025-06-06 15:19:59] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:19:59] [INFO] 📊 Scanned: 42 dirs, 15 files, 75,816 bytes
+[2025-06-06 15:19:59] [INFO] 📚 Learned patterns for unknown_entity
+[2025-06-06 15:19:59] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/dto/EkycRequestDto.java
+[2025-06-06 15:19:59] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/dto/OtpVerificationDto.java
+[2025-06-06 15:19:59] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/dto/OtpVerificationDto.java
+[2025-06-06 15:19:59] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:19:59] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:19:59] [INFO] 📊 Scanned: 42 dirs, 15 files, 75,816 bytes
+[2025-06-06 15:19:59] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/dto/EkycRequestDto.java
+[2025-06-06 15:19:59] [INFO] 🔗 MCP found 1 related files for context
+[2025-06-06 15:20:12] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:20:12] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_017_response.txt
+[2025-06-06 15:20:12] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/dto/OtpVerificationDto.java
+[2025-06-06 15:20:12] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/dto/OtpVerificationDto.java
+[2025-06-06 15:20:12] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:20:12] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/dto/OtpVerificationDto.java (3,514 bytes)
+[2025-06-06 15:20:12] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:20:12] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/dto/OtpVerificationDto.java (3,514 bytes)
+[2025-06-06 15:20:12] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:20:12] [INFO] 📊 Scanned: 42 dirs, 16 files, 79,330 bytes
+[2025-06-06 15:20:12] [INFO] 📚 Learned patterns for unknown_entity
+[2025-06-06 15:20:12] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/dto/OtpVerificationDto.java
+[2025-06-06 15:20:12] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/dto/EkycResponseDto.java
+[2025-06-06 15:20:12] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/dto/EkycResponseDto.java
+[2025-06-06 15:20:12] [INFO] 📊 Context built: 1 items, 336 tokens, 1.00 compression
+[2025-06-06 15:20:12] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:20:12] [INFO] 📊 Scanned: 42 dirs, 16 files, 79,330 bytes
+[2025-06-06 15:20:12] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/dto/EkycRequestDto.java
+[2025-06-06 15:20:12] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/dto/OtpVerificationDto.java
+[2025-06-06 15:20:12] [INFO] 🔗 MCP found 2 related files for context
+[2025-06-06 15:20:40] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:20:40] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_018_response.txt
+[2025-06-06 15:20:40] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/dto/EkycResponseDto.java
+[2025-06-06 15:20:40] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/dto/EkycResponseDto.java
+[2025-06-06 15:20:40] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:20:40] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/dto/EkycResponseDto.java (9,441 bytes)
+[2025-06-06 15:20:40] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:20:40] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/dto/EkycResponseDto.java (9,441 bytes)
+[2025-06-06 15:20:40] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:20:40] [INFO] 📊 Scanned: 42 dirs, 17 files, 88,771 bytes
+[2025-06-06 15:20:40] [INFO] 📚 Learned patterns for unknown_entity
+[2025-06-06 15:20:40] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/dto/EkycResponseDto.java
+[2025-06-06 15:20:40] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateRequestDto.java
+[2025-06-06 15:20:40] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateRequestDto.java
+[2025-06-06 15:20:40] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:20:40] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:20:40] [INFO] 📊 Scanned: 42 dirs, 17 files, 88,771 bytes
+[2025-06-06 15:20:40] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/dto/EkycRequestDto.java
+[2025-06-06 15:20:40] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/dto/EkycResponseDto.java
+[2025-06-06 15:20:40] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/dto/OtpVerificationDto.java
+[2025-06-06 15:20:40] [INFO] 🔗 MCP found 3 related files for context
+[2025-06-06 15:20:58] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:20:58] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_019_response.txt
+[2025-06-06 15:20:58] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateRequestDto.java
+[2025-06-06 15:20:58] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateRequestDto.java
+[2025-06-06 15:20:58] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:20:58] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateRequestDto.java (4,459 bytes)
+[2025-06-06 15:20:58] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:20:58] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateRequestDto.java (4,459 bytes)
+[2025-06-06 15:20:58] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:20:58] [INFO] 📊 Scanned: 42 dirs, 18 files, 93,230 bytes
+[2025-06-06 15:20:58] [INFO] 📚 Learned patterns for unknown_entity
+[2025-06-06 15:20:58] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateRequestDto.java
+[2025-06-06 15:20:58] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateResponseDto.java
+[2025-06-06 15:20:58] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateResponseDto.java
+[2025-06-06 15:20:58] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:20:58] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:20:58] [INFO] 📊 Scanned: 42 dirs, 18 files, 93,230 bytes
+[2025-06-06 15:20:58] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/dto/EkycRequestDto.java
+[2025-06-06 15:20:58] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/dto/EkycResponseDto.java
+[2025-06-06 15:20:58] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/dto/OtpVerificationDto.java
+[2025-06-06 15:20:58] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateRequestDto.java
+[2025-06-06 15:20:58] [INFO] 🔗 MCP found 4 related files for context
+[2025-06-06 15:21:18] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:21:18] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_020_response.txt
+[2025-06-06 15:21:18] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateResponseDto.java
+[2025-06-06 15:21:18] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateResponseDto.java
+[2025-06-06 15:21:18] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:21:18] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateResponseDto.java (6,374 bytes)
+[2025-06-06 15:21:18] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:21:18] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateResponseDto.java (6,374 bytes)
+[2025-06-06 15:21:18] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:21:18] [INFO] 📊 Scanned: 42 dirs, 19 files, 99,604 bytes
+[2025-06-06 15:21:18] [INFO] 📚 Learned patterns for unknown_entity
+[2025-06-06 15:21:18] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateResponseDto.java
+[2025-06-06 15:21:18] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpVerifyRequestDto.java
+[2025-06-06 15:21:18] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpVerifyRequestDto.java
+[2025-06-06 15:21:18] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:21:18] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:21:18] [INFO] 📊 Scanned: 42 dirs, 19 files, 99,604 bytes
+[2025-06-06 15:21:18] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/dto/EkycRequestDto.java
+[2025-06-06 15:21:18] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/dto/EkycResponseDto.java
+[2025-06-06 15:21:18] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/dto/OtpVerificationDto.java
+[2025-06-06 15:21:18] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateRequestDto.java
+[2025-06-06 15:21:18] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateResponseDto.java
+[2025-06-06 15:21:18] [INFO] 🔗 MCP found 5 related files for context
+[2025-06-06 15:21:33] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:21:33] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_021_response.txt
+[2025-06-06 15:21:33] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpVerifyRequestDto.java
+[2025-06-06 15:21:33] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpVerifyRequestDto.java
+[2025-06-06 15:21:33] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:21:33] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpVerifyRequestDto.java (4,020 bytes)
+[2025-06-06 15:21:33] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:21:33] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpVerifyRequestDto.java (4,020 bytes)
+[2025-06-06 15:21:33] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:21:33] [INFO] 📊 Scanned: 42 dirs, 20 files, 103,624 bytes
+[2025-06-06 15:21:33] [INFO] 📚 Learned patterns for unknown_entity
+[2025-06-06 15:21:33] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpVerifyRequestDto.java
+[2025-06-06 15:21:33] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpVerifyResponseDto.java
+[2025-06-06 15:21:33] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpVerifyResponseDto.java
+[2025-06-06 15:21:33] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:21:33] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:21:33] [INFO] 📊 Scanned: 42 dirs, 20 files, 103,624 bytes
+[2025-06-06 15:21:33] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/dto/EkycRequestDto.java
+[2025-06-06 15:21:33] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/dto/EkycResponseDto.java
+[2025-06-06 15:21:33] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/dto/OtpVerificationDto.java
+[2025-06-06 15:21:33] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateRequestDto.java
+[2025-06-06 15:21:33] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateResponseDto.java
+[2025-06-06 15:21:33] [INFO] 🔗 MCP found 5 related files for context
+[2025-06-06 15:21:50] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:21:50] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_022_response.txt
+[2025-06-06 15:21:50] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpVerifyResponseDto.java
+[2025-06-06 15:21:50] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpVerifyResponseDto.java
+[2025-06-06 15:21:50] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:21:50] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpVerifyResponseDto.java (5,395 bytes)
+[2025-06-06 15:21:50] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:21:50] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpVerifyResponseDto.java (5,395 bytes)
+[2025-06-06 15:21:50] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:21:50] [INFO] 📊 Scanned: 42 dirs, 21 files, 109,019 bytes
+[2025-06-06 15:21:50] [INFO] 📚 Learned patterns for unknown_entity
+[2025-06-06 15:21:50] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpVerifyResponseDto.java
+[2025-06-06 15:21:50] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/dto/ErrorResponseDto.java
+[2025-06-06 15:21:50] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/dto/ErrorResponseDto.java
+[2025-06-06 15:21:50] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:21:50] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:21:50] [INFO] 📊 Scanned: 42 dirs, 21 files, 109,019 bytes
+[2025-06-06 15:21:50] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/dto/EkycRequestDto.java
+[2025-06-06 15:21:50] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/dto/EkycResponseDto.java
+[2025-06-06 15:21:50] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/dto/OtpVerificationDto.java
+[2025-06-06 15:21:50] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateRequestDto.java
+[2025-06-06 15:21:50] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateResponseDto.java
+[2025-06-06 15:21:50] [INFO] 🔗 MCP found 5 related files for context
+[2025-06-06 15:22:10] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:22:10] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_023_response.txt
+[2025-06-06 15:22:10] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/dto/ErrorResponseDto.java
+[2025-06-06 15:22:10] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/dto/ErrorResponseDto.java
+[2025-06-06 15:22:10] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:22:10] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/dto/ErrorResponseDto.java (6,963 bytes)
+[2025-06-06 15:22:10] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:22:10] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/dto/ErrorResponseDto.java (6,963 bytes)
+[2025-06-06 15:22:10] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:22:10] [INFO] 📊 Scanned: 42 dirs, 22 files, 115,982 bytes
+[2025-06-06 15:22:10] [INFO] 📚 Learned patterns for unknown_entity
+[2025-06-06 15:22:10] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/dto/ErrorResponseDto.java
+[2025-06-06 15:22:10] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/exception/EkycException.java
+[2025-06-06 15:22:10] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/exception/EkycException.java
+[2025-06-06 15:22:10] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:22:10] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:22:10] [INFO] 📊 Scanned: 42 dirs, 22 files, 115,982 bytes
+[2025-06-06 15:22:24] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:22:24] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_024_response.txt
+[2025-06-06 15:22:24] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/exception/EkycException.java
+[2025-06-06 15:22:24] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/exception/EkycException.java
+[2025-06-06 15:22:24] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:22:24] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/exception/EkycException.java (4,485 bytes)
+[2025-06-06 15:22:24] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:22:24] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/exception/EkycException.java (4,485 bytes)
+[2025-06-06 15:22:24] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:22:24] [INFO] 📊 Scanned: 42 dirs, 23 files, 120,467 bytes
+[2025-06-06 15:22:24] [INFO] 📚 Learned patterns for unknown_entity
+[2025-06-06 15:22:24] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/exception/EkycException.java
+[2025-06-06 15:22:24] [INFO] 📝 Generating: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateRequestDto.java
+[2025-06-06 15:22:24] [INFO] 🎯 Building context for: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateRequestDto.java
+[2025-06-06 15:22:24] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:22:24] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:22:24] [INFO] 📊 Scanned: 42 dirs, 23 files, 120,467 bytes
+[2025-06-06 15:22:39] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:22:39] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_025_response.txt
+[2025-06-06 15:22:39] [INFO] 📁 Creating file immediately: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateRequestDto.java
+[2025-06-06 15:22:39] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateRequestDto.java
+[2025-06-06 15:22:39] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:22:39] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateRequestDto.java (4,035 bytes)
+[2025-06-06 15:22:39] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:22:39] [INFO] ✅ File created: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateRequestDto.java (4,035 bytes)
+[2025-06-06 15:22:39] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:22:39] [INFO] 📊 Scanned: 42 dirs, 24 files, 124,502 bytes
+[2025-06-06 15:22:39] [INFO] 📚 Learned patterns for unknown_entity
+[2025-06-06 15:22:39] [INFO] 🔄 Updated context with: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateRequestDto.java
+[2025-06-06 15:22:39] [INFO] 📝 Generating: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateResponseDto.java
+[2025-06-06 15:22:39] [INFO] 🎯 Building context for: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateResponseDto.java
+[2025-06-06 15:22:39] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:22:39] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:22:39] [INFO] 📊 Scanned: 42 dirs, 24 files, 124,502 bytes
+[2025-06-06 15:22:39] [INFO] 📖 Read file: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateRequestDto.java
+[2025-06-06 15:22:39] [INFO] 🔗 MCP found 1 related files for context
+[2025-06-06 15:22:53] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:22:53] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_026_response.txt
+[2025-06-06 15:22:53] [INFO] 📁 Creating file immediately: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateResponseDto.java
+[2025-06-06 15:22:53] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateResponseDto.java
+[2025-06-06 15:22:53] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:22:53] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateResponseDto.java (3,843 bytes)
+[2025-06-06 15:22:53] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:22:53] [INFO] ✅ File created: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateResponseDto.java (3,843 bytes)
+[2025-06-06 15:22:53] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:22:53] [INFO] 📊 Scanned: 42 dirs, 25 files, 128,345 bytes
+[2025-06-06 15:22:53] [INFO] 📚 Learned patterns for unknown_entity
+[2025-06-06 15:22:53] [INFO] 🔄 Updated context with: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateResponseDto.java
+[2025-06-06 15:22:53] [INFO] 📝 Generating: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyRequestDto.java
+[2025-06-06 15:22:53] [INFO] 🎯 Building context for: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyRequestDto.java
+[2025-06-06 15:22:53] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:22:53] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:22:53] [INFO] 📊 Scanned: 42 dirs, 25 files, 128,345 bytes
+[2025-06-06 15:22:53] [INFO] 📖 Read file: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateRequestDto.java
+[2025-06-06 15:22:53] [INFO] 📖 Read file: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateResponseDto.java
+[2025-06-06 15:22:53] [INFO] 🔗 MCP found 2 related files for context
+[2025-06-06 15:23:08] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:23:08] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_027_response.txt
+[2025-06-06 15:23:08] [INFO] 📁 Creating file immediately: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyRequestDto.java
+[2025-06-06 15:23:08] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyRequestDto.java
+[2025-06-06 15:23:08] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:23:08] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyRequestDto.java (3,929 bytes)
+[2025-06-06 15:23:08] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:23:08] [INFO] ✅ File created: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyRequestDto.java (3,929 bytes)
+[2025-06-06 15:23:08] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:23:08] [INFO] 📊 Scanned: 42 dirs, 26 files, 132,274 bytes
+[2025-06-06 15:23:08] [INFO] 📚 Learned patterns for unknown_entity
+[2025-06-06 15:23:08] [INFO] 🔄 Updated context with: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyRequestDto.java
+[2025-06-06 15:23:08] [INFO] 📝 Generating: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyResponseDto.java
+[2025-06-06 15:23:08] [INFO] 🎯 Building context for: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyResponseDto.java
+[2025-06-06 15:23:08] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:23:08] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:23:08] [INFO] 📊 Scanned: 42 dirs, 26 files, 132,274 bytes
+[2025-06-06 15:23:08] [INFO] 📖 Read file: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateRequestDto.java
+[2025-06-06 15:23:08] [INFO] 📖 Read file: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateResponseDto.java
+[2025-06-06 15:23:08] [INFO] 📖 Read file: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyRequestDto.java
+[2025-06-06 15:23:08] [INFO] 🔗 MCP found 3 related files for context
+[2025-06-06 15:23:21] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:23:21] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_028_response.txt
+[2025-06-06 15:23:21] [INFO] 📁 Creating file immediately: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyResponseDto.java
+[2025-06-06 15:23:21] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyResponseDto.java
+[2025-06-06 15:23:21] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:23:21] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyResponseDto.java (3,848 bytes)
+[2025-06-06 15:23:21] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:23:21] [INFO] ✅ File created: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyResponseDto.java (3,848 bytes)
+[2025-06-06 15:23:21] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:23:21] [INFO] 📊 Scanned: 42 dirs, 27 files, 136,122 bytes
+[2025-06-06 15:23:21] [INFO] 📚 Learned patterns for unknown_entity
+[2025-06-06 15:23:21] [INFO] 🔄 Updated context with: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyResponseDto.java
+[2025-06-06 15:23:21] [INFO] 📝 Generating: mock-uidai-service/src/main/java/com/mock/uidai/dto/KycDataDto.java
+[2025-06-06 15:23:21] [INFO] 🎯 Building context for: mock-uidai-service/src/main/java/com/mock/uidai/dto/KycDataDto.java
+[2025-06-06 15:23:21] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:23:21] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:23:21] [INFO] 📊 Scanned: 42 dirs, 27 files, 136,122 bytes
+[2025-06-06 15:23:21] [INFO] 📖 Read file: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateRequestDto.java
+[2025-06-06 15:23:21] [INFO] 📖 Read file: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateResponseDto.java
+[2025-06-06 15:23:21] [INFO] 📖 Read file: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyRequestDto.java
+[2025-06-06 15:23:21] [INFO] 📖 Read file: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyResponseDto.java
+[2025-06-06 15:23:21] [INFO] 🔗 MCP found 4 related files for context
+[2025-06-06 15:23:45] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:23:45] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_029_response.txt
+[2025-06-06 15:23:45] [INFO] 📁 Creating file immediately: mock-uidai-service/src/main/java/com/mock/uidai/dto/KycDataDto.java
+[2025-06-06 15:23:45] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/dto/KycDataDto.java
+[2025-06-06 15:23:45] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:23:45] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/dto/KycDataDto.java (6,707 bytes)
+[2025-06-06 15:23:45] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:23:45] [INFO] ✅ File created: mock-uidai-service/src/main/java/com/mock/uidai/dto/KycDataDto.java (6,707 bytes)
+[2025-06-06 15:23:45] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:23:45] [INFO] 📊 Scanned: 42 dirs, 28 files, 142,829 bytes
+[2025-06-06 15:23:45] [INFO] 📚 Learned patterns for unknown_entity
+[2025-06-06 15:23:45] [INFO] 🔄 Updated context with: mock-uidai-service/src/main/java/com/mock/uidai/dto/KycDataDto.java
+[2025-06-06 15:23:45] [INFO] 📝 Generating: mock-uidai-service/src/main/java/com/mock/uidai/dto/ErrorResponseDto.java
+[2025-06-06 15:23:45] [INFO] 🎯 Building context for: mock-uidai-service/src/main/java/com/mock/uidai/dto/ErrorResponseDto.java
+[2025-06-06 15:23:45] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:23:45] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:23:45] [INFO] 📊 Scanned: 42 dirs, 28 files, 142,829 bytes
+[2025-06-06 15:23:45] [INFO] 📖 Read file: mock-uidai-service/src/main/java/com/mock/uidai/dto/KycDataDto.java
+[2025-06-06 15:23:45] [INFO] 📖 Read file: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateRequestDto.java
+[2025-06-06 15:23:45] [INFO] 📖 Read file: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateResponseDto.java
+[2025-06-06 15:23:45] [INFO] 📖 Read file: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyRequestDto.java
+[2025-06-06 15:23:45] [INFO] 📖 Read file: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyResponseDto.java
+[2025-06-06 15:23:45] [INFO] 🔗 MCP found 5 related files for context
+[2025-06-06 15:23:58] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:23:58] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_030_response.txt
+[2025-06-06 15:23:58] [INFO] 📁 Creating file immediately: mock-uidai-service/src/main/java/com/mock/uidai/dto/ErrorResponseDto.java
+[2025-06-06 15:23:58] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/dto/ErrorResponseDto.java
+[2025-06-06 15:23:58] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:23:58] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/dto/ErrorResponseDto.java (4,575 bytes)
+[2025-06-06 15:23:58] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:23:58] [INFO] ✅ File created: mock-uidai-service/src/main/java/com/mock/uidai/dto/ErrorResponseDto.java (4,575 bytes)
+[2025-06-06 15:23:58] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:23:58] [INFO] 📊 Scanned: 42 dirs, 29 files, 147,404 bytes
+[2025-06-06 15:23:58] [INFO] 📚 Learned patterns for unknown_entity
+[2025-06-06 15:23:58] [INFO] 🔄 Updated context with: mock-uidai-service/src/main/java/com/mock/uidai/dto/ErrorResponseDto.java
+[2025-06-06 15:23:58] [INFO] 📝 Generating: mock-uidai-service/src/main/java/com/mock/uidai/dto/ConfigRequestDto.java
+[2025-06-06 15:23:58] [INFO] 🎯 Building context for: mock-uidai-service/src/main/java/com/mock/uidai/dto/ConfigRequestDto.java
+[2025-06-06 15:23:58] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:23:58] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:23:58] [INFO] 📊 Scanned: 42 dirs, 29 files, 147,404 bytes
+[2025-06-06 15:23:58] [INFO] 📖 Read file: mock-uidai-service/src/main/java/com/mock/uidai/dto/ErrorResponseDto.java
+[2025-06-06 15:23:58] [INFO] 📖 Read file: mock-uidai-service/src/main/java/com/mock/uidai/dto/KycDataDto.java
+[2025-06-06 15:23:58] [INFO] 📖 Read file: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateRequestDto.java
+[2025-06-06 15:23:58] [INFO] 📖 Read file: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateResponseDto.java
+[2025-06-06 15:23:58] [INFO] 📖 Read file: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyRequestDto.java
+[2025-06-06 15:23:58] [INFO] 🔗 MCP found 5 related files for context
+[2025-06-06 15:24:13] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:24:13] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_031_response.txt
+[2025-06-06 15:24:13] [INFO] 📁 Creating file immediately: mock-uidai-service/src/main/java/com/mock/uidai/dto/ConfigRequestDto.java
+[2025-06-06 15:24:13] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/dto/ConfigRequestDto.java
+[2025-06-06 15:24:13] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:24:13] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/dto/ConfigRequestDto.java (4,688 bytes)
+[2025-06-06 15:24:13] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:24:13] [INFO] ✅ File created: mock-uidai-service/src/main/java/com/mock/uidai/dto/ConfigRequestDto.java (4,688 bytes)
+[2025-06-06 15:24:13] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:24:13] [INFO] 📊 Scanned: 42 dirs, 30 files, 152,092 bytes
+[2025-06-06 15:24:13] [INFO] 📚 Learned patterns for unknown_entity
+[2025-06-06 15:24:13] [INFO] 🔄 Updated context with: mock-uidai-service/src/main/java/com/mock/uidai/dto/ConfigRequestDto.java
+[2025-06-06 15:24:13] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/repository/EkycRequestRepository.java
+[2025-06-06 15:24:13] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/repository/EkycRequestRepository.java
+[2025-06-06 15:24:13] [INFO] 📊 Context built: 1 items, 347 tokens, 1.00 compression
+[2025-06-06 15:24:13] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:24:13] [INFO] 📊 Scanned: 42 dirs, 30 files, 152,092 bytes
+[2025-06-06 15:24:30] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:24:30] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_032_response.txt
+[2025-06-06 15:24:30] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/repository/EkycRequestRepository.java
+[2025-06-06 15:24:30] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/repository/EkycRequestRepository.java
+[2025-06-06 15:24:30] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:24:30] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/repository/EkycRequestRepository.java (5,114 bytes)
+[2025-06-06 15:24:30] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:24:30] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/repository/EkycRequestRepository.java (5,114 bytes)
+[2025-06-06 15:24:30] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:24:30] [INFO] 📊 Scanned: 42 dirs, 31 files, 157,206 bytes
+[2025-06-06 15:24:30] [INFO] 📚 Learned patterns for unknown_repository
+[2025-06-06 15:24:30] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/repository/EkycRequestRepository.java
+[2025-06-06 15:24:30] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/repository/OtpVerificationRepository.java
+[2025-06-06 15:24:30] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/repository/OtpVerificationRepository.java
+[2025-06-06 15:24:30] [INFO] 📊 Context built: 1 items, 340 tokens, 1.00 compression
+[2025-06-06 15:24:30] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:24:30] [INFO] 📊 Scanned: 42 dirs, 31 files, 157,206 bytes
+[2025-06-06 15:24:30] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/repository/EkycRequestRepository.java
+[2025-06-06 15:24:30] [INFO] 🔗 MCP found 1 related files for context
+[2025-06-06 15:24:47] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:24:47] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_033_response.txt
+[2025-06-06 15:24:47] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/repository/OtpVerificationRepository.java
+[2025-06-06 15:24:47] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/repository/OtpVerificationRepository.java
+[2025-06-06 15:24:47] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:24:47] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/repository/OtpVerificationRepository.java (4,407 bytes)
+[2025-06-06 15:24:47] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:24:47] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/repository/OtpVerificationRepository.java (4,407 bytes)
+[2025-06-06 15:24:47] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:24:47] [INFO] 📊 Scanned: 42 dirs, 32 files, 161,613 bytes
+[2025-06-06 15:24:47] [INFO] 📚 Learned patterns for unknown_repository
+[2025-06-06 15:24:47] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/repository/OtpVerificationRepository.java
+[2025-06-06 15:24:47] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/service/EkycService.java
+[2025-06-06 15:24:47] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/service/EkycService.java
+[2025-06-06 15:24:47] [INFO] 📊 Context built: 2 items, 400 tokens, 1.00 compression
+[2025-06-06 15:24:47] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:24:47] [INFO] 📊 Scanned: 42 dirs, 32 files, 161,613 bytes
+[2025-06-06 15:25:00] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:25:00] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_034_response.txt
+[2025-06-06 15:25:00] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/service/EkycService.java
+[2025-06-06 15:25:00] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/service/EkycService.java
+[2025-06-06 15:25:00] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:25:00] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/service/EkycService.java (3,866 bytes)
+[2025-06-06 15:25:00] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:25:00] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/service/EkycService.java (3,866 bytes)
+[2025-06-06 15:25:00] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:25:00] [INFO] 📊 Scanned: 42 dirs, 33 files, 165,479 bytes
+[2025-06-06 15:25:00] [INFO] 📚 Learned patterns for unknown_service
+[2025-06-06 15:25:00] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/service/EkycService.java
+[2025-06-06 15:25:00] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/service/OtpVerificationService.java
+[2025-06-06 15:25:00] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/service/OtpVerificationService.java
+[2025-06-06 15:25:00] [INFO] 📊 Context built: 2 items, 397 tokens, 1.00 compression
+[2025-06-06 15:25:00] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:25:00] [INFO] 📊 Scanned: 42 dirs, 33 files, 165,479 bytes
+[2025-06-06 15:25:00] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/service/EkycService.java
+[2025-06-06 15:25:00] [INFO] 🔗 MCP found 1 related files for context
+[2025-06-06 15:25:09] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:25:09] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_035_response.txt
+[2025-06-06 15:25:09] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/service/OtpVerificationService.java
+[2025-06-06 15:25:09] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/service/OtpVerificationService.java
+[2025-06-06 15:25:09] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:25:09] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/service/OtpVerificationService.java (2,485 bytes)
+[2025-06-06 15:25:09] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:25:09] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/service/OtpVerificationService.java (2,485 bytes)
+[2025-06-06 15:25:09] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:25:09] [INFO] 📊 Scanned: 42 dirs, 34 files, 167,964 bytes
+[2025-06-06 15:25:09] [INFO] 📚 Learned patterns for unknown_service
+[2025-06-06 15:25:09] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/service/OtpVerificationService.java
+[2025-06-06 15:25:09] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/service/UidaiApiService.java
+[2025-06-06 15:25:09] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/service/UidaiApiService.java
+[2025-06-06 15:25:09] [INFO] 📊 Context built: 4 items, 493 tokens, 1.00 compression
+[2025-06-06 15:25:09] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:25:09] [INFO] 📊 Scanned: 42 dirs, 34 files, 167,964 bytes
+[2025-06-06 15:25:09] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/service/EkycService.java
+[2025-06-06 15:25:09] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/service/OtpVerificationService.java
+[2025-06-06 15:25:09] [INFO] 🔗 MCP found 2 related files for context
+[2025-06-06 15:25:18] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:25:18] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_036_response.txt
+[2025-06-06 15:25:18] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/service/UidaiApiService.java
+[2025-06-06 15:25:18] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/service/UidaiApiService.java
+[2025-06-06 15:25:18] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:25:18] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/service/UidaiApiService.java (2,132 bytes)
+[2025-06-06 15:25:18] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:25:18] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/service/UidaiApiService.java (2,132 bytes)
+[2025-06-06 15:25:18] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:25:18] [INFO] 📊 Scanned: 42 dirs, 35 files, 170,096 bytes
+[2025-06-06 15:25:18] [INFO] 📚 Learned patterns for unknown_service
+[2025-06-06 15:25:18] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/service/UidaiApiService.java
+[2025-06-06 15:25:18] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/service/impl/EkycServiceImpl.java
+[2025-06-06 15:25:18] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/service/impl/EkycServiceImpl.java
+[2025-06-06 15:25:18] [INFO] 📊 Context built: 4 items, 553 tokens, 1.00 compression
+[2025-06-06 15:25:18] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:25:18] [INFO] 📊 Scanned: 42 dirs, 35 files, 170,096 bytes
+[2025-06-06 15:26:30] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:26:30] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_037_response.txt
+[2025-06-06 15:26:30] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/service/impl/EkycServiceImpl.java
+[2025-06-06 15:26:30] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/service/impl/EkycServiceImpl.java
+[2025-06-06 15:26:30] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:26:30] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/service/impl/EkycServiceImpl.java (23,155 bytes)
+[2025-06-06 15:26:30] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:26:30] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/service/impl/EkycServiceImpl.java (23,155 bytes)
+[2025-06-06 15:26:30] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:26:30] [INFO] 📊 Scanned: 43 dirs, 36 files, 193,251 bytes
+[2025-06-06 15:26:30] [INFO] 📚 Learned patterns for unknown_service
+[2025-06-06 15:26:30] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/service/impl/EkycServiceImpl.java
+[2025-06-06 15:26:30] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/service/impl/OtpVerificationServiceImpl.java
+[2025-06-06 15:26:30] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/service/impl/OtpVerificationServiceImpl.java
+[2025-06-06 15:26:30] [INFO] 📊 Context built: 5 items, 654 tokens, 1.00 compression
+[2025-06-06 15:26:30] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:26:30] [INFO] 📊 Scanned: 43 dirs, 36 files, 193,251 bytes
+[2025-06-06 15:26:30] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/service/impl/EkycServiceImpl.java
+[2025-06-06 15:26:30] [INFO] 🔗 MCP found 1 related files for context
+[2025-06-06 15:27:07] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:27:07] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_038_response.txt
+[2025-06-06 15:27:07] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/service/impl/OtpVerificationServiceImpl.java
+[2025-06-06 15:27:07] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/service/impl/OtpVerificationServiceImpl.java
+[2025-06-06 15:27:07] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:27:07] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/service/impl/OtpVerificationServiceImpl.java (11,797 bytes)
+[2025-06-06 15:27:07] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:27:07] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/service/impl/OtpVerificationServiceImpl.java (11,797 bytes)
+[2025-06-06 15:27:07] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:27:07] [INFO] 📊 Scanned: 43 dirs, 37 files, 205,048 bytes
+[2025-06-06 15:27:07] [INFO] 📚 Learned patterns for unknown_service
+[2025-06-06 15:27:07] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/service/impl/OtpVerificationServiceImpl.java
+[2025-06-06 15:27:07] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/service/impl/UidaiApiServiceImpl.java
+[2025-06-06 15:27:07] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/service/impl/UidaiApiServiceImpl.java
+[2025-06-06 15:27:07] [INFO] 📊 Context built: 2 items, 380 tokens, 1.00 compression
+[2025-06-06 15:27:07] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:27:07] [INFO] 📊 Scanned: 43 dirs, 37 files, 205,048 bytes
+[2025-06-06 15:27:07] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/service/impl/EkycServiceImpl.java
+[2025-06-06 15:27:07] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/service/impl/OtpVerificationServiceImpl.java
+[2025-06-06 15:27:07] [INFO] 🔗 MCP found 2 related files for context
+[2025-06-06 15:27:39] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:27:39] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_039_response.txt
+[2025-06-06 15:27:39] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/service/impl/UidaiApiServiceImpl.java
+[2025-06-06 15:27:39] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/service/impl/UidaiApiServiceImpl.java
+[2025-06-06 15:27:39] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:27:39] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/service/impl/UidaiApiServiceImpl.java (9,897 bytes)
+[2025-06-06 15:27:39] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:27:39] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/service/impl/UidaiApiServiceImpl.java (9,897 bytes)
+[2025-06-06 15:27:39] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:27:39] [INFO] 📊 Scanned: 43 dirs, 38 files, 214,945 bytes
+[2025-06-06 15:27:39] [INFO] 📚 Learned patterns for unknown_service
+[2025-06-06 15:27:39] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/service/impl/UidaiApiServiceImpl.java
+[2025-06-06 15:27:39] [INFO] 📝 Generating: mock-uidai-service/src/main/java/com/mock/uidai/service/MockUidaiService.java
+[2025-06-06 15:27:39] [INFO] 🎯 Building context for: mock-uidai-service/src/main/java/com/mock/uidai/service/MockUidaiService.java
+[2025-06-06 15:27:39] [INFO] 📊 Context built: 9 items, 761 tokens, 1.00 compression
+[2025-06-06 15:27:39] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:27:39] [INFO] 📊 Scanned: 43 dirs, 38 files, 214,945 bytes
+[2025-06-06 15:28:17] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:28:17] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_040_response.txt
+[2025-06-06 15:28:17] [INFO] 📁 Creating file immediately: mock-uidai-service/src/main/java/com/mock/uidai/service/MockUidaiService.java
+[2025-06-06 15:28:17] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/service/MockUidaiService.java
+[2025-06-06 15:28:17] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:28:17] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/service/MockUidaiService.java (10,443 bytes)
+[2025-06-06 15:28:17] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:28:17] [INFO] ✅ File created: mock-uidai-service/src/main/java/com/mock/uidai/service/MockUidaiService.java (10,443 bytes)
+[2025-06-06 15:28:17] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:28:17] [INFO] 📊 Scanned: 43 dirs, 39 files, 225,388 bytes
+[2025-06-06 15:28:17] [INFO] 📚 Learned patterns for unknown_service
+[2025-06-06 15:28:17] [INFO] 🔄 Updated context with: mock-uidai-service/src/main/java/com/mock/uidai/service/MockUidaiService.java
+[2025-06-06 15:28:17] [INFO] 📝 Generating: mock-uidai-service/src/main/java/com/mock/uidai/service/MockConfigService.java
+[2025-06-06 15:28:17] [INFO] 🎯 Building context for: mock-uidai-service/src/main/java/com/mock/uidai/service/MockConfigService.java
+[2025-06-06 15:28:17] [INFO] 📊 Context built: 1 items, 334 tokens, 1.00 compression
+[2025-06-06 15:28:17] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:28:17] [INFO] 📊 Scanned: 43 dirs, 39 files, 225,388 bytes
+[2025-06-06 15:28:17] [INFO] 📖 Read file: mock-uidai-service/src/main/java/com/mock/uidai/service/MockUidaiService.java
+[2025-06-06 15:28:17] [INFO] 🔗 MCP found 1 related files for context
+[2025-06-06 15:28:41] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:28:41] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_041_response.txt
+[2025-06-06 15:28:41] [INFO] 📁 Creating file immediately: mock-uidai-service/src/main/java/com/mock/uidai/service/MockConfigService.java
+[2025-06-06 15:28:41] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/service/MockConfigService.java
+[2025-06-06 15:28:41] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:28:41] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/service/MockConfigService.java (8,813 bytes)
+[2025-06-06 15:28:41] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:28:41] [INFO] ✅ File created: mock-uidai-service/src/main/java/com/mock/uidai/service/MockConfigService.java (8,813 bytes)
+[2025-06-06 15:28:41] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:28:41] [INFO] 📊 Scanned: 43 dirs, 40 files, 234,201 bytes
+[2025-06-06 15:28:41] [INFO] 📚 Learned patterns for unknown_service
+[2025-06-06 15:28:41] [INFO] 🔄 Updated context with: mock-uidai-service/src/main/java/com/mock/uidai/service/MockConfigService.java
+[2025-06-06 15:28:41] [INFO] 📝 Generating: mock-uidai-service/src/main/java/com/mock/uidai/service/TraceLoggerService.java
+[2025-06-06 15:28:41] [INFO] 🎯 Building context for: mock-uidai-service/src/main/java/com/mock/uidai/service/TraceLoggerService.java
+[2025-06-06 15:28:41] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:28:41] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:28:41] [INFO] 📊 Scanned: 43 dirs, 40 files, 234,201 bytes
+[2025-06-06 15:28:41] [INFO] 📖 Read file: mock-uidai-service/src/main/java/com/mock/uidai/service/MockConfigService.java
+[2025-06-06 15:28:41] [INFO] 📖 Read file: mock-uidai-service/src/main/java/com/mock/uidai/service/MockUidaiService.java
+[2025-06-06 15:28:41] [INFO] 🔗 MCP found 2 related files for context
+[2025-06-06 15:29:12] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:29:12] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_042_response.txt
+[2025-06-06 15:29:12] [INFO] 📁 Creating file immediately: mock-uidai-service/src/main/java/com/mock/uidai/service/TraceLoggerService.java
+[2025-06-06 15:29:12] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/service/TraceLoggerService.java
+[2025-06-06 15:29:12] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:29:12] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/service/TraceLoggerService.java (9,131 bytes)
+[2025-06-06 15:29:12] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:29:12] [INFO] ✅ File created: mock-uidai-service/src/main/java/com/mock/uidai/service/TraceLoggerService.java (9,131 bytes)
+[2025-06-06 15:29:12] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:29:12] [INFO] 📊 Scanned: 43 dirs, 41 files, 243,332 bytes
+[2025-06-06 15:29:12] [INFO] 📚 Learned patterns for unknown_service
+[2025-06-06 15:29:12] [INFO] 🔄 Updated context with: mock-uidai-service/src/main/java/com/mock/uidai/service/TraceLoggerService.java
+[2025-06-06 15:29:12] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/controller/EkycController.java
+[2025-06-06 15:29:12] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/controller/EkycController.java
+[2025-06-06 15:29:12] [INFO] 📊 Context built: 3 items, 496 tokens, 1.00 compression
+[2025-06-06 15:29:12] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:29:12] [INFO] 📊 Scanned: 43 dirs, 41 files, 243,332 bytes
+[2025-06-06 15:29:33] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:29:33] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_043_response.txt
+[2025-06-06 15:29:33] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/controller/EkycController.java
+[2025-06-06 15:29:33] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/controller/EkycController.java
+[2025-06-06 15:29:33] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:29:33] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/controller/EkycController.java (7,155 bytes)
+[2025-06-06 15:29:33] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:29:33] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/controller/EkycController.java (7,155 bytes)
+[2025-06-06 15:29:33] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:29:33] [INFO] 📊 Scanned: 43 dirs, 42 files, 250,487 bytes
+[2025-06-06 15:29:33] [INFO] 📚 Learned patterns for unknown_controller
+[2025-06-06 15:29:33] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/controller/EkycController.java
+[2025-06-06 15:29:33] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/controller/OtpVerificationController.java
+[2025-06-06 15:29:33] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/controller/OtpVerificationController.java
+[2025-06-06 15:29:33] [INFO] 📊 Context built: 3 items, 490 tokens, 1.00 compression
+[2025-06-06 15:29:33] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:29:33] [INFO] 📊 Scanned: 43 dirs, 42 files, 250,487 bytes
+[2025-06-06 15:29:33] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/controller/EkycController.java
+[2025-06-06 15:29:33] [INFO] 🔗 MCP found 1 related files for context
+[2025-06-06 15:29:52] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:29:52] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_044_response.txt
+[2025-06-06 15:29:52] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/controller/OtpVerificationController.java
+[2025-06-06 15:29:52] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/controller/OtpVerificationController.java
+[2025-06-06 15:29:52] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:29:52] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/controller/OtpVerificationController.java (6,039 bytes)
+[2025-06-06 15:29:52] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:29:52] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/controller/OtpVerificationController.java (6,039 bytes)
+[2025-06-06 15:29:52] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:29:52] [INFO] 📊 Scanned: 43 dirs, 43 files, 256,526 bytes
+[2025-06-06 15:29:52] [INFO] 📚 Learned patterns for unknown_controller
+[2025-06-06 15:29:52] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/controller/OtpVerificationController.java
+[2025-06-06 15:29:52] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/exception/GlobalExceptionHandler.java
+[2025-06-06 15:29:52] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/exception/GlobalExceptionHandler.java
+[2025-06-06 15:29:52] [INFO] 📊 Context built: 3 items, 375 tokens, 1.00 compression
+[2025-06-06 15:29:52] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:29:52] [INFO] 📊 Scanned: 43 dirs, 43 files, 256,526 bytes
+[2025-06-06 15:29:52] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/exception/EkycException.java
+[2025-06-06 15:29:52] [INFO] 🔗 MCP found 1 related files for context
+[2025-06-06 15:30:31] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:30:31] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_045_response.txt
+[2025-06-06 15:30:31] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/exception/GlobalExceptionHandler.java
+[2025-06-06 15:30:31] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/exception/GlobalExceptionHandler.java
+[2025-06-06 15:30:31] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:30:31] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/exception/GlobalExceptionHandler.java (14,282 bytes)
+[2025-06-06 15:30:31] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:30:31] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/exception/GlobalExceptionHandler.java (14,282 bytes)
+[2025-06-06 15:30:31] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:30:31] [INFO] 📊 Scanned: 43 dirs, 44 files, 270,808 bytes
+[2025-06-06 15:30:31] [INFO] 📚 Learned patterns for unknown_controller
+[2025-06-06 15:30:31] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/exception/GlobalExceptionHandler.java
+[2025-06-06 15:30:31] [INFO] 📝 Generating: mock-uidai-service/src/main/java/com/mock/uidai/controller/MockUidaiController.java
+[2025-06-06 15:30:31] [INFO] 🎯 Building context for: mock-uidai-service/src/main/java/com/mock/uidai/controller/MockUidaiController.java
+[2025-06-06 15:30:31] [INFO] 📊 Context built: 9 items, 787 tokens, 1.00 compression
+[2025-06-06 15:30:31] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:30:31] [INFO] 📊 Scanned: 43 dirs, 44 files, 270,808 bytes
+[2025-06-06 15:30:52] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:30:52] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_046_response.txt
+[2025-06-06 15:30:52] [INFO] 📁 Creating file immediately: mock-uidai-service/src/main/java/com/mock/uidai/controller/MockUidaiController.java
+[2025-06-06 15:30:52] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/controller/MockUidaiController.java
+[2025-06-06 15:30:52] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:30:52] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/controller/MockUidaiController.java (6,309 bytes)
+[2025-06-06 15:30:52] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:30:52] [INFO] ✅ File created: mock-uidai-service/src/main/java/com/mock/uidai/controller/MockUidaiController.java (6,309 bytes)
+[2025-06-06 15:30:52] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:30:52] [INFO] 📊 Scanned: 43 dirs, 45 files, 277,117 bytes
+[2025-06-06 15:30:52] [INFO] 📚 Learned patterns for unknown_controller
+[2025-06-06 15:30:52] [INFO] 🔄 Updated context with: mock-uidai-service/src/main/java/com/mock/uidai/controller/MockUidaiController.java
+[2025-06-06 15:30:52] [INFO] 📝 Generating: mock-uidai-service/src/main/java/com/mock/uidai/controller/MockAdminController.java
+[2025-06-06 15:30:52] [INFO] 🎯 Building context for: mock-uidai-service/src/main/java/com/mock/uidai/controller/MockAdminController.java
+[2025-06-06 15:30:52] [INFO] 📊 Context built: 2 items, 398 tokens, 1.00 compression
+[2025-06-06 15:30:52] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:30:52] [INFO] 📊 Scanned: 43 dirs, 45 files, 277,117 bytes
+[2025-06-06 15:30:52] [INFO] 📖 Read file: mock-uidai-service/src/main/java/com/mock/uidai/controller/MockUidaiController.java
+[2025-06-06 15:30:52] [INFO] 🔗 MCP found 1 related files for context
+[2025-06-06 15:31:08] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:31:08] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_047_response.txt
+[2025-06-06 15:31:08] [INFO] 📁 Creating file immediately: mock-uidai-service/src/main/java/com/mock/uidai/controller/MockAdminController.java
+[2025-06-06 15:31:08] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/controller/MockAdminController.java
+[2025-06-06 15:31:08] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:31:08] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/controller/MockAdminController.java (5,481 bytes)
+[2025-06-06 15:31:08] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:31:08] [INFO] ✅ File created: mock-uidai-service/src/main/java/com/mock/uidai/controller/MockAdminController.java (5,481 bytes)
+[2025-06-06 15:31:08] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:31:08] [INFO] 📊 Scanned: 43 dirs, 46 files, 282,598 bytes
+[2025-06-06 15:31:08] [INFO] 📚 Learned patterns for unknown_controller
+[2025-06-06 15:31:08] [INFO] 🔄 Updated context with: mock-uidai-service/src/main/java/com/mock/uidai/controller/MockAdminController.java
+[2025-06-06 15:31:08] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/util/AuditLogger.java
+[2025-06-06 15:31:08] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/util/AuditLogger.java
+[2025-06-06 15:31:08] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:31:08] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:31:08] [INFO] 📊 Scanned: 43 dirs, 46 files, 282,598 bytes
+[2025-06-06 15:31:37] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:31:37] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_048_response.txt
+[2025-06-06 15:31:37] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/util/AuditLogger.java
+[2025-06-06 15:31:37] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/util/AuditLogger.java
+[2025-06-06 15:31:37] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:31:37] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/util/AuditLogger.java (8,482 bytes)
+[2025-06-06 15:31:37] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:31:37] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/util/AuditLogger.java (8,482 bytes)
+[2025-06-06 15:31:37] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:31:37] [INFO] 📊 Scanned: 43 dirs, 47 files, 291,080 bytes
+[2025-06-06 15:31:37] [INFO] 📚 Learned patterns for unknown_utility
+[2025-06-06 15:31:37] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/util/AuditLogger.java
+[2025-06-06 15:31:37] [INFO] 📝 Generating: ekyc-service/src/main/java/com/ekyc/service/util/ValidationUtils.java
+[2025-06-06 15:31:37] [INFO] 🎯 Building context for: ekyc-service/src/main/java/com/ekyc/service/util/ValidationUtils.java
+[2025-06-06 15:31:37] [INFO] 📊 Context built: 0 items, 293 tokens, 0.00 compression
+[2025-06-06 15:31:37] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:31:37] [INFO] 📊 Scanned: 43 dirs, 47 files, 291,080 bytes
+[2025-06-06 15:31:37] [INFO] 📖 Read file: ekyc-service/src/main/java/com/ekyc/service/util/AuditLogger.java
+[2025-06-06 15:31:37] [INFO] 🔗 MCP found 1 related files for context
+[2025-06-06 15:32:07] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:32:07] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_049_response.txt
+[2025-06-06 15:32:07] [INFO] 📁 Creating file immediately: ekyc-service/src/main/java/com/ekyc/service/util/ValidationUtils.java
+[2025-06-06 15:32:07] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/util/ValidationUtils.java
+[2025-06-06 15:32:07] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:32:07] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/util/ValidationUtils.java (8,927 bytes)
+[2025-06-06 15:32:07] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:32:07] [INFO] ✅ File created: ekyc-service/src/main/java/com/ekyc/service/util/ValidationUtils.java (8,927 bytes)
+[2025-06-06 15:32:07] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:32:07] [INFO] 📊 Scanned: 43 dirs, 48 files, 300,007 bytes
+[2025-06-06 15:32:07] [INFO] 📚 Learned patterns for unknown_utility
+[2025-06-06 15:32:07] [INFO] 🔄 Updated context with: ekyc-service/src/main/java/com/ekyc/service/util/ValidationUtils.java
+[2025-06-06 15:32:07] [INFO] 📝 Generating: ekyc-service/src/test/java/com/ekyc/service/controller/EkycControllerTest.java
+[2025-06-06 15:32:07] [INFO] 🎯 Building context for: ekyc-service/src/test/java/com/ekyc/service/controller/EkycControllerTest.java
+[2025-06-06 15:32:07] [INFO] 📊 Context built: 2 items, 484 tokens, 1.00 compression
+[2025-06-06 15:32:07] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:32:07] [INFO] 📊 Scanned: 43 dirs, 48 files, 300,007 bytes
+[2025-06-06 15:32:40] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:32:40] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_050_response.txt
+[2025-06-06 15:32:40] [INFO] 📁 Creating file immediately: ekyc-service/src/test/java/com/ekyc/service/controller/EkycControllerTest.java
+[2025-06-06 15:32:40] [INFO] 📄 Creating file: ekyc-service/src/test/java/com/ekyc/service/controller/EkycControllerTest.java
+[2025-06-06 15:32:40] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:32:40] [INFO] ✅ Created: ekyc-service/src/test/java/com/ekyc/service/controller/EkycControllerTest.java (10,773 bytes)
+[2025-06-06 15:32:40] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:32:40] [INFO] ✅ File created: ekyc-service/src/test/java/com/ekyc/service/controller/EkycControllerTest.java (10,773 bytes)
+[2025-06-06 15:32:40] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:32:40] [INFO] 📊 Scanned: 44 dirs, 49 files, 310,780 bytes
+[2025-06-06 15:32:40] [INFO] 📚 Learned patterns for unknown_test
+[2025-06-06 15:32:40] [INFO] 🔄 Updated context with: ekyc-service/src/test/java/com/ekyc/service/controller/EkycControllerTest.java
+[2025-06-06 15:32:40] [INFO] 📝 Generating: ekyc-service/src/test/java/com/ekyc/service/controller/OtpVerificationControllerTest.java
+[2025-06-06 15:32:40] [INFO] 🎯 Building context for: ekyc-service/src/test/java/com/ekyc/service/controller/OtpVerificationControllerTest.java
+[2025-06-06 15:32:40] [INFO] 📊 Context built: 2 items, 460 tokens, 1.00 compression
+[2025-06-06 15:32:40] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:32:40] [INFO] 📊 Scanned: 44 dirs, 49 files, 310,780 bytes
+[2025-06-06 15:32:40] [INFO] 📖 Read file: ekyc-service/src/test/java/com/ekyc/service/controller/EkycControllerTest.java
+[2025-06-06 15:32:40] [INFO] 🔗 MCP found 1 related files for context
+[2025-06-06 15:33:09] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:33:09] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_051_response.txt
+[2025-06-06 15:33:09] [INFO] 📁 Creating file immediately: ekyc-service/src/test/java/com/ekyc/service/controller/OtpVerificationControllerTest.java
+[2025-06-06 15:33:09] [INFO] 📄 Creating file: ekyc-service/src/test/java/com/ekyc/service/controller/OtpVerificationControllerTest.java
+[2025-06-06 15:33:09] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:33:09] [INFO] ✅ Created: ekyc-service/src/test/java/com/ekyc/service/controller/OtpVerificationControllerTest.java (9,003 bytes)
+[2025-06-06 15:33:09] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:33:09] [INFO] ✅ File created: ekyc-service/src/test/java/com/ekyc/service/controller/OtpVerificationControllerTest.java (9,003 bytes)
+[2025-06-06 15:33:09] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:33:09] [INFO] 📊 Scanned: 44 dirs, 50 files, 319,783 bytes
+[2025-06-06 15:33:09] [INFO] 📚 Learned patterns for unknown_test
+[2025-06-06 15:33:09] [INFO] 🔄 Updated context with: ekyc-service/src/test/java/com/ekyc/service/controller/OtpVerificationControllerTest.java
+[2025-06-06 15:33:09] [INFO] 📝 Generating: ekyc-service/src/test/java/com/ekyc/service/service/EkycServiceImplTest.java
+[2025-06-06 15:33:09] [INFO] 🎯 Building context for: ekyc-service/src/test/java/com/ekyc/service/service/EkycServiceImplTest.java
+[2025-06-06 15:33:09] [INFO] 📊 Context built: 1 items, 380 tokens, 1.00 compression
+[2025-06-06 15:33:09] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:33:09] [INFO] 📊 Scanned: 44 dirs, 50 files, 319,783 bytes
+[2025-06-06 15:33:38] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:33:38] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_052_response.txt
+[2025-06-06 15:33:38] [INFO] 📁 Creating file immediately: ekyc-service/src/test/java/com/ekyc/service/service/EkycServiceImplTest.java
+[2025-06-06 15:33:38] [INFO] 📄 Creating file: ekyc-service/src/test/java/com/ekyc/service/service/EkycServiceImplTest.java
+[2025-06-06 15:33:38] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:33:38] [INFO] ✅ Created: ekyc-service/src/test/java/com/ekyc/service/service/EkycServiceImplTest.java (8,624 bytes)
+[2025-06-06 15:33:38] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:33:38] [INFO] ✅ File created: ekyc-service/src/test/java/com/ekyc/service/service/EkycServiceImplTest.java (8,624 bytes)
+[2025-06-06 15:33:38] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:33:38] [INFO] 📊 Scanned: 45 dirs, 51 files, 328,407 bytes
+[2025-06-06 15:33:38] [INFO] 📚 Learned patterns for unknown_test
+[2025-06-06 15:33:38] [INFO] 🔄 Updated context with: ekyc-service/src/test/java/com/ekyc/service/service/EkycServiceImplTest.java
+[2025-06-06 15:33:38] [INFO] 📝 Generating: ekyc-service/src/test/java/com/ekyc/service/service/OtpVerificationServiceImplTest.java
+[2025-06-06 15:33:38] [INFO] 🎯 Building context for: ekyc-service/src/test/java/com/ekyc/service/service/OtpVerificationServiceImplTest.java
+[2025-06-06 15:33:38] [INFO] 📊 Context built: 1 items, 364 tokens, 1.00 compression
+[2025-06-06 15:33:38] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:33:38] [INFO] 📊 Scanned: 45 dirs, 51 files, 328,407 bytes
+[2025-06-06 15:33:38] [INFO] 📖 Read file: ekyc-service/src/test/java/com/ekyc/service/service/EkycServiceImplTest.java
+[2025-06-06 15:33:38] [INFO] 🔗 MCP found 1 related files for context
+[2025-06-06 15:34:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:34:11] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_053_response.txt
+[2025-06-06 15:34:11] [INFO] 📁 Creating file immediately: ekyc-service/src/test/java/com/ekyc/service/service/OtpVerificationServiceImplTest.java
+[2025-06-06 15:34:11] [INFO] 📄 Creating file: ekyc-service/src/test/java/com/ekyc/service/service/OtpVerificationServiceImplTest.java
+[2025-06-06 15:34:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:34:11] [INFO] ✅ Created: ekyc-service/src/test/java/com/ekyc/service/service/OtpVerificationServiceImplTest.java (10,541 bytes)
+[2025-06-06 15:34:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:34:11] [INFO] ✅ File created: ekyc-service/src/test/java/com/ekyc/service/service/OtpVerificationServiceImplTest.java (10,541 bytes)
+[2025-06-06 15:34:11] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:34:11] [INFO] 📊 Scanned: 45 dirs, 52 files, 338,948 bytes
+[2025-06-06 15:34:11] [INFO] 📚 Learned patterns for unknown_test
+[2025-06-06 15:34:11] [INFO] 🔄 Updated context with: ekyc-service/src/test/java/com/ekyc/service/service/OtpVerificationServiceImplTest.java
+[2025-06-06 15:34:11] [INFO] 📝 Generating: ekyc-service/src/test/java/com/ekyc/service/service/UidaiApiServiceImplTest.java
+[2025-06-06 15:34:11] [INFO] 🎯 Building context for: ekyc-service/src/test/java/com/ekyc/service/service/UidaiApiServiceImplTest.java
+[2025-06-06 15:34:11] [INFO] 📊 Context built: 1 items, 374 tokens, 1.00 compression
+[2025-06-06 15:34:11] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:34:11] [INFO] 📊 Scanned: 45 dirs, 52 files, 338,948 bytes
+[2025-06-06 15:34:11] [INFO] 📖 Read file: ekyc-service/src/test/java/com/ekyc/service/service/EkycServiceImplTest.java
+[2025-06-06 15:34:11] [INFO] 📖 Read file: ekyc-service/src/test/java/com/ekyc/service/service/OtpVerificationServiceImplTest.java
+[2025-06-06 15:34:11] [INFO] 🔗 MCP found 2 related files for context
+[2025-06-06 15:34:39] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:34:39] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_054_response.txt
+[2025-06-06 15:34:39] [INFO] 📁 Creating file immediately: ekyc-service/src/test/java/com/ekyc/service/service/UidaiApiServiceImplTest.java
+[2025-06-06 15:34:39] [INFO] 📄 Creating file: ekyc-service/src/test/java/com/ekyc/service/service/UidaiApiServiceImplTest.java
+[2025-06-06 15:34:39] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:34:39] [INFO] ✅ Created: ekyc-service/src/test/java/com/ekyc/service/service/UidaiApiServiceImplTest.java (8,480 bytes)
+[2025-06-06 15:34:39] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:34:39] [INFO] ✅ File created: ekyc-service/src/test/java/com/ekyc/service/service/UidaiApiServiceImplTest.java (8,480 bytes)
+[2025-06-06 15:34:39] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:34:39] [INFO] 📊 Scanned: 45 dirs, 53 files, 347,428 bytes
+[2025-06-06 15:34:39] [INFO] 📚 Learned patterns for unknown_test
+[2025-06-06 15:34:39] [INFO] 🔄 Updated context with: ekyc-service/src/test/java/com/ekyc/service/service/UidaiApiServiceImplTest.java
+[2025-06-06 15:34:39] [INFO] 📝 Generating: ekyc-service/src/test/java/com/ekyc/service/integration/EkycIntegrationTest.java
+[2025-06-06 15:34:39] [INFO] 🎯 Building context for: ekyc-service/src/test/java/com/ekyc/service/integration/EkycIntegrationTest.java
+[2025-06-06 15:34:39] [INFO] 📊 Context built: 2 items, 462 tokens, 1.00 compression
+[2025-06-06 15:34:39] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:34:39] [INFO] 📊 Scanned: 45 dirs, 53 files, 347,428 bytes
+[2025-06-06 15:35:22] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:35:22] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_055_response.txt
+[2025-06-06 15:35:22] [INFO] 📁 Creating file immediately: ekyc-service/src/test/java/com/ekyc/service/integration/EkycIntegrationTest.java
+[2025-06-06 15:35:22] [INFO] 📄 Creating file: ekyc-service/src/test/java/com/ekyc/service/integration/EkycIntegrationTest.java
+[2025-06-06 15:35:22] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:35:22] [INFO] ✅ Created: ekyc-service/src/test/java/com/ekyc/service/integration/EkycIntegrationTest.java (13,620 bytes)
+[2025-06-06 15:35:22] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:35:22] [INFO] ✅ File created: ekyc-service/src/test/java/com/ekyc/service/integration/EkycIntegrationTest.java (13,620 bytes)
+[2025-06-06 15:35:22] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:35:22] [INFO] 📊 Scanned: 46 dirs, 54 files, 361,048 bytes
+[2025-06-06 15:35:22] [INFO] 📚 Learned patterns for unknown_test
+[2025-06-06 15:35:22] [INFO] 🔄 Updated context with: ekyc-service/src/test/java/com/ekyc/service/integration/EkycIntegrationTest.java
+[2025-06-06 15:35:22] [INFO] 📝 Generating: mock-uidai-service/src/test/java/com/mock/uidai/controller/MockUidaiControllerTest.java
+[2025-06-06 15:35:22] [INFO] 🎯 Building context for: mock-uidai-service/src/test/java/com/mock/uidai/controller/MockUidaiControllerTest.java
+[2025-06-06 15:35:22] [INFO] 📊 Context built: 2 items, 485 tokens, 1.00 compression
+[2025-06-06 15:35:22] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:35:22] [INFO] 📊 Scanned: 46 dirs, 54 files, 361,048 bytes
+[2025-06-06 15:35:51] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:35:51] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_056_response.txt
+[2025-06-06 15:35:51] [INFO] 📁 Creating file immediately: mock-uidai-service/src/test/java/com/mock/uidai/controller/MockUidaiControllerTest.java
+[2025-06-06 15:35:51] [INFO] 📄 Creating file: mock-uidai-service/src/test/java/com/mock/uidai/controller/MockUidaiControllerTest.java
+[2025-06-06 15:35:51] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:35:51] [INFO] ✅ Created: mock-uidai-service/src/test/java/com/mock/uidai/controller/MockUidaiControllerTest.java (9,011 bytes)
+[2025-06-06 15:35:51] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:35:51] [INFO] ✅ File created: mock-uidai-service/src/test/java/com/mock/uidai/controller/MockUidaiControllerTest.java (9,011 bytes)
+[2025-06-06 15:35:51] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:35:51] [INFO] 📊 Scanned: 47 dirs, 55 files, 370,059 bytes
+[2025-06-06 15:35:51] [INFO] 📚 Learned patterns for unknown_test
+[2025-06-06 15:35:51] [INFO] 🔄 Updated context with: mock-uidai-service/src/test/java/com/mock/uidai/controller/MockUidaiControllerTest.java
+[2025-06-06 15:35:51] [INFO] 📝 Generating: mock-uidai-service/src/test/java/com/mock/uidai/service/MockUidaiServiceTest.java
+[2025-06-06 15:35:51] [INFO] 🎯 Building context for: mock-uidai-service/src/test/java/com/mock/uidai/service/MockUidaiServiceTest.java
+[2025-06-06 15:35:51] [INFO] 📊 Context built: 1 items, 407 tokens, 1.00 compression
+[2025-06-06 15:35:51] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:35:51] [INFO] 📊 Scanned: 47 dirs, 55 files, 370,059 bytes
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 💬 LLM Interaction: code_generation_chunk_03_remaining -> code_generation_chunk_03_remaining_057_response.txt
+[2025-06-06 15:36:26] [INFO] 📁 Creating file immediately: mock-uidai-service/src/test/java/com/mock/uidai/service/MockUidaiServiceTest.java
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: mock-uidai-service/src/test/java/com/mock/uidai/service/MockUidaiServiceTest.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: mock-uidai-service/src/test/java/com/mock/uidai/service/MockUidaiServiceTest.java (11,039 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ File created: mock-uidai-service/src/test/java/com/mock/uidai/service/MockUidaiServiceTest.java (11,039 bytes)
+[2025-06-06 15:36:26] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-06 15:36:26] [INFO] 📊 Scanned: 48 dirs, 56 files, 381,098 bytes
+[2025-06-06 15:36:26] [INFO] 📚 Learned patterns for unknown_test
+[2025-06-06 15:36:26] [INFO] 🔄 Updated context with: mock-uidai-service/src/test/java/com/mock/uidai/service/MockUidaiServiceTest.java
+[2025-06-06 15:36:26] [INFO] ✅ Chunk chunk_03_remaining complete: 100.0% success rate
+[2025-06-06 15:36:26] [INFO] ✅ Code generation complete: 56 files, 100.0% success rate
+[2025-06-06 15:36:26] [INFO] 📊 Code generation results saved to: code_generation_results.json
+[2025-06-06 15:36:26] [INFO] 📈 Generation Statistics:
+[2025-06-06 15:36:26] [INFO]    Total Files: 56
+[2025-06-06 15:36:26] [INFO]    Successful: 56
+[2025-06-06 15:36:26] [INFO]    Success Rate: 100.0%
+[2025-06-06 15:36:26] [SUCCESS] ✅ SUCCESS in code_generation: Code generation completed successfully
+[2025-06-06 15:36:26] [INFO] 📁 Creating files from generated code...
+[2025-06-06 15:36:26] [INFO] 📝 Starting file creation from generation results
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/pom.xml
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/pom.xml (10,154 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: mock-uidai-service/pom.xml
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: mock-uidai-service/pom.xml (6,269 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/config/WebClientConfig.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/config/WebClientConfig.java (5,540 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/resources/application.yml
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/resources/application.yml (2,934 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/resources/db/migration/V1__init_schema.sql
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/resources/db/migration/V1__init_schema.sql (5,280 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/config/OpenApiConfig.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/config/OpenApiConfig.java (3,186 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: mock-uidai-service/src/main/resources/application.yml
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: mock-uidai-service/src/main/resources/application.yml (1,606 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/EkycServiceApplication.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/EkycServiceApplication.java (3,503 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/MockUidaiServiceApplication.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/MockUidaiServiceApplication.java (1,802 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/entity/EkycRequest.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/entity/EkycRequest.java (17,640 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/entity/OtpVerification.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/entity/OtpVerification.java (6,714 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/enums/IdType.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/enums/IdType.java (2,303 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/enums/VerificationStatus.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/enums/VerificationStatus.java (2,425 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/enums/ConsentType.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/enums/ConsentType.java (1,634 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/dto/EkycRequestDto.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/dto/EkycRequestDto.java (10,950 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/dto/OtpVerificationDto.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/dto/OtpVerificationDto.java (3,514 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/dto/EkycResponseDto.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/dto/EkycResponseDto.java (9,441 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateRequestDto.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateRequestDto.java (4,459 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateResponseDto.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpInitiateResponseDto.java (6,374 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpVerifyRequestDto.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpVerifyRequestDto.java (4,020 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpVerifyResponseDto.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/dto/UidaiOtpVerifyResponseDto.java (5,395 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/dto/ErrorResponseDto.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/dto/ErrorResponseDto.java (6,963 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/exception/EkycException.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/exception/EkycException.java (4,485 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateRequestDto.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateRequestDto.java (4,035 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateResponseDto.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpInitiateResponseDto.java (3,843 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyRequestDto.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyRequestDto.java (3,929 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyResponseDto.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/dto/OtpVerifyResponseDto.java (3,848 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/dto/KycDataDto.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/dto/KycDataDto.java (6,707 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/dto/ErrorResponseDto.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/dto/ErrorResponseDto.java (4,575 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/dto/ConfigRequestDto.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/dto/ConfigRequestDto.java (4,688 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/repository/EkycRequestRepository.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/repository/EkycRequestRepository.java (5,114 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/repository/OtpVerificationRepository.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/repository/OtpVerificationRepository.java (4,407 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/service/EkycService.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/service/EkycService.java (3,866 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/service/OtpVerificationService.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/service/OtpVerificationService.java (2,485 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/service/UidaiApiService.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/service/UidaiApiService.java (2,132 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/service/impl/EkycServiceImpl.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/service/impl/EkycServiceImpl.java (23,155 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/service/impl/OtpVerificationServiceImpl.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/service/impl/OtpVerificationServiceImpl.java (11,797 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/service/impl/UidaiApiServiceImpl.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/service/impl/UidaiApiServiceImpl.java (9,897 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/service/MockUidaiService.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/service/MockUidaiService.java (10,443 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/service/MockConfigService.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/service/MockConfigService.java (8,813 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/service/TraceLoggerService.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/service/TraceLoggerService.java (9,131 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/controller/EkycController.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/controller/EkycController.java (7,155 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/controller/OtpVerificationController.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/controller/OtpVerificationController.java (6,039 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/exception/GlobalExceptionHandler.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/exception/GlobalExceptionHandler.java (14,282 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/controller/MockUidaiController.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/controller/MockUidaiController.java (6,309 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: mock-uidai-service/src/main/java/com/mock/uidai/controller/MockAdminController.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: mock-uidai-service/src/main/java/com/mock/uidai/controller/MockAdminController.java (5,481 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/util/AuditLogger.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/util/AuditLogger.java (8,482 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/main/java/com/ekyc/service/util/ValidationUtils.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/main/java/com/ekyc/service/util/ValidationUtils.java (8,927 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/test/java/com/ekyc/service/controller/EkycControllerTest.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/test/java/com/ekyc/service/controller/EkycControllerTest.java (10,773 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/test/java/com/ekyc/service/controller/OtpVerificationControllerTest.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/test/java/com/ekyc/service/controller/OtpVerificationControllerTest.java (9,003 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/test/java/com/ekyc/service/service/EkycServiceImplTest.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/test/java/com/ekyc/service/service/EkycServiceImplTest.java (8,624 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/test/java/com/ekyc/service/service/OtpVerificationServiceImplTest.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/test/java/com/ekyc/service/service/OtpVerificationServiceImplTest.java (10,541 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/test/java/com/ekyc/service/service/UidaiApiServiceImplTest.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/test/java/com/ekyc/service/service/UidaiApiServiceImplTest.java (8,480 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: ekyc-service/src/test/java/com/ekyc/service/integration/EkycIntegrationTest.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: ekyc-service/src/test/java/com/ekyc/service/integration/EkycIntegrationTest.java (13,620 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: mock-uidai-service/src/test/java/com/mock/uidai/controller/MockUidaiControllerTest.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: mock-uidai-service/src/test/java/com/mock/uidai/controller/MockUidaiControllerTest.java (9,011 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] 📄 Creating file: mock-uidai-service/src/test/java/com/mock/uidai/service/MockUidaiServiceTest.java
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ Created: mock-uidai-service/src/test/java/com/mock/uidai/service/MockUidaiServiceTest.java (11,039 bytes)
+[2025-06-06 15:36:26] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-06 15:36:26] [INFO] ✅ File creation complete: 56/56 files created in 0.02s
+[2025-06-06 15:36:26] [INFO] 📊 File creation summary saved to: file_creation_summary.json
+[2025-06-06 15:36:26] [INFO] 📋 Creation report saved to: creation_report.txt
+[2025-06-06 15:36:26] [INFO] 📈 File Creation Statistics:
+[2025-06-06 15:36:26] [INFO]    Total Files: 56
+[2025-06-06 15:36:26] [INFO]    Created: 56
+[2025-06-06 15:36:26] [INFO]    Failed: 0
+[2025-06-06 15:36:26] [INFO]    Total Size: 387,222 bytes
+[2025-06-06 15:36:26] [INFO]    Creation Time: 0.02s
+[2025-06-06 15:36:26] [SUCCESS] ✅ SUCCESS in file_creation: Created 56 files successfully
+[2025-06-06 15:36:26] [INFO] 📁 Output directory: generated_code
+[2025-06-06 15:36:26] [INFO] --------------------------------------------------
+[2025-06-06 15:36:26] [SUCCESS] ✅ SUCCESS in workflow: Workflow completed!
+[2025-06-06 15:36:26] [INFO]    Final step: git_complete
+[2025-06-06 15:36:26] [INFO]    Iterations: 0
+[2025-06-06 15:36:26] [INFO]    Errors: 0

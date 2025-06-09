@@ -1,0 +1,81 @@
+# LLM Response - code_generation_chunk_03_remaining
+# Timestamp: 2025-06-09 13:51:40
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_remaining_035
+# ==================================================
+
+package com.ekyc.service.service;
+
+import com.ekyc.service.dto.EkycResponseDto;
+import com.ekyc.service.dto.OtpVerificationDto;
+import com.ekyc.service.enums.VerificationStatus;
+
+import java.util.Optional;
+import java.util.UUID;
+
+/**
+ * Service interface for OTP verification operations.
+ * This service handles the generation, validation, and management of One-Time Passwords
+ * used in the eKYC verification process.
+ */
+public interface OtpVerificationService {
+
+    /**
+     * Generates a new OTP for the specified user and sends it through the specified channel.
+     *
+     * @param userId The unique identifier of the user
+     * @param channelId The channel through which the OTP should be sent (SMS, EMAIL, etc.)
+     * @return A response containing the status of the OTP generation and delivery
+     */
+    EkycResponseDto generateOtp(UUID userId, String channelId);
+
+    /**
+     * Verifies the OTP provided by the user against the stored OTP.
+     *
+     * @param otpVerificationDto The DTO containing the OTP and related verification information
+     * @return A response containing the verification status and any additional information
+     */
+    EkycResponseDto verifyOtp(OtpVerificationDto otpVerificationDto);
+
+    /**
+     * Retrieves the current verification status for a specific user.
+     *
+     * @param userId The unique identifier of the user
+     * @return An Optional containing the verification status if found, or empty if not found
+     */
+    Optional<VerificationStatus> getVerificationStatus(UUID userId);
+
+    /**
+     * Invalidates any existing OTP for the specified user.
+     * This is typically used when a user requests a new OTP or when security concerns arise.
+     *
+     * @param userId The unique identifier of the user
+     * @return true if an OTP was found and invalidated, false otherwise
+     */
+    boolean invalidateOtp(UUID userId);
+
+    /**
+     * Checks if the user has exceeded the maximum number of OTP verification attempts.
+     *
+     * @param userId The unique identifier of the user
+     * @return true if the user has exceeded the maximum attempts, false otherwise
+     */
+    boolean hasExceededMaxAttempts(UUID userId);
+
+    /**
+     * Gets the remaining number of OTP verification attempts for the user.
+     *
+     * @param userId The unique identifier of the user
+     * @return The number of remaining attempts
+     */
+    int getRemainingAttempts(UUID userId);
+
+    /**
+     * Resends the OTP to the user through the specified channel.
+     *
+     * @param userId The unique identifier of the user
+     * @param channelId The channel through which the OTP should be resent
+     * @return A response containing the status of the OTP resend operation
+     */
+    EkycResponseDto resendOtp(UUID userId, String channelId);
+}

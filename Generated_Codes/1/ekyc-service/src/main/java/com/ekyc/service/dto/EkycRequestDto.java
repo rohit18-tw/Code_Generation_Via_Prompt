@@ -1,0 +1,440 @@
+package com.ekyc.service.dto;
+
+import com.ekyc.service.enums.ConsentType;
+import com.ekyc.service.enums.IdType;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.time.LocalDate;
+import java.util.Objects;
+
+/**
+* Data Transfer Object for eKYC request data.
+* Contains all necessary information for electronic Know Your Customer verification.
+*/
+public class EkycRequestDto {
+
+    @NotBlank(message = "First name is required")
+    @Size(min = 2, max = 100, message = "First name must be between 2 and 100 characters")
+    private String firstName;
+
+    @NotBlank(message = "Last name is required")
+    @Size(min = 2, max = 100, message = "Last name must be between 2 and 100 characters")
+    private String lastName;
+
+    private String middleName;
+
+    @NotNull(message = "Date of birth is required")
+    private LocalDate dateOfBirth;
+
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email must be valid")
+    private String email;
+
+    @NotBlank(message = "Phone number is required")
+    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Phone number must be valid")
+    private String phoneNumber;
+
+    @NotNull(message = "ID type is required")
+    private IdType idType;
+
+    @NotBlank(message = "ID number is required")
+    private String idNumber;
+
+    @NotNull(message = "Consent type is required")
+    private ConsentType consentType;
+
+    @NotNull(message = "Consent given status is required")
+    private Boolean consentGiven;
+
+    private String address;
+
+    private String countryCode;
+
+    private String ipAddress;
+
+    private String deviceInfo;
+
+    /**
+    * Default constructor
+    */
+    public EkycRequestDto() {
+    }
+
+    /**
+    * Parameterized constructor with required fields
+    *
+    * @param firstName    First name of the customer
+    * @param lastName     Last name of the customer
+    * @param dateOfBirth  Date of birth of the customer
+    * @param email        Email address of the customer
+    * @param phoneNumber  Phone number of the customer
+    * @param idType       Type of identification document
+    * @param idNumber     Identification document number
+    * @param consentType  Type of consent provided
+    * @param consentGiven Whether consent was given
+    */
+    public EkycRequestDto(String firstName, String lastName, LocalDate dateOfBirth, String email,
+    String phoneNumber, IdType idType, String idNumber,
+    ConsentType consentType, Boolean consentGiven) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.idType = idType;
+        this.idNumber = idNumber;
+        this.consentType = consentType;
+        this.consentGiven = consentGiven;
+    }
+
+    /**
+    * Get the first name
+    *
+    * @return the first name
+    */
+    public String getFirstName() {
+        return firstName;
+    }
+
+    /**
+    * Set the first name
+    *
+    * @param firstName the first name to set
+    */
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    /**
+    * Get the last name
+    *
+    * @return the last name
+    */
+    public String getLastName() {
+        return lastName;
+    }
+
+    /**
+    * Set the last name
+    *
+    * @param lastName the last name to set
+    */
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    /**
+    * Get the middle name
+    *
+    * @return the middle name
+    */
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    /**
+    * Set the middle name
+    *
+    * @param middleName the middle name to set
+    */
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+
+    /**
+    * Get the date of birth
+    *
+    * @return the date of birth
+    */
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    /**
+    * Set the date of birth
+    *
+    * @param dateOfBirth the date of birth to set
+    */
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    /**
+    * Get the email
+    *
+    * @return the email
+    */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+    * Set the email
+    *
+    * @param email the email to set
+    */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
+    * Get the phone number
+    *
+    * @return the phone number
+    */
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    /**
+    * Set the phone number
+    *
+    * @param phoneNumber the phone number to set
+    */
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    /**
+    * Get the ID type
+    *
+    * @return the ID type
+    */
+    public IdType getIdType() {
+        return idType;
+    }
+
+    /**
+    * Set the ID type
+    *
+    * @param idType the ID type to set
+    */
+    public void setIdType(IdType idType) {
+        this.idType = idType;
+    }
+
+    /**
+    * Get the ID number
+    *
+    * @return the ID number
+    */
+    public String getIdNumber() {
+        return idNumber;
+    }
+
+    /**
+    * Set the ID number
+    *
+    * @param idNumber the ID number to set
+    */
+    public void setIdNumber(String idNumber) {
+        this.idNumber = idNumber;
+    }
+
+    /**
+    * Get the consent type
+    *
+    * @return the consent type
+    */
+    public ConsentType getConsentType() {
+        return consentType;
+    }
+
+    /**
+    * Set the consent type
+    *
+    * @param consentType the consent type to set
+    */
+    public void setConsentType(ConsentType consentType) {
+        this.consentType = consentType;
+    }
+
+    /**
+    * Get the consent given status
+    *
+    * @return the consent given status
+    */
+    public Boolean getConsentGiven() {
+        return consentGiven;
+    }
+
+    /**
+    * Set the consent given status
+    *
+    * @param consentGiven the consent given status to set
+    */
+    public void setConsentGiven(Boolean consentGiven) {
+        this.consentGiven = consentGiven;
+    }
+
+    /**
+    * Get the address
+    *
+    * @return the address
+    */
+    public String getAddress() {
+        return address;
+    }
+
+    /**
+    * Set the address
+    *
+    * @param address the address to set
+    */
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    /**
+    * Get the country code
+    *
+    * @return the country code
+    */
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    /**
+    * Set the country code
+    *
+    * @param countryCode the country code to set
+    */
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
+    }
+
+    /**
+    * Get the IP address
+    *
+    * @return the IP address
+    */
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    /**
+    * Set the IP address
+    *
+    * @param ipAddress the IP address to set
+    */
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+
+    /**
+    * Get the device information
+    *
+    * @return the device information
+    */
+    public String getDeviceInfo() {
+        return deviceInfo;
+    }
+
+    /**
+    * Set the device information
+    *
+    * @param deviceInfo the device information to set
+    */
+    public void setDeviceInfo(String deviceInfo) {
+        this.deviceInfo = deviceInfo;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EkycRequestDto that = (EkycRequestDto) o;
+        return Objects.equals(firstName, that.firstName) &&
+        Objects.equals(lastName, that.lastName) &&
+        Objects.equals(middleName, that.middleName) &&
+        Objects.equals(dateOfBirth, that.dateOfBirth) &&
+        Objects.equals(email, that.email) &&
+        Objects.equals(phoneNumber, that.phoneNumber) &&
+        idType == that.idType &&
+        Objects.equals(idNumber, that.idNumber) &&
+        consentType == that.consentType &&
+        Objects.equals(consentGiven, that.consentGiven) &&
+        Objects.equals(address, that.address) &&
+        Objects.equals(countryCode, that.countryCode) &&
+        Objects.equals(ipAddress, that.ipAddress) &&
+        Objects.equals(deviceInfo, that.deviceInfo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, lastName, middleName, dateOfBirth, email, phoneNumber,
+        idType, idNumber, consentType, consentGiven, address, countryCode, ipAddress, deviceInfo);
+    }
+
+    @Override
+    public String toString() {
+        // Mask sensitive information for logging
+        return "EkycRequestDto{" +
+        "firstName='" + firstName + '\'' +
+        ", lastName='" + lastName + '\'' +
+        ", middleName='" + (middleName != null ? middleName : "") + '\'' +
+        ", dateOfBirth=" + dateOfBirth +
+        ", email='" + maskEmail(email) + '\'' +
+        ", phoneNumber='" + maskPhoneNumber(phoneNumber) + '\'' +
+        ", idType=" + idType +
+        ", idNumber='" + maskIdNumber(idNumber) + '\'' +
+        ", consentType=" + consentType +
+        ", consentGiven=" + consentGiven +
+        ", address='" + (address != null ? "***" : null) + '\'' +
+        ", countryCode='" + countryCode + '\'' +
+        ", ipAddress='" + (ipAddress != null ? "***" : null) + '\'' +
+        ", deviceInfo='" + (deviceInfo != null ? "***" : null) + '\'' +
+        '}';
+    }
+
+    /**
+    * Masks an email address for privacy in logs
+    *
+    * @param email the email to mask
+    * @return masked email
+    */
+    private String maskEmail(String email) {
+        if (email == null || email.isEmpty()) {
+            return email;
+        }
+
+        int atIndex = email.indexOf('@');
+        if (atIndex <= 1) {
+            return "***" + (atIndex >= 0 ? email.substring(atIndex) : "");
+        }
+
+        return email.substring(0, 1) + "***" + (atIndex >= 0 ? email.substring(atIndex) : "");
+    }
+
+    /**
+    * Masks a phone number for privacy in logs
+    *
+    * @param phoneNumber the phone number to mask
+    * @return masked phone number
+    */
+    private String maskPhoneNumber(String phoneNumber) {
+        if (phoneNumber == null || phoneNumber.length() <= 4) {
+            return phoneNumber;
+        }
+
+        return "***" + phoneNumber.substring(phoneNumber.length() - 4);
+    }
+
+    /**
+    * Masks an ID number for privacy in logs
+    *
+    * @param idNumber the ID number to mask
+    * @return masked ID number
+    */
+    private String maskIdNumber(String idNumber) {
+        if (idNumber == null || idNumber.length() <= 4) {
+            return "***";
+        }
+
+        return "***" + idNumber.substring(idNumber.length() - 4);
+    }
+}
