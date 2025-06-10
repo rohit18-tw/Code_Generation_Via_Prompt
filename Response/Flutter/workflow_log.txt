@@ -1,0 +1,115 @@
+[2025-06-10 16:29:52] [INFO] 🚀 Session started: 20250610_162952_5c417744
+[2025-06-10 16:29:52] [INFO] 📁 Session directory: Response/20250610_162952_5c417744
+[2025-06-10 16:29:52] [INFO] 🧠 AI Context Manager initialized - No language-specific code needed!
+[2025-06-10 16:29:52] [INFO] 🧠 CTX Manager initialized with AI-driven context extraction
+[2025-06-10 16:29:52] [INFO] 🔗 MCP Integration initialized with file system tools
+[2025-06-10 16:29:52] [INFO] 🔗 MCP Integration initialized with file system tools
+[2025-06-10 16:29:52] [INFO] 📁 File Creator initialized - Output: generated_code, Dry Run: False, Validation: True
+[2025-06-10 16:29:52] [INFO] 🚀 Code Generator initialized with CTX and MCP integration
+[2025-06-10 16:29:52] [INFO] 🔗 MCP Integration initialized with file system tools
+[2025-06-10 16:29:52] [INFO] 📁 File Creator initialized - Output: generated_code, Dry Run: False, Validation: True
+[2025-06-10 16:29:52] [INFO] 🚀 Starting Agentic Workflow
+[2025-06-10 16:29:52] [INFO]    Input: Create a simple bank application using flutter
+[2025-06-10 16:29:52] [INFO]    Session ID: 20250610_162952_5c417744
+[2025-06-10 16:29:52] [INFO] --------------------------------------------------
+[2025-06-10 16:29:52] [INFO] 🔍 Processing input: Create a simple bank application using flutter
+[2025-06-10 16:29:52] [SUCCESS] ✅ SUCCESS in input_processing: Input processed - Type: text, Source: direct_input
+[2025-06-10 16:29:52] [INFO] 🎯 Starting development plan generation...
+[2025-06-10 16:29:52] [INFO] 🎯 Sending plan generation request to Claude...
+[2025-06-10 16:30:22] [INFO] 💬 LLM Interaction: plan_generation -> plan_generation_001_response.txt
+[2025-06-10 16:30:22] [INFO] 📝 Plan generation response saved to: plan_generation_001_response.txt
+[2025-06-10 16:30:22] [ERROR] ❌ ERROR in plan_generation: Response appears to be truncated - increase MAX_TOKENS in config
+[2025-06-10 16:30:22] [ERROR] ❌ ERROR in plan_generation: JSON parsing failed: Expecting value: line 1 column 1 (char 0)
+[2025-06-10 16:30:22] [WARNING] ⚠️ Failed to parse JSON, attempting text extraction...
+[2025-06-10 16:30:22] [INFO] 🌳 Project tree structure saved to: project_structure.txt
+[2025-06-10 16:30:22] [INFO] 📊 Code generation analysis saved to: code_generation_analysis.json
+[2025-06-10 16:30:22] [INFO] 📋 Code Generation Insights:
+[2025-06-10 16:30:22] [INFO]    Strategy: file_by_file
+[2025-06-10 16:30:22] [INFO]    Total Files: 20
+[2025-06-10 16:30:22] [INFO]    Generation Order: config → entities → services → widgets → screens → tests
+[2025-06-10 16:30:22] [INFO]    High Priority Files: 10
+[2025-06-10 16:30:22] [INFO] 📋 Plan Summary:
+[2025-06-10 16:30:22] [INFO]    🎯 **Enhanced Project Plan Generated**
+[2025-06-10 16:30:22] [INFO]    **Title**: Flutter Bank Application
+[2025-06-10 16:30:22] [INFO]    **Language**: dart
+[2025-06-10 16:30:22] [INFO]    **Framework**: flutter
+[2025-06-10 16:30:22] [INFO]    **Type**: web_app
+[2025-06-10 16:30:22] [INFO]    **Code Generation Strategy**: file_by_file
+[2025-06-10 16:30:22] [INFO]    **Generation Order**: config → entities → services → widgets → screens → tests
+[2025-06-10 16:30:22] [INFO]    **Implementation Steps**: 8 steps planned
+[2025-06-10 16:30:22] [INFO]    **Files to Create**: 20 files
+[2025-06-10 16:30:22] [INFO]    Ready for enhanced code generation!
+[2025-06-10 16:30:22] [INFO] 
+🌳 Project Structure:
+[2025-06-10 16:30:22] [INFO]    flutter-bank-application/
+[2025-06-10 16:30:22] [INFO]    ├── assets/
+[2025-06-10 16:30:22] [INFO]    │   └── images/
+[2025-06-10 16:30:22] [INFO]    ├── lib/
+[2025-06-10 16:30:22] [INFO]    │   ├── main.dart
+[2025-06-10 16:30:22] [INFO]    │   ├── models/
+[2025-06-10 16:30:22] [INFO]    │   │   ├── account.dart
+[2025-06-10 16:30:22] [INFO]    │   │   ├── transaction.dart
+[2025-06-10 16:30:22] [INFO]    │   │   └── user.dart
+[2025-06-10 16:30:22] [INFO]    │   ├── screens/
+[2025-06-10 16:30:22] [INFO]    │   │   ├── home_screen.dart
+[2025-06-10 16:30:22] [INFO]    │   │   ├── login_screen.dart
+[2025-06-10 16:30:22] [INFO]    │   │   ├── transaction_screen.dart
+[2025-06-10 16:30:22] [INFO]    │   │   └── transfer_screen.dart
+[2025-06-10 16:30:22] [INFO]    │   ├── services/
+[2025-06-10 16:30:22] [INFO]    │   │   ├── account_service.dart
+[2025-06-10 16:30:22] [INFO]    │   │   ├── auth_service.dart
+[2025-06-10 16:30:22] [INFO]    │   │   └── transaction_service.dart
+[2025-06-10 16:30:22] [INFO]    │   ├── utils/
+[2025-06-10 16:30:22] [INFO]    │   │   ├── constants.dart
+[2025-06-10 16:30:22] [INFO]    │   │   └── theme.dart
+[2025-06-10 16:30:22] [INFO]    │   └── widgets/
+[2025-06-10 16:30:22] [INFO]    │       ├── account_card.dart
+[2025-06-10 16:30:22] [INFO]    │       ├── custom_button.dart
+[2025-06-10 16:30:22] [INFO]    │       ├── custom_text_field.dart
+[2025-06-10 16:30:22] [INFO]    │       └── transaction_list.dart
+[2025-06-10 16:30:22] [INFO]    ├── pubspec.yaml
+[2025-06-10 16:30:22] [INFO]    └── test/
+[2025-06-10 16:30:22] [INFO]        ├── account_service_test.dart
+[2025-06-10 16:30:22] [INFO]        └── auth_service_test.dart
+[2025-06-10 16:30:22] [SUCCESS] ✅ SUCCESS in plan_generation: Development plan generated and saved to development_plan.json
+[2025-06-10 16:30:22] [INFO] 🔨 Starting code generation...
+[2025-06-10 16:30:22] [INFO] 🎯 Starting code generation from enhanced plan
+[2025-06-10 16:30:22] [INFO] 📁 Created directory: lib
+[2025-06-10 16:30:22] [INFO] 📁 Created directory: lib/models
+[2025-06-10 16:30:22] [INFO] 📁 Created directory: lib/screens
+[2025-06-10 16:30:22] [INFO] 📁 Created directory: lib/services
+[2025-06-10 16:30:22] [INFO] 📁 Created directory: lib/widgets
+[2025-06-10 16:30:22] [INFO] 📁 Created directory: lib/utils
+[2025-06-10 16:30:22] [INFO] 📁 Created directory: test
+[2025-06-10 16:30:22] [INFO] 📁 Created directory: assets
+[2025-06-10 16:30:22] [INFO] 📁 Created directory: assets/images
+[2025-06-10 16:30:22] [INFO] 📁 Created 9 directories
+[2025-06-10 16:30:22] [INFO] 📦 Created 2 generation chunks
+[2025-06-10 16:30:22] [INFO] 🔨 Generating chunk: chunk_01_config (3 files)
+[2025-06-10 16:30:22] [INFO] 📝 Generating: lib/utils/constants.dart
+[2025-06-10 16:30:22] [INFO] 🎯 Building AI context for: Create a config for system web_app that Application constants
+[2025-06-10 16:30:26] [ERROR] ❌ ERROR in ai_context: Intent analysis failed: Expecting value: line 1 column 1 (char 0)
+[2025-06-10 16:30:31] [ERROR] ❌ ERROR in ai_context: Stack suggestion failed: Expecting value: line 1 column 1 (char 0)
+[2025-06-10 16:30:31] [INFO] ✅ AI context built: 0 items, 0 tokens, python + fastapi
+[2025-06-10 16:30:31] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-10 16:30:31] [INFO] 📊 Scanned: 73 dirs, 58 files, 404,302 bytes
+[2025-06-10 16:30:45] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-10 16:30:45] [INFO] 💬 LLM Interaction: code_generation_chunk_01_config -> code_generation_chunk_01_config_002_response.txt
+[2025-06-10 16:30:45] [INFO] 📁 Creating file immediately: lib/utils/constants.dart
+[2025-06-10 16:30:45] [INFO] 📄 Creating file: lib/utils/constants.dart
+[2025-06-10 16:30:45] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-10 16:30:45] [INFO] ✅ Created: lib/utils/constants.dart (2,801 bytes)
+[2025-06-10 16:30:45] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-10 16:30:45] [INFO] ✅ File created: lib/utils/constants.dart (2,801 bytes)
+[2025-06-10 16:30:45] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-10 16:30:45] [INFO] 📊 Scanned: 73 dirs, 59 files, 407,103 bytes
+[2025-06-10 16:30:45] [ERROR] ❌ ERROR in single_file_generation: Generation failed: 'ContextManager' object has no attribute 'encoding'
+[2025-06-10 16:30:45] [INFO] 📝 Generating: lib/utils/theme.dart
+[2025-06-10 16:30:45] [INFO] 🎯 Building AI context for: Create a config for system web_app that Application theme configuration
+[2025-06-10 16:30:50] [ERROR] ❌ ERROR in ai_context: Intent analysis failed: Expecting value: line 1 column 1 (char 0)
+[2025-06-10 16:30:54] [ERROR] ❌ ERROR in ai_context: Stack suggestion failed: Expecting value: line 1 column 1 (char 0)
+[2025-06-10 16:30:54] [INFO] ✅ AI context built: 0 items, 0 tokens, python + fastapi
+[2025-06-10 16:30:54] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-10 16:30:54] [INFO] 📊 Scanned: 73 dirs, 59 files, 407,103 bytes
+[2025-06-10 16:30:54] [INFO] 📖 Read file: lib/utils/constants.dart
+[2025-06-10 16:30:54] [INFO] 🔗 MCP found 1 related files for context

@@ -1,0 +1,169 @@
+[2025-06-10 16:26:35] [INFO] 🚀 Session started: 20250610_162635_358e34c9
+[2025-06-10 16:26:35] [INFO] 📁 Session directory: Response/20250610_162635_358e34c9
+[2025-06-10 16:27:02] [INFO] 🧠 AI Context Manager initialized - No language-specific code needed!
+[2025-06-10 16:27:02] [INFO] 🧠 CTX Manager initialized with AI-driven context extraction
+[2025-06-10 16:27:02] [INFO] 🔗 MCP Integration initialized with file system tools
+[2025-06-10 16:27:02] [INFO] 🔗 MCP Integration initialized with file system tools
+[2025-06-10 16:27:02] [INFO] 📁 File Creator initialized - Output: generated_code, Dry Run: False, Validation: True
+[2025-06-10 16:27:02] [INFO] 🚀 Code Generator initialized with CTX and MCP integration
+[2025-06-10 16:27:02] [INFO] 🔗 MCP Integration initialized with file system tools
+[2025-06-10 16:27:02] [INFO] 📁 File Creator initialized - Output: generated_code, Dry Run: False, Validation: True
+[2025-06-10 16:27:02] [INFO] 🚀 Starting Agentic Workflow
+[2025-06-10 16:27:02] [INFO]    Input: Create a simple bank application that has ekyc verification frontend react and backend go
+[2025-06-10 16:27:02] [INFO]    Session ID: 20250610_162635_358e34c9
+[2025-06-10 16:27:02] [INFO] --------------------------------------------------
+[2025-06-10 16:27:02] [INFO] 🔍 Processing input: Create a simple bank application that has ekyc verification frontend react and backend go
+[2025-06-10 16:27:02] [SUCCESS] ✅ SUCCESS in input_processing: Input processed - Type: text, Source: direct_input
+[2025-06-10 16:27:02] [INFO] 🎯 Starting development plan generation...
+[2025-06-10 16:27:02] [INFO] 🎯 Sending plan generation request to Claude...
+[2025-06-10 16:27:41] [INFO] 💬 LLM Interaction: plan_generation -> plan_generation_001_response.txt
+[2025-06-10 16:27:41] [INFO] 📝 Plan generation response saved to: plan_generation_001_response.txt
+[2025-06-10 16:27:41] [ERROR] ❌ ERROR in plan_generation: Response appears to be truncated - increase MAX_TOKENS in config
+[2025-06-10 16:27:41] [ERROR] ❌ ERROR in plan_generation: JSON parsing failed: Expecting value: line 1 column 1 (char 0)
+[2025-06-10 16:27:41] [WARNING] ⚠️ Failed to parse JSON, attempting text extraction...
+[2025-06-10 16:27:41] [INFO] 🌳 Project tree structure saved to: project_structure.txt
+[2025-06-10 16:27:41] [INFO] 📊 Code generation analysis saved to: code_generation_analysis.json
+[2025-06-10 16:27:41] [INFO] 📋 Code Generation Insights:
+[2025-06-10 16:27:41] [INFO]    Strategy: file_by_file
+[2025-06-10 16:27:41] [INFO]    Total Files: 25
+[2025-06-10 16:27:41] [INFO]    Generation Order: config → entities → repositories → services → controllers → components → pages → tests
+[2025-06-10 16:27:41] [INFO]    High Priority Files: 21
+[2025-06-10 16:27:41] [INFO] 📋 Plan Summary:
+[2025-06-10 16:27:41] [INFO]    🎯 **Enhanced Project Plan Generated**
+[2025-06-10 16:27:41] [INFO]    **Title**: eKYC Bank Application
+[2025-06-10 16:27:41] [INFO]    **Language**: typescript|go
+[2025-06-10 16:27:41] [INFO]    **Framework**: react|gin
+[2025-06-10 16:27:41] [INFO]    **Type**: web_app
+[2025-06-10 16:27:41] [INFO]    **Code Generation Strategy**: file_by_file
+[2025-06-10 16:27:41] [INFO]    **Generation Order**: config → entities → repositories → services → controllers → components → pages → tests
+[2025-06-10 16:27:41] [INFO]    **Implementation Steps**: 10 steps planned
+[2025-06-10 16:27:41] [INFO]    **Files to Create**: 25 files
+[2025-06-10 16:27:41] [INFO]    Ready for enhanced code generation!
+[2025-06-10 16:27:41] [INFO] 
+🌳 Project Structure:
+[2025-06-10 16:27:41] [INFO]    ekyc-bank-application/
+[2025-06-10 16:27:41] [INFO]    ├── backend/
+[2025-06-10 16:27:41] [INFO]    │   ├── cmd/
+[2025-06-10 16:27:41] [INFO]    │   │   └── main.go
+[2025-06-10 16:27:41] [INFO]    │   ├── go.mod
+[2025-06-10 16:27:41] [INFO]    │   └── internal/
+[2025-06-10 16:27:41] [INFO]    │       ├── api/
+[2025-06-10 16:27:41] [INFO]    │       │   ├── handlers/
+[2025-06-10 16:27:41] [INFO]    │       │   │   ├── ekyc_handler.go
+[2025-06-10 16:27:41] [INFO]    │       │   │   └── user_handler.go
+[2025-06-10 16:27:41] [INFO]    │       │   └── router.go
+[2025-06-10 16:27:41] [INFO]    │       ├── database/
+[2025-06-10 16:27:41] [INFO]    │       │   ├── db.go
+[2025-06-10 16:27:41] [INFO]    │       │   ├── ekyc_repository.go
+[2025-06-10 16:27:41] [INFO]    │       │   └── user_repository.go
+[2025-06-10 16:27:41] [INFO]    │       ├── middleware/
+[2025-06-10 16:27:41] [INFO]    │       │   └── auth.go
+[2025-06-10 16:27:41] [INFO]    │       ├── models/
+[2025-06-10 16:27:41] [INFO]    │       │   ├── ekyc.go
+[2025-06-10 16:27:41] [INFO]    │       │   └── user.go
+[2025-06-10 16:27:41] [INFO]    │       ├── services/
+[2025-06-10 16:27:41] [INFO]    │       │   ├── ekyc_service.go
+[2025-06-10 16:27:41] [INFO]    │       │   └── user_service.go
+[2025-06-10 16:27:41] [INFO]    │       └── utils/
+[2025-06-10 16:27:41] [INFO]    │           └── validator.go
+[2025-06-10 16:27:41] [INFO]    └── frontend/
+[2025-06-10 16:27:41] [INFO]        ├── package.json
+[2025-06-10 16:27:41] [INFO]        ├── public/
+[2025-06-10 16:27:41] [INFO]        └── src/
+[2025-06-10 16:27:41] [INFO]            ├── App.tsx
+[2025-06-10 16:27:41] [INFO]            ├── components/
+[2025-06-10 16:27:41] [INFO]            │   ├── DocumentUpload.tsx
+[2025-06-10 16:27:41] [INFO]            │   ├── EkycForm.tsx
+[2025-06-10 16:27:41] [INFO]            │   └── FaceVerification.tsx
+[2025-06-10 16:27:41] [INFO]            ├── index.tsx
+[2025-06-10 16:27:41] [INFO]            ├── pages/
+[2025-06-10 16:27:41] [INFO]            │   ├── Dashboard.tsx
+[2025-06-10 16:27:41] [INFO]            │   ├── EkycVerification.tsx
+[2025-06-10 16:27:41] [INFO]            │   └── Home.tsx
+[2025-06-10 16:27:41] [INFO]            ├── services/
+[2025-06-10 16:27:41] [INFO]            │   └── api.ts
+[2025-06-10 16:27:41] [INFO]            └── utils/
+[2025-06-10 16:27:41] [INFO]                └── validation.ts
+[2025-06-10 16:27:41] [SUCCESS] ✅ SUCCESS in plan_generation: Development plan generated and saved to development_plan.json
+[2025-06-10 16:27:41] [INFO] 🔨 Starting code generation...
+[2025-06-10 16:27:41] [INFO] 🎯 Starting code generation from enhanced plan
+[2025-06-10 16:27:41] [INFO] 📁 Created directory: frontend
+[2025-06-10 16:27:41] [INFO] 📁 Created directory: frontend/src
+[2025-06-10 16:27:41] [INFO] 📁 Created directory: frontend/src/components
+[2025-06-10 16:27:41] [INFO] 📁 Created directory: frontend/src/pages
+[2025-06-10 16:27:41] [INFO] 📁 Created directory: frontend/src/services
+[2025-06-10 16:27:41] [INFO] 📁 Created directory: frontend/src/utils
+[2025-06-10 16:27:41] [INFO] 📁 Created directory: frontend/public
+[2025-06-10 16:27:41] [INFO] 📁 Created directory: backend
+[2025-06-10 16:27:41] [INFO] 📁 Created directory: backend/cmd
+[2025-06-10 16:27:41] [INFO] 📁 Created directory: backend/internal
+[2025-06-10 16:27:41] [INFO] 📁 Created directory: backend/internal/api
+[2025-06-10 16:27:41] [INFO] 📁 Created directory: backend/internal/models
+[2025-06-10 16:27:41] [INFO] 📁 Created directory: backend/internal/services
+[2025-06-10 16:27:41] [INFO] 📁 Created directory: backend/internal/database
+[2025-06-10 16:27:41] [INFO] 📁 Created directory: backend/internal/middleware
+[2025-06-10 16:27:41] [INFO] 📁 Created directory: backend/internal/utils
+[2025-06-10 16:27:41] [INFO] 📁 Created 16 directories
+[2025-06-10 16:27:41] [INFO] 📦 Created 2 generation chunks
+[2025-06-10 16:27:41] [INFO] 🔨 Generating chunk: chunk_01_config (4 files)
+[2025-06-10 16:27:41] [INFO] 📝 Generating: frontend/package.json
+[2025-06-10 16:27:41] [INFO] 🎯 Building AI context for: Create a config for system web_app that Frontend dependencies and scripts
+[2025-06-10 16:27:46] [ERROR] ❌ ERROR in ai_context: Intent analysis failed: Expecting value: line 1 column 1 (char 0)
+[2025-06-10 16:27:50] [ERROR] ❌ ERROR in ai_context: Stack suggestion failed: Expecting value: line 1 column 1 (char 0)
+[2025-06-10 16:27:50] [INFO] ✅ AI context built: 0 items, 0 tokens, python + fastapi
+[2025-06-10 16:27:50] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-10 16:27:50] [INFO] 📊 Scanned: 64 dirs, 57 files, 402,717 bytes
+[2025-06-10 16:27:59] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-10 16:27:59] [INFO] 💬 LLM Interaction: code_generation_chunk_01_config -> code_generation_chunk_01_config_002_response.txt
+[2025-06-10 16:27:59] [INFO] 📁 Creating file immediately: frontend/package.json
+[2025-06-10 16:27:59] [INFO] 📄 Creating file: frontend/package.json
+[2025-06-10 16:27:59] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-10 16:27:59] [INFO] ✅ Created: frontend/package.json (1,585 bytes)
+[2025-06-10 16:27:59] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-10 16:27:59] [INFO] ✅ File created: frontend/package.json (1,585 bytes)
+[2025-06-10 16:27:59] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-10 16:27:59] [INFO] 📊 Scanned: 64 dirs, 58 files, 404,302 bytes
+[2025-06-10 16:27:59] [ERROR] ❌ ERROR in single_file_generation: Generation failed: 'ContextManager' object has no attribute 'encoding'
+[2025-06-10 16:27:59] [INFO] 📝 Generating: backend/go.mod
+[2025-06-10 16:27:59] [INFO] 🎯 Building AI context for: Create a config for system web_app that Go module definition
+[2025-06-10 16:28:03] [ERROR] ❌ ERROR in ai_context: Intent analysis failed: Expecting value: line 1 column 1 (char 0)
+[2025-06-10 16:28:08] [ERROR] ❌ ERROR in ai_context: Stack suggestion failed: Expecting value: line 1 column 1 (char 0)
+[2025-06-10 16:28:08] [INFO] ✅ AI context built: 0 items, 0 tokens, python + fastapi
+[2025-06-10 16:28:08] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-10 16:28:08] [INFO] 📊 Scanned: 64 dirs, 58 files, 404,302 bytes
+[2025-06-10 16:29:10] [INFO] 🚀 Session started: 20250610_162635_358e34c9
+[2025-06-10 16:29:10] [INFO] 📁 Session directory: Response/20250610_162635_358e34c9
+[2025-06-10 16:29:10] [INFO] 🧠 AI Context Manager initialized - No language-specific code needed!
+[2025-06-10 16:29:10] [INFO] 🧠 CTX Manager initialized with AI-driven context extraction
+[2025-06-10 16:29:10] [INFO] 🔗 MCP Integration initialized with file system tools
+[2025-06-10 16:29:10] [INFO] 🔗 MCP Integration initialized with file system tools
+[2025-06-10 16:29:10] [INFO] 📁 File Creator initialized - Output: generated_code, Dry Run: False, Validation: True
+[2025-06-10 16:29:10] [INFO] 🚀 Code Generator initialized with CTX and MCP integration
+[2025-06-10 16:29:10] [INFO] 🔗 MCP Integration initialized with file system tools
+[2025-06-10 16:29:10] [INFO] 📁 File Creator initialized - Output: generated_code, Dry Run: False, Validation: True
+[2025-06-10 16:29:10] [INFO] 🚀 Starting Agentic Workflow
+[2025-06-10 16:29:10] [INFO]    Input: Create a simple bank application using flutter
+[2025-06-10 16:29:10] [INFO]    Session ID: 20250610_162635_358e34c9
+[2025-06-10 16:29:10] [INFO] --------------------------------------------------
+[2025-06-10 16:29:10] [INFO] 🔍 Processing input: Create a simple bank application using flutter
+[2025-06-10 16:29:10] [SUCCESS] ✅ SUCCESS in input_processing: Input processed - Type: text, Source: direct_input
+[2025-06-10 16:29:10] [INFO] 🎯 Starting development plan generation...
+[2025-06-10 16:29:10] [INFO] 🎯 Sending plan generation request to Claude...
+[2025-06-10 16:29:36] [INFO] 🚀 Session started: 20250610_162635_358e34c9
+[2025-06-10 16:29:36] [INFO] 📁 Session directory: Response/20250610_162635_358e34c9
+[2025-06-10 16:29:36] [INFO] 🧠 AI Context Manager initialized - No language-specific code needed!
+[2025-06-10 16:29:36] [INFO] 🧠 CTX Manager initialized with AI-driven context extraction
+[2025-06-10 16:29:36] [INFO] 🔗 MCP Integration initialized with file system tools
+[2025-06-10 16:29:36] [INFO] 🔗 MCP Integration initialized with file system tools
+[2025-06-10 16:29:36] [INFO] 📁 File Creator initialized - Output: generated_code, Dry Run: False, Validation: True
+[2025-06-10 16:29:36] [INFO] 🚀 Code Generator initialized with CTX and MCP integration
+[2025-06-10 16:29:36] [INFO] 🔗 MCP Integration initialized with file system tools
+[2025-06-10 16:29:36] [INFO] 📁 File Creator initialized - Output: generated_code, Dry Run: False, Validation: True
+[2025-06-10 16:29:36] [INFO] 🚀 Starting Agentic Workflow
+[2025-06-10 16:29:36] [INFO]    Input: Create a simple bank application using flutter
+[2025-06-10 16:29:36] [INFO]    Session ID: 20250610_162635_358e34c9
+[2025-06-10 16:29:36] [INFO] --------------------------------------------------
+[2025-06-10 16:29:36] [INFO] 🔍 Processing input: Create a simple bank application using flutter
+[2025-06-10 16:29:36] [SUCCESS] ✅ SUCCESS in input_processing: Input processed - Type: text, Source: direct_input
+[2025-06-10 16:29:36] [INFO] 🎯 Starting development plan generation...
+[2025-06-10 16:29:36] [INFO] 🎯 Sending plan generation request to Claude...

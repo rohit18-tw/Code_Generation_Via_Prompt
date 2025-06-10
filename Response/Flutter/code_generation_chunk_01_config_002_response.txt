@@ -1,0 +1,86 @@
+# LLM Response - code_generation_chunk_01_config
+# Timestamp: 2025-06-10 16:30:45
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_01_config_002
+# ==================================================
+
+/// Constants used throughout the application.
+///
+/// This file contains all the constant values used across the application
+/// to maintain consistency and make future updates easier.
+
+// API Base URL
+const String kBaseUrl = 'https://api.example.com/v1';
+
+// API Endpoints
+const String kAuthEndpoint = '/auth';
+const String kUsersEndpoint = '/users';
+const String kProductsEndpoint = '/products';
+const String kOrdersEndpoint = '/orders';
+
+// API Request Timeouts (in milliseconds)
+const int kConnectionTimeout = 30000;
+const int kReceiveTimeout = 30000;
+
+// Shared Preferences Keys
+const String kTokenKey = 'auth_token';
+const String kUserIdKey = 'user_id';
+const String kUserNameKey = 'user_name';
+const String kUserEmailKey = 'user_email';
+const String kIsLoggedInKey = 'is_logged_in';
+const String kThemeModeKey = 'theme_mode';
+const String kLocaleKey = 'locale';
+
+// Animation Durations
+const Duration kShortAnimationDuration = Duration(milliseconds: 200);
+const Duration kMediumAnimationDuration = Duration(milliseconds: 500);
+const Duration kLongAnimationDuration = Duration(milliseconds: 800);
+
+// Pagination
+const int kDefaultPageSize = 20;
+const int kMaxPageSize = 100;
+
+// Cache Duration
+const Duration kCacheValidDuration = Duration(hours: 24);
+
+// Error Messages
+const String kNetworkErrorMessage = 'Network error. Please check your connection.';
+const String kServerErrorMessage = 'Server error. Please try again later.';
+const String kUnauthorizedErrorMessage = 'Unauthorized. Please login again.';
+const String kNotFoundErrorMessage = 'Resource not found.';
+const String kUnknownErrorMessage = 'An unknown error occurred.';
+
+// Validation Regex Patterns
+const String kEmailPattern = r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$';
+const String kPasswordPattern = r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$';
+const String kPhonePattern = r'^\+?[0-9]{10,15}$';
+
+// UI Constants
+const double kDefaultPadding = 16.0;
+const double kSmallPadding = 8.0;
+const double kLargePadding = 24.0;
+const double kDefaultBorderRadius = 8.0;
+const double kDefaultIconSize = 24.0;
+const double kDefaultButtonHeight = 48.0;
+const double kDefaultTextFieldHeight = 56.0;
+
+// Font Sizes
+const double kHeadlineLargeSize = 32.0;
+const double kHeadlineMediumSize = 24.0;
+const double kHeadlineSmallSize = 20.0;
+const double kBodyLargeSize = 16.0;
+const double kBodyMediumSize = 14.0;
+const double kBodySmallSize = 12.0;
+const double kCaptionSize = 10.0;
+
+// Asset Paths
+const String kImagesPath = 'assets/images/';
+const String kIconsPath = 'assets/icons/';
+const String kAnimationsPath = 'assets/animations/';
+
+// Feature Flags
+const bool kEnableAnalytics = true;
+const bool kEnableCrashReporting = true;
+const bool kEnableRemoteConfig = true;
+const bool kEnablePushNotifications = true;
+const bool kEnableDarkMode = true;

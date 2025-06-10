@@ -1,0 +1,30 @@
+flutter-bank-application/
+├── assets/
+│   └── images/
+├── lib/
+│   ├── main.dart
+│   ├── models/
+│   │   ├── account.dart
+│   │   ├── transaction.dart
+│   │   └── user.dart
+│   ├── screens/
+│   │   ├── home_screen.dart
+│   │   ├── login_screen.dart
+│   │   ├── transaction_screen.dart
+│   │   └── transfer_screen.dart
+│   ├── services/
+│   │   ├── account_service.dart
+│   │   ├── auth_service.dart
+│   │   └── transaction_service.dart
+│   ├── utils/
+│   │   ├── constants.dart
+│   │   └── theme.dart
+│   └── widgets/
+│       ├── account_card.dart
+│       ├── custom_button.dart
+│       ├── custom_text_field.dart
+│       └── transaction_list.dart
+├── pubspec.yaml
+└── test/
+    ├── account_service_test.dart
+    └── auth_service_test.dart

@@ -24,7 +24,6 @@ class Config:
     # File Processing
     SUPPORTED_TEXT_EXTENSIONS = {".txt", ".md", ".py", ".js", ".ts", ".html", ".css", ".json", ".yaml", ".yml"}
     SUPPORTED_DOC_EXTENSIONS = {".pdf", ".docx", ".doc"}
-    SUPPORTED_IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp"}
 
     # Validation
     ENABLE_STATIC_ANALYSIS = True

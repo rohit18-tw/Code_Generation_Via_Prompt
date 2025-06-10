@@ -114,63 +114,76 @@ class PlanGenerator:
     "project": {
         "title": "Project Title",
         "description": "Brief description",
-        "language": "python|java|javascript|typescript",
-        "type": "web_app|api|cli_tool|library",
-        "framework": "spring-boot|react|express|fastapi"
+        "language": "auto-detect from requirements (python|java|javascript|typescript|dart|go|csharp|php|ruby|swift|kotlin)",
+        "type": "auto-detect from requirements (web_app|mobile_app|api|cli_tool|library|desktop_app|microservice)",
+        "framework": "auto-detect based on language and requirements (spring-boot|react|express|fastapi|flutter|django|laravel|rails|dotnet|nextjs|vue|angular)"
     },
     "structure": {
-        "directories": ["src", "tests"],
+        "directories": ["auto-generate based on language/framework conventions"],
         "files": [
             {
-                "path": "src/main.py",
-                "purpose": "Main entry point",
-                "type": "main|config|entity|service|controller|test",
+                "path": "auto-generate appropriate paths",
+                "purpose": "Clear description of file purpose",
+                "type": "auto-detect appropriate types based on language/framework",
                 "priority": "high|medium|low",
-                "dependencies": ["file1.py", "file2.py"],
+                "dependencies": ["list of file dependencies"],
                 "relevant_constraints": {
-                    "technology_restrictions": ["No Lombok", "No Mockito"],
-                    "architectural_requirements": ["Use PostgreSQL"],
-                    "business_logic_requirements": ["Even digits succeed"]
+                    "technology_restrictions": ["extracted from requirements"],
+                    "architectural_requirements": ["extracted from requirements"],
+                    "business_logic_requirements": ["extracted from requirements"]
                 }
             }
         ]
     },
     "code_generation": {
-        "order": ["config", "entities", "repositories", "services", "controllers", "tests"],
+        "order": ["auto-determine optimal generation order based on dependencies"],
         "file_templates": {
-            "entity": "Data model with validation",
-            "controller": "REST endpoints with CRUD operations",
-            "service": "Business logic layer",
-            "repository": "Data access layer",
-            "config": "Configuration and setup"
+            "auto-generate": "templates appropriate for the detected language/framework"
         },
-        "implementation_strategy": "file_by_file",
-        "validation_rules": ["syntax_check", "dependency_check", "style_check"]
+        "implementation_strategy": "file_by_file|batch|incremental",
+        "validation_rules": ["language-appropriate validation rules"]
     },
     "dependencies": {
-        "runtime": ["package1>=1.0.0", "package2"],
-        "development": ["pytest", "flake8"],
-        "build": ["maven", "gradle", "npm"]
+        "runtime": ["language/framework appropriate dependencies"],
+        "development": ["language/framework appropriate dev tools"],
+        "build": ["appropriate build tools for the language/framework"]
     },
     "steps": [
         {
             "step": 1,
-            "title": "Setup Project Structure",
-            "files": ["main.py", "requirements.txt"],
-            "file_types": ["config", "main"],
-            "estimated_time": "15 minutes",
-            "validation": ["directory_structure", "dependency_files"]
+            "title": "Descriptive step title",
+            "files": ["files for this step"],
+            "file_types": ["types for this step"],
+            "estimated_time": "realistic time estimate",
+            "validation": ["appropriate validation for this step"]
         }
     ],
     "constraints": {
-        "technology_restrictions": ["No Lombok", "No Mockito"],
-        "architectural_requirements": ["Mock services use in-memory storage", "Main services use PostgreSQL"],
-        "business_logic_requirements": ["Even digits succeed", "OTP 123456 succeeds"],
-        "security_requirements": ["Mask PII in logs"],
-        "testing_requirements": ["Use only JUnit 5"]
+        "technology_restrictions": ["extracted from requirements"],
+        "architectural_requirements": ["extracted from requirements"],
+        "business_logic_requirements": ["extracted from requirements"],
+        "security_requirements": ["extracted from requirements"],
+        "testing_requirements": ["extracted from requirements"],
+        "performance_requirements": ["extracted from requirements"],
+        "coding_standards": ["language/framework appropriate standards"],
+        "best_practices": ["language/framework appropriate practices"]
     }
 }
 ```
+
+**CRITICAL INSTRUCTIONS**:
+1. **Auto-detect everything**: Analyze the requirements to determine the appropriate language, framework, file types, and structure
+2. **Language-specific file types**: Use appropriate file types for the detected language:
+   - Java: main|config|entity|service|controller|repository|test
+   - Python: main|config|model|service|view|util|test
+   - JavaScript/TypeScript: main|component|page|hook|service|util|test
+   - Dart/Flutter: main|widget|screen|model|service|provider|util|test
+   - Go: main|handler|service|model|middleware|util|test
+   - C#: main|controller|service|model|repository|config|test
+3. **Framework-appropriate structure**: Generate directory structures that follow the framework's conventions
+4. **Language-appropriate dependencies**: Use the correct package managers and dependencies for the detected language
+5. **Realistic generation order**: Order files based on actual dependency requirements
+6. **Extract ALL constraints**: Pull every constraint, requirement, and restriction from the user's input
 
 Focus on essential information only. Generate complete code without skipping implementations."""
 

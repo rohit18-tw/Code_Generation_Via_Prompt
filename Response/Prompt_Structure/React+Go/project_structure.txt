@@ -1,0 +1,43 @@
+ekyc-bank-application/
+├── backend/
+│   ├── cmd/
+│   │   └── main.go
+│   ├── go.mod
+│   └── internal/
+│       ├── api/
+│       │   ├── handlers/
+│       │   │   ├── ekyc_handler.go
+│       │   │   └── user_handler.go
+│       │   └── router.go
+│       ├── database/
+│       │   ├── db.go
+│       │   ├── ekyc_repository.go
+│       │   └── user_repository.go
+│       ├── middleware/
+│       │   └── auth.go
+│       ├── models/
+│       │   ├── ekyc.go
+│       │   └── user.go
+│       ├── services/
+│       │   ├── ekyc_service.go
+│       │   └── user_service.go
+│       └── utils/
+│           └── validator.go
+└── frontend/
+    ├── package.json
+    ├── public/
+    └── src/
+        ├── App.tsx
+        ├── components/
+        │   ├── DocumentUpload.tsx
+        │   ├── EkycForm.tsx
+        │   └── FaceVerification.tsx
+        ├── index.tsx
+        ├── pages/
+        │   ├── Dashboard.tsx
+        │   ├── EkycVerification.tsx
+        │   └── Home.tsx
+        ├── services/
+        │   └── api.ts
+        └── utils/
+            └── validation.ts

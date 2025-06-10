@@ -1,0 +1,783 @@
+{
+  "total_files": 25,
+  "files_by_type": {
+    "config": [
+      {
+        "path": "frontend/package.json",
+        "purpose": "Frontend dependencies and scripts",
+        "type": "config",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "backend/go.mod",
+        "purpose": "Go module definition",
+        "type": "config",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "backend/internal/api/router.go",
+        "purpose": "API router setup",
+        "type": "config",
+        "priority": "high",
+        "dependencies": [
+          "internal/api/handlers",
+          "internal/middleware"
+        ],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "backend/internal/database/db.go",
+        "purpose": "Database connection setup",
+        "type": "config",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {}
+      }
+    ],
+    "main": [
+      {
+        "path": "frontend/src/index.tsx",
+        "purpose": "React application entry point",
+        "type": "main",
+        "priority": "high",
+        "dependencies": [
+          "App.tsx"
+        ],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "frontend/src/App.tsx",
+        "purpose": "Main application component with routing",
+        "type": "main",
+        "priority": "high",
+        "dependencies": [
+          "pages/Home.tsx",
+          "pages/EkycVerification.tsx",
+          "pages/Dashboard.tsx"
+        ],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "backend/cmd/main.go",
+        "purpose": "Backend application entry point",
+        "type": "main",
+        "priority": "high",
+        "dependencies": [
+          "internal/api",
+          "internal/database"
+        ],
+        "relevant_constraints": {}
+      }
+    ],
+    "component": [
+      {
+        "path": "frontend/src/components/EkycForm.tsx",
+        "purpose": "Form component for eKYC verification",
+        "type": "component",
+        "priority": "high",
+        "dependencies": [
+          "services/api.ts"
+        ],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "frontend/src/components/DocumentUpload.tsx",
+        "purpose": "Component for uploading identity documents",
+        "type": "component",
+        "priority": "high",
+        "dependencies": [
+          "services/api.ts"
+        ],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "frontend/src/components/FaceVerification.tsx",
+        "purpose": "Component for face verification",
+        "type": "component",
+        "priority": "high",
+        "dependencies": [
+          "services/api.ts"
+        ],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "frontend/src/pages/Home.tsx",
+        "purpose": "Landing page component",
+        "type": "component",
+        "priority": "medium",
+        "dependencies": [],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "frontend/src/pages/EkycVerification.tsx",
+        "purpose": "eKYC verification page component",
+        "type": "component",
+        "priority": "high",
+        "dependencies": [
+          "components/EkycForm.tsx",
+          "components/DocumentUpload.tsx",
+          "components/FaceVerification.tsx"
+        ],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "frontend/src/pages/Dashboard.tsx",
+        "purpose": "User dashboard after successful verification",
+        "type": "component",
+        "priority": "medium",
+        "dependencies": [
+          "services/api.ts"
+        ],
+        "relevant_constraints": {}
+      }
+    ],
+    "service": [
+      {
+        "path": "frontend/src/services/api.ts",
+        "purpose": "API service for backend communication",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "backend/internal/services/ekyc_service.go",
+        "purpose": "eKYC verification business logic",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "internal/models/ekyc.go",
+          "internal/database/ekyc_repository.go"
+        ],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "backend/internal/services/user_service.go",
+        "purpose": "User management business logic",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "internal/models/user.go",
+          "internal/database/user_repository.go"
+        ],
+        "relevant_constraints": {}
+      }
+    ],
+    "utility": [
+      {
+        "path": "frontend/src/utils/validation.ts",
+        "purpose": "Validation utilities for forms",
+        "type": "utility",
+        "priority": "medium",
+        "dependencies": [],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "backend/internal/utils/validator.go",
+        "purpose": "Input validation utilities",
+        "type": "utility",
+        "priority": "medium",
+        "dependencies": [],
+        "relevant_constraints": {}
+      }
+    ],
+    "controller": [
+      {
+        "path": "backend/internal/api/handlers/ekyc_handler.go",
+        "purpose": "eKYC verification API handlers",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "internal/services/ekyc_service.go"
+        ],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "backend/internal/api/handlers/user_handler.go",
+        "purpose": "User management API handlers",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "internal/services/user_service.go"
+        ],
+        "relevant_constraints": {}
+      }
+    ],
+    "entity": [
+      {
+        "path": "backend/internal/models/user.go",
+        "purpose": "User data model",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "backend/internal/models/ekyc.go",
+        "purpose": "eKYC verification data model",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {}
+      }
+    ],
+    "repository": [
+      {
+        "path": "backend/internal/database/user_repository.go",
+        "purpose": "User data access layer",
+        "type": "repository",
+        "priority": "high",
+        "dependencies": [
+          "internal/models/user.go",
+          "internal/database/db.go"
+        ],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "backend/internal/database/ekyc_repository.go",
+        "purpose": "eKYC data access layer",
+        "type": "repository",
+        "priority": "high",
+        "dependencies": [
+          "internal/models/ekyc.go",
+          "internal/database/db.go"
+        ],
+        "relevant_constraints": {}
+      }
+    ],
+    "middleware": [
+      {
+        "path": "backend/internal/middleware/auth.go",
+        "purpose": "Authentication middleware",
+        "type": "middleware",
+        "priority": "high",
+        "dependencies": [
+          "internal/services/user_service.go"
+        ],
+        "relevant_constraints": {}
+      }
+    ]
+  },
+  "files_by_priority": {
+    "high": [
+      {
+        "path": "frontend/package.json",
+        "purpose": "Frontend dependencies and scripts",
+        "type": "config",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "frontend/src/index.tsx",
+        "purpose": "React application entry point",
+        "type": "main",
+        "priority": "high",
+        "dependencies": [
+          "App.tsx"
+        ],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "frontend/src/App.tsx",
+        "purpose": "Main application component with routing",
+        "type": "main",
+        "priority": "high",
+        "dependencies": [
+          "pages/Home.tsx",
+          "pages/EkycVerification.tsx",
+          "pages/Dashboard.tsx"
+        ],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "frontend/src/components/EkycForm.tsx",
+        "purpose": "Form component for eKYC verification",
+        "type": "component",
+        "priority": "high",
+        "dependencies": [
+          "services/api.ts"
+        ],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "frontend/src/components/DocumentUpload.tsx",
+        "purpose": "Component for uploading identity documents",
+        "type": "component",
+        "priority": "high",
+        "dependencies": [
+          "services/api.ts"
+        ],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "frontend/src/components/FaceVerification.tsx",
+        "purpose": "Component for face verification",
+        "type": "component",
+        "priority": "high",
+        "dependencies": [
+          "services/api.ts"
+        ],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "frontend/src/pages/EkycVerification.tsx",
+        "purpose": "eKYC verification page component",
+        "type": "component",
+        "priority": "high",
+        "dependencies": [
+          "components/EkycForm.tsx",
+          "components/DocumentUpload.tsx",
+          "components/FaceVerification.tsx"
+        ],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "frontend/src/services/api.ts",
+        "purpose": "API service for backend communication",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "backend/go.mod",
+        "purpose": "Go module definition",
+        "type": "config",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "backend/cmd/main.go",
+        "purpose": "Backend application entry point",
+        "type": "main",
+        "priority": "high",
+        "dependencies": [
+          "internal/api",
+          "internal/database"
+        ],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "backend/internal/api/router.go",
+        "purpose": "API router setup",
+        "type": "config",
+        "priority": "high",
+        "dependencies": [
+          "internal/api/handlers",
+          "internal/middleware"
+        ],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "backend/internal/api/handlers/ekyc_handler.go",
+        "purpose": "eKYC verification API handlers",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "internal/services/ekyc_service.go"
+        ],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "backend/internal/api/handlers/user_handler.go",
+        "purpose": "User management API handlers",
+        "type": "controller",
+        "priority": "high",
+        "dependencies": [
+          "internal/services/user_service.go"
+        ],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "backend/internal/models/user.go",
+        "purpose": "User data model",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "backend/internal/models/ekyc.go",
+        "purpose": "eKYC verification data model",
+        "type": "entity",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "backend/internal/services/ekyc_service.go",
+        "purpose": "eKYC verification business logic",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "internal/models/ekyc.go",
+          "internal/database/ekyc_repository.go"
+        ],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "backend/internal/services/user_service.go",
+        "purpose": "User management business logic",
+        "type": "service",
+        "priority": "high",
+        "dependencies": [
+          "internal/models/user.go",
+          "internal/database/user_repository.go"
+        ],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "backend/internal/database/db.go",
+        "purpose": "Database connection setup",
+        "type": "config",
+        "priority": "high",
+        "dependencies": [],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "backend/internal/database/user_repository.go",
+        "purpose": "User data access layer",
+        "type": "repository",
+        "priority": "high",
+        "dependencies": [
+          "internal/models/user.go",
+          "internal/database/db.go"
+        ],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "backend/internal/database/ekyc_repository.go",
+        "purpose": "eKYC data access layer",
+        "type": "repository",
+        "priority": "high",
+        "dependencies": [
+          "internal/models/ekyc.go",
+          "internal/database/db.go"
+        ],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "backend/internal/middleware/auth.go",
+        "purpose": "Authentication middleware",
+        "type": "middleware",
+        "priority": "high",
+        "dependencies": [
+          "internal/services/user_service.go"
+        ],
+        "relevant_constraints": {}
+      }
+    ],
+    "medium": [
+      {
+        "path": "frontend/src/pages/Home.tsx",
+        "purpose": "Landing page component",
+        "type": "component",
+        "priority": "medium",
+        "dependencies": [],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "frontend/src/pages/Dashboard.tsx",
+        "purpose": "User dashboard after successful verification",
+        "type": "component",
+        "priority": "medium",
+        "dependencies": [
+          "services/api.ts"
+        ],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "frontend/src/utils/validation.ts",
+        "purpose": "Validation utilities for forms",
+        "type": "utility",
+        "priority": "medium",
+        "dependencies": [],
+        "relevant_constraints": {}
+      },
+      {
+        "path": "backend/internal/utils/validator.go",
+        "purpose": "Input validation utilities",
+        "type": "utility",
+        "priority": "medium",
+        "dependencies": [],
+        "relevant_constraints": {}
+      }
+    ],
+    "low": []
+  },
+  "generation_order": [
+    "config",
+    "entities",
+    "repositories",
+    "services",
+    "controllers",
+    "components",
+    "pages",
+    "tests"
+  ],
+  "ordered_files": [
+    {
+      "path": "frontend/package.json",
+      "purpose": "Frontend dependencies and scripts",
+      "type": "config",
+      "priority": "high",
+      "dependencies": [],
+      "relevant_constraints": {}
+    },
+    {
+      "path": "backend/go.mod",
+      "purpose": "Go module definition",
+      "type": "config",
+      "priority": "high",
+      "dependencies": [],
+      "relevant_constraints": {}
+    },
+    {
+      "path": "backend/internal/api/router.go",
+      "purpose": "API router setup",
+      "type": "config",
+      "priority": "high",
+      "dependencies": [
+        "internal/api/handlers",
+        "internal/middleware"
+      ],
+      "relevant_constraints": {}
+    },
+    {
+      "path": "backend/internal/database/db.go",
+      "purpose": "Database connection setup",
+      "type": "config",
+      "priority": "high",
+      "dependencies": [],
+      "relevant_constraints": {}
+    },
+    {
+      "path": "frontend/src/index.tsx",
+      "purpose": "React application entry point",
+      "type": "main",
+      "priority": "high",
+      "dependencies": [
+        "App.tsx"
+      ],
+      "relevant_constraints": {}
+    },
+    {
+      "path": "frontend/src/App.tsx",
+      "purpose": "Main application component with routing",
+      "type": "main",
+      "priority": "high",
+      "dependencies": [
+        "pages/Home.tsx",
+        "pages/EkycVerification.tsx",
+        "pages/Dashboard.tsx"
+      ],
+      "relevant_constraints": {}
+    },
+    {
+      "path": "backend/cmd/main.go",
+      "purpose": "Backend application entry point",
+      "type": "main",
+      "priority": "high",
+      "dependencies": [
+        "internal/api",
+        "internal/database"
+      ],
+      "relevant_constraints": {}
+    },
+    {
+      "path": "frontend/src/components/EkycForm.tsx",
+      "purpose": "Form component for eKYC verification",
+      "type": "component",
+      "priority": "high",
+      "dependencies": [
+        "services/api.ts"
+      ],
+      "relevant_constraints": {}
+    },
+    {
+      "path": "frontend/src/components/DocumentUpload.tsx",
+      "purpose": "Component for uploading identity documents",
+      "type": "component",
+      "priority": "high",
+      "dependencies": [
+        "services/api.ts"
+      ],
+      "relevant_constraints": {}
+    },
+    {
+      "path": "frontend/src/components/FaceVerification.tsx",
+      "purpose": "Component for face verification",
+      "type": "component",
+      "priority": "high",
+      "dependencies": [
+        "services/api.ts"
+      ],
+      "relevant_constraints": {}
+    },
+    {
+      "path": "frontend/src/pages/Home.tsx",
+      "purpose": "Landing page component",
+      "type": "component",
+      "priority": "medium",
+      "dependencies": [],
+      "relevant_constraints": {}
+    },
+    {
+      "path": "frontend/src/pages/EkycVerification.tsx",
+      "purpose": "eKYC verification page component",
+      "type": "component",
+      "priority": "high",
+      "dependencies": [
+        "components/EkycForm.tsx",
+        "components/DocumentUpload.tsx",
+        "components/FaceVerification.tsx"
+      ],
+      "relevant_constraints": {}
+    },
+    {
+      "path": "frontend/src/pages/Dashboard.tsx",
+      "purpose": "User dashboard after successful verification",
+      "type": "component",
+      "priority": "medium",
+      "dependencies": [
+        "services/api.ts"
+      ],
+      "relevant_constraints": {}
+    },
+    {
+      "path": "frontend/src/services/api.ts",
+      "purpose": "API service for backend communication",
+      "type": "service",
+      "priority": "high",
+      "dependencies": [],
+      "relevant_constraints": {}
+    },
+    {
+      "path": "backend/internal/services/ekyc_service.go",
+      "purpose": "eKYC verification business logic",
+      "type": "service",
+      "priority": "high",
+      "dependencies": [
+        "internal/models/ekyc.go",
+        "internal/database/ekyc_repository.go"
+      ],
+      "relevant_constraints": {}
+    },
+    {
+      "path": "backend/internal/services/user_service.go",
+      "purpose": "User management business logic",
+      "type": "service",
+      "priority": "high",
+      "dependencies": [
+        "internal/models/user.go",
+        "internal/database/user_repository.go"
+      ],
+      "relevant_constraints": {}
+    },
+    {
+      "path": "frontend/src/utils/validation.ts",
+      "purpose": "Validation utilities for forms",
+      "type": "utility",
+      "priority": "medium",
+      "dependencies": [],
+      "relevant_constraints": {}
+    },
+    {
+      "path": "backend/internal/utils/validator.go",
+      "purpose": "Input validation utilities",
+      "type": "utility",
+      "priority": "medium",
+      "dependencies": [],
+      "relevant_constraints": {}
+    },
+    {
+      "path": "backend/internal/api/handlers/ekyc_handler.go",
+      "purpose": "eKYC verification API handlers",
+      "type": "controller",
+      "priority": "high",
+      "dependencies": [
+        "internal/services/ekyc_service.go"
+      ],
+      "relevant_constraints": {}
+    },
+    {
+      "path": "backend/internal/api/handlers/user_handler.go",
+      "purpose": "User management API handlers",
+      "type": "controller",
+      "priority": "high",
+      "dependencies": [
+        "internal/services/user_service.go"
+      ],
+      "relevant_constraints": {}
+    },
+    {
+      "path": "backend/internal/models/user.go",
+      "purpose": "User data model",
+      "type": "entity",
+      "priority": "high",
+      "dependencies": [],
+      "relevant_constraints": {}
+    },
+    {
+      "path": "backend/internal/models/ekyc.go",
+      "purpose": "eKYC verification data model",
+      "type": "entity",
+      "priority": "high",
+      "dependencies": [],
+      "relevant_constraints": {}
+    },
+    {
+      "path": "backend/internal/database/user_repository.go",
+      "purpose": "User data access layer",
+      "type": "repository",
+      "priority": "high",
+      "dependencies": [
+        "internal/models/user.go",
+        "internal/database/db.go"
+      ],
+      "relevant_constraints": {}
+    },
+    {
+      "path": "backend/internal/database/ekyc_repository.go",
+      "purpose": "eKYC data access layer",
+      "type": "repository",
+      "priority": "high",
+      "dependencies": [
+        "internal/models/ekyc.go",
+        "internal/database/db.go"
+      ],
+      "relevant_constraints": {}
+    },
+    {
+      "path": "backend/internal/middleware/auth.go",
+      "purpose": "Authentication middleware",
+      "type": "middleware",
+      "priority": "high",
+      "dependencies": [
+        "internal/services/user_service.go"
+      ],
+      "relevant_constraints": {}
+    }
+  ],
+  "implementation_strategy": "file_by_file",
+  "validation_rules": [
+    "syntax_check",
+    "dependency_check",
+    "style_check"
+  ],
+  "file_templates": {
+    "entity": "Data model with validation",
+    "controller": "REST endpoints with CRUD operations",
+    "service": "Business logic layer",
+    "repository": "Data access layer",
+    "config": "Configuration and setup",
+    "component": "React component with state management",
+    "page": "React page component with routing"
+  }
+}
