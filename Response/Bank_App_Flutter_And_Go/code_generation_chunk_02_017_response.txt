@@ -1,0 +1,239 @@
+# LLM Response - code_generation_chunk_02
+# Timestamp: 2025-06-11 10:24:33
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_02_017
+# ==================================================
+
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
+import 'package:logging/logging.dart';
+
+/// A model class representing a user in the application.
+///
+/// This class handles user data, serialization/deserialization,
+/// and provides validation for user properties.
+class User {
+  final String id;
+  final String email;
+  final String username;
+  final String? firstName;
+  final String? lastName;
+  final String? profileImageUrl;
+  final DateTime createdAt;
+  final DateTime? lastLoginAt;
+  final bool isActive;
+  final Map<String, dynamic>? preferences;
+
+  static final Logger _logger = Logger('User');
+
+  /// Creates a new [User] instance with the provided parameters.
+  ///
+  /// The [id], [email], [username], and [createdAt] parameters are required.
+  /// All other parameters are optional.
+  User({
+    required this.id,
+    required this.email,
+    required this.username,
+    this.firstName,
+    this.lastName,
+    this.profileImageUrl,
+    required this.createdAt,
+    this.lastLoginAt,
+    this.isActive = true,
+    this.preferences,
+  }) {
+    validateEmail(email);
+    validateUsername(username);
+  }
+
+  /// Creates a [User] from a JSON map.
+  ///
+  /// Throws a [FormatException] if the JSON data is invalid.
+  factory User.fromJson(Map<String, dynamic> json) {
+    try {
+      return User(
+        id: json['id'] as String,
+        email: json['email'] as String,
+        username: json['username'] as String,
+        firstName: json['firstName'] as String?,
+        lastName: json['lastName'] as String?,
+        profileImageUrl: json['profileImageUrl'] as String?,
+        createdAt: DateTime.parse(json['createdAt'] as String),
+        lastLoginAt: json['lastLoginAt'] != null
+            ? DateTime.parse(json['lastLoginAt'] as String)
+            : null,
+        isActive: json['isActive'] as bool? ?? true,
+        preferences: json['preferences'] as Map<String, dynamic>?,
+      );
+    } catch (e) {
+      _logger.severe('Failed to parse User from JSON: $e');
+      throw FormatException('Invalid user data format: $e');
+    }
+  }
+
+  /// Converts the [User] instance to a JSON map.
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'email': email,
+      'username': username,
+      'firstName': firstName,
+      'lastName': lastName,
+      'profileImageUrl': profileImageUrl,
+      'createdAt': createdAt.toIso8601String(),
+      'lastLoginAt': lastLoginAt?.toIso8601String(),
+      'isActive': isActive,
+      'preferences': preferences,
+    };
+  }
+
+  /// Creates a copy of this [User] with the given fields replaced with new values.
+  User copyWith({
+    String? id,
+    String? email,
+    String? username,
+    String? firstName,
+    String? lastName,
+    String? profileImageUrl,
+    DateTime? createdAt,
+    DateTime? lastLoginAt,
+    bool? isActive,
+    Map<String, dynamic>? preferences,
+  }) {
+    return User(
+      id: id ?? this.id,
+      email: email ?? this.email,
+      username: username ?? this.username,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      profileImageUrl: profileImageUrl ?? this.profileImageUrl,
+      createdAt: createdAt ?? this.createdAt,
+      lastLoginAt: lastLoginAt ?? this.lastLoginAt,
+      isActive: isActive ?? this.isActive,
+      preferences: preferences ?? this.preferences,
+    );
+  }
+
+  /// Returns the full name of the user.
+  ///
+  /// If both first and last names are available, returns them concatenated.
+  /// Otherwise, returns the username.
+  String get fullName {
+    if (firstName != null && lastName != null) {
+      return '$firstName $lastName';
+    } else if (firstName != null) {
+      return firstName!;
+    } else if (lastName != null) {
+      return lastName!;
+    } else {
+      return username;
+    }
+  }
+
+  /// Returns a PII-safe string representation of the user for logging.
+  ///
+  /// This method masks sensitive information like email and names.
+  String toSafeString() {
+    final maskedEmail = _maskEmail(email);
+    final maskedUsername = username.length > 2
+        ? '${username.substring(0, 2)}***'
+        : '***';
+    
+    return 'User(id: $id, email: $maskedEmail, username: $maskedUsername)';
+  }
+
+  /// Validates an email address format.
+  ///
+  /// Throws a [FormatException] if the email is invalid.
+  static void validateEmail(String email) {
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
+    
+    if (!emailRegex.hasMatch(email)) {
+      _logger.warning('Invalid email format: ${_maskEmail(email)}');
+      throw FormatException('Invalid email format');
+    }
+  }
+
+  /// Validates a username format.
+  ///
+  /// Throws a [FormatException] if the username is invalid.
+  static void validateUsername(String username) {
+    if (username.isEmpty) {
+      _logger.warning('Username cannot be empty');
+      throw FormatException('Username cannot be empty');
+    }
+    
+    if (username.length < 3) {
+      _logger.warning('Username too short: ${username.length} chars');
+      throw FormatException('Username must be at least 3 characters long');
+    }
+    
+    final usernameRegex = RegExp(r'^[a-zA-Z0-9_]+$');
+    if (!usernameRegex.hasMatch(username)) {
+      _logger.warning('Invalid username format');
+      throw FormatException(
+        'Username can only contain letters, numbers, and underscores',
+      );
+    }
+  }
+
+  /// Masks an email address for privacy in logs.
+  static String _maskEmail(String email) {
+    final parts = email.split('@');
+    if (parts.length != 2) return '***@***.***';
+    
+    final name = parts[0];
+    final domain = parts[1];
+    
+    final maskedName = name.length > 2
+        ? '${name.substring(0, 2)}***'
+        : '***';
+    
+    return '$maskedName@$domain';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    
+    return other is User &&
+        other.id == id &&
+        other.email == email &&
+        other.username == username &&
+        other.firstName == firstName &&
+        other.lastName == lastName &&
+        other.profileImageUrl == profileImageUrl &&
+        other.createdAt == createdAt &&
+        other.lastLoginAt == lastLoginAt &&
+        other.isActive == isActive &&
+        mapEquals(other.preferences, preferences);
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        email.hashCode ^
+        username.hashCode ^
+        firstName.hashCode ^
+        lastName.hashCode ^
+        profileImageUrl.hashCode ^
+        createdAt.hashCode ^
+        lastLoginAt.hashCode ^
+        isActive.hashCode ^
+        preferences.hashCode;
+  }
+
+  @override
+  String toString() {
+    if (kDebugMode) {
+      return 'User(id: $id, email: $email, username: $username, '
+          'firstName: $firstName, lastName: $lastName, '
+          'profileImageUrl: $profileImageUrl, createdAt: $createdAt, '
+          'lastLoginAt: $lastLoginAt, isActive: $isActive)';
+    } else {
+      return toSafeString();
+    }
+  }
+}

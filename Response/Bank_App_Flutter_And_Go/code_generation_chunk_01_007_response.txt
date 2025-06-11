@@ -1,0 +1,396 @@
+# LLM Response - code_generation_chunk_01
+# Timestamp: 2025-06-11 10:19:24
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_01_007
+# ==================================================
+
+package models
+
+import (
+	"database/sql"
+	"errors"
+	"fmt"
+	"log"
+	"strings"
+	"time"
+)
+
+// TransactionType represents the type of transaction
+type TransactionType string
+
+// Transaction types
+const (
+	Deposit    TransactionType = "deposit"
+	Withdrawal TransactionType = "withdrawal"
+	Transfer   TransactionType = "transfer"
+)
+
+// TransactionStatus represents the status of a transaction
+type TransactionStatus string
+
+// Transaction statuses
+const (
+	Pending   TransactionStatus = "pending"
+	Completed TransactionStatus = "completed"
+	Failed    TransactionStatus = "failed"
+	Cancelled TransactionStatus = "cancelled"
+)
+
+// Transaction represents a financial transaction in the system
+type Transaction struct {
+	ID              int64            `json:"id"`
+	AccountID       int64            `json:"account_id"`
+	DestAccountID   sql.NullInt64    `json:"dest_account_id,omitempty"`
+	Amount          float64          `json:"amount"`
+	Type            TransactionType  `json:"type"`
+	Status          TransactionStatus `json:"status"`
+	Description     string           `json:"description"`
+	ReferenceNumber string           `json:"reference_number"`
+	CreatedAt       time.Time        `json:"created_at"`
+	UpdatedAt       time.Time        `json:"updated_at"`
+}
+
+// Validate checks if the transaction data is valid
+func (t *Transaction) Validate() error {
+	// Check if amount is positive
+	if t.Amount <= 0 {
+		return errors.New("transaction amount must be greater than zero")
+	}
+
+	// Check if transaction type is valid
+	if t.Type != Deposit && t.Type != Withdrawal && t.Type != Transfer {
+		return errors.New("invalid transaction type")
+	}
+
+	// For transfers, destination account must be specified
+	if t.Type == Transfer && !t.DestAccountID.Valid {
+		return errors.New("destination account is required for transfers")
+	}
+
+	// Check if transaction status is valid
+	if t.Status != Pending && t.Status != Completed && t.Status != Failed && t.Status != Cancelled {
+		return errors.New("invalid transaction status")
+	}
+
+	// Validate description (optional but if provided should not be too long)
+	if len(t.Description) > 255 {
+		return errors.New("description is too long (maximum 255 characters)")
+	}
+
+	return nil
+}
+
+// Create inserts a new transaction into the database
+func (t *Transaction) Create(db *sql.DB) error {
+	// Validate transaction data before insertion
+	if err := t.Validate(); err != nil {
+		return err
+	}
+
+	// Generate reference number if not provided
+	if t.ReferenceNumber == "" {
+		t.ReferenceNumber = generateReferenceNumber()
+	}
+
+	// Set timestamps
+	now := time.Now()
+	t.CreatedAt = now
+	t.UpdatedAt = now
+
+	// Prepare SQL statement
+	query := `
+		INSERT INTO transactions 
+		(account_id, dest_account_id, amount, type, status, description, reference_number, created_at, updated_at) 
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+		RETURNING id
+	`
+
+	// Execute the query
+	var destAccountID interface{}
+	if t.DestAccountID.Valid {
+		destAccountID = t.DestAccountID.Int64
+	} else {
+		destAccountID = nil
+	}
+
+	// Log the transaction creation attempt (mask sensitive data)
+	log.Printf("Creating transaction: type=%s, amount=%.2f, account_id=%d, status=%s", 
+		t.Type, t.Amount, t.AccountID, t.Status)
+
+	err := db.QueryRow(
+		query,
+		t.AccountID,
+		destAccountID,
+		t.Amount,
+		t.Type,
+		t.Status,
+		t.Description,
+		t.ReferenceNumber,
+		t.CreatedAt,
+		t.UpdatedAt,
+	).Scan(&t.ID)
+
+	if err != nil {
+		log.Printf("Error creating transaction: %v", err)
+		return fmt.Errorf("failed to create transaction: %w", err)
+	}
+
+	log.Printf("Transaction created successfully: id=%d, reference=%s", t.ID, t.ReferenceNumber)
+	return nil
+}
+
+// GetByID retrieves a transaction by its ID
+func (t *Transaction) GetByID(db *sql.DB, id int64) error {
+	query := `
+		SELECT id, account_id, dest_account_id, amount, type, status, description, 
+		       reference_number, created_at, updated_at 
+		FROM transactions 
+		WHERE id = ?
+	`
+
+	var destAccountID sql.NullInt64
+	err := db.QueryRow(query, id).Scan(
+		&t.ID,
+		&t.AccountID,
+		&destAccountID,
+		&t.Amount,
+		&t.Type,
+		&t.Status,
+		&t.Description,
+		&t.ReferenceNumber,
+		&t.CreatedAt,
+		&t.UpdatedAt,
+	)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return fmt.Errorf("transaction with ID %d not found", id)
+		}
+		return fmt.Errorf("error retrieving transaction: %w", err)
+	}
+
+	t.DestAccountID = destAccountID
+	return nil
+}
+
+// GetByReferenceNumber retrieves a transaction by its reference number
+func (t *Transaction) GetByReferenceNumber(db *sql.DB, refNumber string) error {
+	query := `
+		SELECT id, account_id, dest_account_id, amount, type, status, description, 
+		       reference_number, created_at, updated_at 
+		FROM transactions 
+		WHERE reference_number = ?
+	`
+
+	var destAccountID sql.NullInt64
+	err := db.QueryRow(query, refNumber).Scan(
+		&t.ID,
+		&t.AccountID,
+		&destAccountID,
+		&t.Amount,
+		&t.Type,
+		&t.Status,
+		&t.Description,
+		&t.ReferenceNumber,
+		&t.CreatedAt,
+		&t.UpdatedAt,
+	)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return fmt.Errorf("transaction with reference number %s not found", refNumber)
+		}
+		return fmt.Errorf("error retrieving transaction: %w", err)
+	}
+
+	t.DestAccountID = destAccountID
+	return nil
+}
+
+// UpdateStatus updates the status of a transaction
+func (t *Transaction) UpdateStatus(db *sql.DB, status TransactionStatus) error {
+	// Validate the new status
+	if status != Pending && status != Completed && status != Failed && status != Cancelled {
+		return errors.New("invalid transaction status")
+	}
+
+	// Update the status and timestamp
+	t.Status = status
+	t.UpdatedAt = time.Now()
+
+	query := `
+		UPDATE transactions 
+		SET status = ?, updated_at = ? 
+		WHERE id = ?
+	`
+
+	log.Printf("Updating transaction status: id=%d, new_status=%s", t.ID, status)
+
+	_, err := db.Exec(query, t.Status, t.UpdatedAt, t.ID)
+	if err != nil {
+		log.Printf("Error updating transaction status: %v", err)
+		return fmt.Errorf("failed to update transaction status: %w", err)
+	}
+
+	log.Printf("Transaction status updated successfully: id=%d, status=%s", t.ID, t.Status)
+	return nil
+}
+
+// GetTransactionsByAccountID retrieves all transactions for a specific account
+func GetTransactionsByAccountID(db *sql.DB, accountID int64) ([]Transaction, error) {
+	query := `
+		SELECT id, account_id, dest_account_id, amount, type, status, description, 
+		       reference_number, created_at, updated_at 
+		FROM transactions 
+		WHERE account_id = ? OR dest_account_id = ?
+		ORDER BY created_at DESC
+	`
+
+	rows, err := db.Query(query, accountID, accountID)
+	if err != nil {
+		return nil, fmt.Errorf("error retrieving transactions: %w", err)
+	}
+	defer rows.Close()
+
+	var transactions []Transaction
+	for rows.Next() {
+		var t Transaction
+		var destAccountID sql.NullInt64
+
+		err := rows.Scan(
+			&t.ID,
+			&t.AccountID,
+			&destAccountID,
+			&t.Amount,
+			&t.Type,
+			&t.Status,
+			&t.Description,
+			&t.ReferenceNumber,
+			&t.CreatedAt,
+			&t.UpdatedAt,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("error scanning transaction row: %w", err)
+		}
+
+		t.DestAccountID = destAccountID
+		transactions = append(transactions, t)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating transaction rows: %w", err)
+	}
+
+	log.Printf("Retrieved %d transactions for account ID %d", len(transactions), accountID)
+	return transactions, nil
+}
+
+// GetTransactionsByDateRange retrieves transactions within a specific date range
+func GetTransactionsByDateRange(db *sql.DB, accountID int64, startDate, endDate time.Time) ([]Transaction, error) {
+	query := `
+		SELECT id, account_id, dest_account_id, amount, type, status, description, 
+		       reference_number, created_at, updated_at 
+		FROM transactions 
+		WHERE (account_id = ? OR dest_account_id = ?) 
+		  AND created_at BETWEEN ? AND ?
+		ORDER BY created_at DESC
+	`
+
+	rows, err := db.Query(query, accountID, accountID, startDate, endDate)
+	if err != nil {
+		return nil, fmt.Errorf("error retrieving transactions by date range: %w", err)
+	}
+	defer rows.Close()
+
+	var transactions []Transaction
+	for rows.Next() {
+		var t Transaction
+		var destAccountID sql.NullInt64
+
+		err := rows.Scan(
+			&t.ID,
+			&t.AccountID,
+			&destAccountID,
+			&t.Amount,
+			&t.Type,
+			&t.Status,
+			&t.Description,
+			&t.ReferenceNumber,
+			&t.CreatedAt,
+			&t.UpdatedAt,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("error scanning transaction row: %w", err)
+		}
+
+		t.DestAccountID = destAccountID
+		transactions = append(transactions, t)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating transaction rows: %w", err)
+	}
+
+	log.Printf("Retrieved %d transactions for account ID %d between %s and %s", 
+		len(transactions), accountID, startDate.Format("2006-01-02"), endDate.Format("2006-01-02"))
+	return transactions, nil
+}
+
+// generateReferenceNumber creates a unique reference number for a transaction
+func generateReferenceNumber() string {
+	timestamp := time.Now().UnixNano() / int64(time.Millisecond)
+	return fmt.Sprintf("TXN%d", timestamp)
+}
+
+// FormatAmount returns a formatted string representation of the transaction amount
+func (t *Transaction) FormatAmount() string {
+	return fmt.Sprintf("$%.2f", t.Amount)
+}
+
+// IsIncoming determines if this is an incoming transaction for the specified account
+func (t *Transaction) IsIncoming(accountID int64) bool {
+	return t.Type == Deposit || (t.Type == Transfer && t.DestAccountID.Valid && t.DestAccountID.Int64 == accountID)
+}
+
+// GetDescription returns a user-friendly description of the transaction
+func (t *Transaction) GetDescription() string {
+	if t.Description != "" {
+		return t.Description
+	}
+	
+	// Generate a default description based on transaction type
+	switch t.Type {
+	case Deposit:
+		return "Deposit"
+	case Withdrawal:
+		return "Withdrawal"
+	case Transfer:
+		if t.DestAccountID.Valid {
+			return fmt.Sprintf("Transfer to account #%d", t.DestAccountID.Int64)
+		}
+		return "Transfer"
+	default:
+		return string(t.Type)
+	}
+}
+
+// GetFormattedDate returns a formatted date string for the transaction
+func (t *Transaction) GetFormattedDate() string {
+	return t.CreatedAt.Format("Jan 02, 2006 15:04:05")
+}
+
+// GetStatusColor returns a color code based on the transaction status
+func (t *Transaction) GetStatusColor() string {
+	switch t.Status {
+	case Completed:
+		return "green"
+	case Pending:
+		return "orange"
+	case Failed:
+		return "red"
+	case Cancelled:
+		return "gray"
+	default:
+		return "black"
+	}
+}

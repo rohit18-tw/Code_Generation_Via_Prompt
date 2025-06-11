@@ -1,0 +1,90 @@
+# LLM Response - code_generation_chunk_02
+# Timestamp: 2025-06-11 10:23:57
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_02_015
+# ==================================================
+
+package api
+
+import (
+	"database/sql"
+	"log"
+	"net/http"
+
+	"github.com/gorilla/mux"
+
+	"backend/api/handlers"
+	"backend/middleware"
+)
+
+// Router represents the API router with all routes configured
+type Router struct {
+	router *mux.Router
+	db     *sql.DB
+}
+
+// NewRouter creates and configures a new API router
+func NewRouter(db *sql.DB) *Router {
+	r := &Router{
+		router: mux.NewRouter(),
+		db:     db,
+	}
+	r.setupRoutes()
+	return r
+}
+
+// setupRoutes configures all API routes
+func (r *Router) setupRoutes() {
+	// Initialize handlers
+	authHandler := handlers.NewAuthHandler(r.db)
+	accountHandler := handlers.NewAccountHandler(r.db)
+	transactionHandler := handlers.NewTransactionHandler(r.db)
+
+	// Auth middleware
+	authMiddleware := middleware.AuthMiddleware
+
+	// Public routes (no auth required)
+	r.router.HandleFunc("/api/auth/register", authHandler.Register).Methods("POST")
+	r.router.HandleFunc("/api/auth/login", authHandler.Login).Methods("POST")
+	r.router.HandleFunc("/api/auth/verify", authHandler.VerifyToken).Methods("GET")
+
+	// Protected routes (auth required)
+	// Auth routes
+	r.router.HandleFunc("/api/auth/logout", authMiddleware(authHandler.Logout)).Methods("POST")
+
+	// Account routes
+	r.router.HandleFunc("/api/accounts", authMiddleware(accountHandler.CreateAccount)).Methods("POST")
+	r.router.HandleFunc("/api/accounts", authMiddleware(accountHandler.GetAccounts)).Methods("GET")
+	r.router.HandleFunc("/api/accounts/{id}", authMiddleware(accountHandler.GetAccount)).Methods("GET")
+	r.router.HandleFunc("/api/accounts/{id}", authMiddleware(accountHandler.UpdateAccount)).Methods("PUT")
+
+	// Transaction routes
+	r.router.HandleFunc("/api/transactions", authMiddleware(transactionHandler.CreateTransaction)).Methods("POST")
+	r.router.HandleFunc("/api/transactions/{id}", authMiddleware(transactionHandler.GetTransaction)).Methods("GET")
+	r.router.HandleFunc("/api/accounts/{id}/transactions", authMiddleware(transactionHandler.GetAccountTransactions)).Methods("GET")
+	r.router.HandleFunc("/api/user/transactions", authMiddleware(transactionHandler.GetUserTransactions)).Methods("GET")
+
+	// Add middleware for all routes
+	r.router.Use(loggingMiddleware)
+}
+
+// loggingMiddleware logs all incoming requests
+func loggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Log the request with masked sensitive data
+		log.Printf("Request: %s %s from %s", r.Method, r.URL.Path, middleware.MaskPII(r.RemoteAddr))
+		
+		// Call the next handler
+		next.ServeHTTP(w, r)
+	})
+}
+
+// ServeHTTP implements the http.Handler interface
+func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	r.router.ServeHTTP(w, req)
+}
+
+// GetHandler returns the underlying router as an http.Handler
+func (r *Router) GetHandler() http.Handler {
+	return r.router
+}

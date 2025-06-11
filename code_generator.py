@@ -115,7 +115,7 @@ class CodeGenerator:
         self.logger.log_workflow(f"📁 Created {len(directories)} directories")
 
     def _create_generation_chunks(self, development_plan: Dict[str, Any]) -> List[GenerationChunk]:
-        """Create intelligent generation chunks based on dependencies and complexity."""
+        """Create intelligent generation chunks based on dependencies and complexity - adaptive to any order format."""
         files = development_plan.get("structure", {}).get("files", [])
         code_gen = development_plan.get("code_generation", {})
         generation_order = code_gen.get("order", [])
@@ -123,99 +123,69 @@ class CodeGenerator:
         chunks = []
         chunk_id = 1
 
-        # Group files by type according to generation order
-        files_by_type = {}
-        for file_info in files:
-            file_type = file_info.get("type", "unknown")
-            if file_type not in files_by_type:
-                files_by_type[file_type] = []
-            files_by_type[file_type].append(file_info)
+        # Order files by the paths specified in the plan (plan generator only produces file paths)
+        ordered_files = self._order_files_by_paths(files, generation_order)
 
-        # Create chunks following the generation order
-        for file_type in generation_order:
-            if file_type in files_by_type:
-                type_files = files_by_type[file_type]
+        # Create chunks from ordered files - simple file count based chunking
+        current_chunk_files = []
+        current_chunk_deps = set()
 
-                # Split large types into multiple chunks
-                while type_files:
-                    chunk_files = []
-                    estimated_tokens = 0
+        for file_info in ordered_files:
+            file_deps = file_info.get("dependencies", [])
 
-                    # Add files to chunk until we hit limits
-                    while (type_files and
-                           len(chunk_files) < self.config.MAX_FILES_PER_CHUNK and
-                           estimated_tokens < self.config.CHUNK_TOKEN_LIMIT * 0.7):  # Leave room for context
+            # Check if adding this file would exceed file count limit
+            if len(current_chunk_files) >= self.config.MAX_FILES_PER_CHUNK:
 
-                        file_info = type_files.pop(0)
-                        chunk_files.append(file_info)
+                # Create chunk from current files
+                chunk = GenerationChunk(
+                    chunk_id=f"chunk_{chunk_id:02d}",
+                    files=current_chunk_files,
+                    dependencies=list(current_chunk_deps),
+                    estimated_tokens=0,  # No longer used
+                    priority=chunk_id
+                )
+                chunks.append(chunk)
+                chunk_id += 1
 
-                        # Estimate tokens for this file (rough estimate)
-                        estimated_tokens += self._estimate_file_tokens(file_info, development_plan)
+                # Start new chunk
+                current_chunk_files = []
+                current_chunk_deps = set()
 
-                    if chunk_files:
-                        # Determine chunk dependencies
-                        chunk_deps = set()
-                        for file_info in chunk_files:
-                            chunk_deps.update(file_info.get("dependencies", []))
+            # Add file to current chunk
+            current_chunk_files.append(file_info)
+            current_chunk_deps.update(file_deps)
 
-                        chunk = GenerationChunk(
-                            chunk_id=f"chunk_{chunk_id:02d}_{file_type}",
-                            files=chunk_files,
-                            dependencies=list(chunk_deps),
-                            estimated_tokens=estimated_tokens,
-                            priority=generation_order.index(file_type) if file_type in generation_order else 999
-                        )
-                        chunks.append(chunk)
-                        chunk_id += 1
-
-        # Add any remaining files not in the generation order
-        remaining_files = []
-        for file_type, type_files in files_by_type.items():
-            if file_type not in generation_order:
-                remaining_files.extend(type_files)
-
-        if remaining_files:
+        # Create final chunk if there are remaining files
+        if current_chunk_files:
             chunk = GenerationChunk(
-                chunk_id=f"chunk_{chunk_id:02d}_remaining",
-                files=remaining_files,
-                dependencies=[],
-                estimated_tokens=sum(self._estimate_file_tokens(f, development_plan) for f in remaining_files),
-                priority=1000
+                chunk_id=f"chunk_{chunk_id:02d}",
+                files=current_chunk_files,
+                dependencies=list(current_chunk_deps),
+                estimated_tokens=0,  # No longer used
+                priority=chunk_id
             )
             chunks.append(chunk)
 
         self.logger.log_workflow(f"📦 Created {len(chunks)} generation chunks")
         return chunks
 
-    def _estimate_file_tokens(self, file_info: Dict[str, Any], development_plan: Dict[str, Any]) -> int:
-        """Estimate tokens needed to generate a file."""
-        file_type = file_info.get("type", "unknown")
-        language = development_plan.get("project", {}).get("language", "unknown")
 
-        # Base estimates by file type and language
-        base_estimates = {
-            "config": 500,
-            "entity": 800,
-            "service": 1500,
-            "controller": 1200,
-            "repository": 1000,
-            "test": 1000,
-            "main": 600,
-            "utility": 700
-        }
 
-        # Language multipliers
-        language_multipliers = {
-            "java": 1.3,  # Java tends to be more verbose
-            "go": 1.0,
-            "python": 0.8,
-            "javascript": 0.9
-        }
+    def _order_files_by_paths(self, files: List[Dict[str, Any]], generation_order: List[str]) -> List[Dict[str, Any]]:
+        """Order files based on specific file paths in generation order."""
+        ordered_files = []
+        files_by_path = {f.get("path", ""): f for f in files}
 
-        base_tokens = base_estimates.get(file_type, 800)
-        multiplier = language_multipliers.get(language, 1.0)
+        # Add files in the order specified
+        for path in generation_order:
+            if path in files_by_path:
+                ordered_files.append(files_by_path[path])
+                del files_by_path[path]  # Remove to avoid duplicates
 
-        return int(base_tokens * multiplier)
+        # Add any remaining files not in the order
+        ordered_files.extend(files_by_path.values())
+
+        return ordered_files
 
     def _generate_chunk(self, chunk: GenerationChunk, development_plan: Dict[str, Any]) -> Dict[str, Any]:
         """Generate code for a specific chunk."""
@@ -239,8 +209,7 @@ class CodeGenerator:
                     chunk_results["success_count"] += 1
                     # Add to generated files for next file's context
                     self.generated_files[file_info.get('path', '')] = result.content
-                    # Learn from successful generation
-                    self.ctx_manager.learn_from_generation(file_info, result.content, True)
+                    # Pattern learning removed - Claude's intelligence is sufficient
 
                     # 🔄 Update MCP context with newly created file
                     self.logger.log_workflow(f"🔄 Updated context with: {file_info.get('path', '')}")
@@ -309,8 +278,7 @@ class CodeGenerator:
                 model=self.config.DEFAULT_MODEL,
                 metadata={
                     "file_path": file_path,
-                    "file_type": file_info.get("type", "unknown"),
-                    "context_tokens": context.total_tokens,
+                    "file_purpose": file_info.get("purpose", "Not specified"),
                     "validation_passed": validation.is_valid
                 }
             )
@@ -341,7 +309,7 @@ class CodeGenerator:
                 success=validation.is_valid,
                 errors=validation.errors,
                 warnings=validation.warnings,
-                tokens_used=len(self.ctx_manager.encoding.encode(generated_code)),
+                tokens_used=0,  # No longer tracking tokens
                 generation_time=generation_time
             )
 
@@ -363,7 +331,6 @@ class CodeGenerator:
     def _create_system_prompt(self, development_plan: Dict[str, Any]) -> str:
         """Create system prompt for code generation."""
         project = development_plan.get("project", {})
-        constraints = development_plan.get("constraints", {})
         language = project.get("language", "unknown")
         framework = project.get("framework", "unknown")
 
@@ -380,39 +347,7 @@ Generate complete, production-ready code based on the provided context and requi
 - Follow the architectural patterns specified
 - Include all necessary imports and dependencies"""
 
-        # Add constraints if they exist
-        if constraints:
-            prompt += "\n\n**CRITICAL CONSTRAINTS - MUST FOLLOW:**"
 
-            tech_restrictions = constraints.get("technology_restrictions", [])
-            if tech_restrictions:
-                prompt += "\n- Technology Restrictions:"
-                for restriction in tech_restrictions:
-                    prompt += f"\n  • {restriction}"
-
-            coding_standards = constraints.get("coding_standards", [])
-            if coding_standards:
-                prompt += "\n- Coding Standards:"
-                for standard in coding_standards:
-                    prompt += f"\n  • {standard}"
-
-            testing_requirements = constraints.get("testing_requirements", [])
-            if testing_requirements:
-                prompt += "\n- Testing Requirements:"
-                for requirement in testing_requirements:
-                    prompt += f"\n  • {requirement}"
-
-            best_practices = constraints.get("best_practices", [])
-            if best_practices:
-                prompt += "\n- Best Practices:"
-                for practice in best_practices:
-                    prompt += f"\n  • {practice}"
-
-            other_constraints = constraints.get("other_constraints", [])
-            if other_constraints:
-                prompt += "\n- Other Constraints:"
-                for constraint in other_constraints:
-                    prompt += f"\n  • {constraint}"
 
         prompt += """
 
@@ -436,25 +371,23 @@ Provide ONLY the complete code for the requested file. Do not include explanatio
         file_info = context.target_file
         project_context = context.project_context
 
+        # Extract file priority flexibly
+        file_priority = file_info.get('priority', file_info.get('importance', 'medium'))
+
         prompt = f"""Generate complete code for: {file_info['path']}
 
 **File Details:**
 - Purpose: {file_info.get('purpose', 'Not specified')}
-- Type: {file_info.get('type', 'unknown')}
-- Priority: {file_info.get('priority', 'medium')}
+- Priority: {file_priority}
 - Language: {project_context['language']}
 - Framework: {project_context['framework']}
-
-**Project Context:**
-- Project Type: {project_context['type']}
-- Dependencies: {', '.join(project_context.get('dependencies', {}).get('runtime', [])[:5])}
 
 **Dependency Context:**
 """
 
-        # Add optimized dependency context
+        # Add minimal dependency context - just the essential content
         for item in context.dependency_context:
-            prompt += f"\n// From {item.source_file} ({item.item_type}):\n{item.content}\n"
+            prompt += f"\n// From {item.source_file}:\n{item.content}\n"
 
         # Add file system context
         if fs_context.get("related_files"):
@@ -464,19 +397,14 @@ Provide ONLY the complete code for the requested file. Do not include explanatio
                 lines = rel_content.split('\n')[:10]
                 prompt += f"\n// {rel_path} (excerpt):\n" + '\n'.join(lines) + "\n"
 
-        # Add pattern context
-        if context.pattern_context:
-            prompt += "\n**Patterns to Follow:**\n"
-            for pattern_type, patterns in context.pattern_context.items():
-                if patterns:
-                    prompt += f"- {pattern_type}: {patterns}\n"
+        # Pattern context removed - Claude knows patterns naturally
 
         # Add specific requirements
         prompt += f"""
 
 **Specific Requirements:**
 - Implement all methods and functionality completely
-- Follow the file template: {project_context.get('file_templates', {}).get(file_info.get('type', ''), 'Standard implementation')}
+- Follow {project_context['framework']} best practices and conventions
 - Include proper error handling and validation
 - Add comprehensive logging with PII masking where applicable
 - Ensure thread safety and performance optimization
@@ -531,7 +459,6 @@ Generate the complete, production-ready code now:"""
 
         # Calculate statistics
         success_rate = total_success / total_files if total_files > 0 else 0
-        total_tokens = sum(result.tokens_used for result in self.generation_history)
 
         return {
             "success": success_rate > 0.8,  # Consider successful if >80% files generated
@@ -539,7 +466,6 @@ Generate the complete, production-ready code now:"""
             "successful_files": total_success,
             "failed_files": total_files - total_success,
             "success_rate": success_rate,
-            "total_tokens_used": total_tokens,
             "chunks_generated": len(chunk_results),
             "errors": all_errors,
             "generated_files": list(self.generated_files.keys()),

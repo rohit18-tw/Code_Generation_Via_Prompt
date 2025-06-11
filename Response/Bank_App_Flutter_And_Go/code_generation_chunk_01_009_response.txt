@@ -1,0 +1,186 @@
+# LLM Response - code_generation_chunk_01
+# Timestamp: 2025-06-11 10:20:09
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_01_009
+# ==================================================
+
+package utils
+
+import (
+	"errors"
+	"fmt"
+	"log"
+	"time"
+
+	"github.com/golang-jwt/jwt/v4"
+)
+
+// JWT related errors
+var (
+	ErrInvalidToken      = errors.New("invalid token")
+	ErrExpiredToken      = errors.New("token has expired")
+	ErrInvalidSignMethod = errors.New("invalid signing method")
+	ErrMissingClaims     = errors.New("missing required claims")
+	ErrInvalidClaims     = errors.New("invalid claims")
+)
+
+// CustomClaims extends standard JWT claims with user-specific data
+type CustomClaims struct {
+	UserID   int64  `json:"user_id"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	jwt.RegisteredClaims
+}
+
+// JWTConfig holds JWT configuration
+type JWTConfig struct {
+	SecretKey     string
+	TokenDuration time.Duration
+}
+
+// DefaultJWTConfig returns a default JWT configuration
+func DefaultJWTConfig() JWTConfig {
+	return JWTConfig{
+		SecretKey:     "your-secret-key-change-in-production", // Should be loaded from environment or config
+		TokenDuration: 24 * time.Hour,                         // 24 hours by default
+	}
+}
+
+// GenerateToken creates a new JWT token for a user
+func GenerateToken(userID int64, username, email string, config JWTConfig) (string, error) {
+	log.Printf("Generating token for user: %d", userID) // Log user ID only, not PII
+
+	// Create the claims
+	claims := CustomClaims{
+		UserID:   userID,
+		Username: username,
+		Email:    email,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(config.TokenDuration)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			NotBefore: jwt.NewNumericDate(time.Now()),
+			Issuer:    "api",
+			Subject:   fmt.Sprintf("%d", userID),
+		},
+	}
+
+	// Create token with claims
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	// Generate encoded token
+	tokenString, err := token.SignedString([]byte(config.SecretKey))
+	if err != nil {
+		log.Printf("Error generating token: %v", err)
+		return "", fmt.Errorf("failed to sign token: %w", err)
+	}
+
+	log.Printf("Token generated successfully for user: %d", userID)
+	return tokenString, nil
+}
+
+// ValidateToken validates a JWT token and returns the claims
+func ValidateToken(tokenString string, config JWTConfig) (*CustomClaims, error) {
+	log.Println("Validating token")
+
+	// Parse the token
+	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
+		// Validate the signing method
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			log.Printf("Unexpected signing method: %v", token.Header["alg"])
+			return nil, ErrInvalidSignMethod
+		}
+		return []byte(config.SecretKey), nil
+	})
+
+	if err != nil {
+		if errors.Is(err, jwt.ErrTokenExpired) {
+			log.Println("Token validation failed: token expired")
+			return nil, ErrExpiredToken
+		}
+		log.Printf("Token validation failed: %v", err)
+		return nil, ErrInvalidToken
+	}
+
+	// Check if the token is valid
+	if !token.Valid {
+		log.Println("Token validation failed: invalid token")
+		return nil, ErrInvalidToken
+	}
+
+	// Extract claims
+	claims, ok := token.Claims.(*CustomClaims)
+	if !ok {
+		log.Println("Token validation failed: invalid claims type")
+		return nil, ErrInvalidClaims
+	}
+
+	// Validate required claims
+	if claims.UserID == 0 || claims.Username == "" || claims.Email == "" {
+		log.Println("Token validation failed: missing required claims")
+		return nil, ErrMissingClaims
+	}
+
+	log.Printf("Token validated successfully for user: %d", claims.UserID)
+	return claims, nil
+}
+
+// RefreshToken generates a new token with extended expiration
+func RefreshToken(tokenString string, config JWTConfig) (string, error) {
+	log.Println("Refreshing token")
+
+	// Validate the existing token
+	claims, err := ValidateToken(tokenString, config)
+	if err != nil {
+		// Allow refreshing expired tokens, but not invalid ones
+		if !errors.Is(err, ErrExpiredToken) {
+			log.Printf("Token refresh failed: %v", err)
+			return "", err
+		}
+		
+		// For expired tokens, we need to parse without validation
+		token, parseErr := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
+			return []byte(config.SecretKey), nil
+		})
+		
+		if parseErr != nil {
+			log.Printf("Failed to parse expired token: %v", parseErr)
+			return "", ErrInvalidToken
+		}
+		
+		var ok bool
+		claims, ok = token.Claims.(*CustomClaims)
+		if !ok {
+			log.Println("Token refresh failed: invalid claims type")
+			return "", ErrInvalidClaims
+		}
+	}
+
+	// Generate a new token with the same claims but extended expiration
+	return GenerateToken(claims.UserID, claims.Username, claims.Email, config)
+}
+
+// ExtractUserIDFromToken extracts the user ID from a token string
+func ExtractUserIDFromToken(tokenString string, config JWTConfig) (int64, error) {
+	claims, err := ValidateToken(tokenString, config)
+	if err != nil {
+		return 0, err
+	}
+	return claims.UserID, nil
+}
+
+// GetTokenFromHeader extracts the token from the Authorization header
+func GetTokenFromHeader(authHeader string) (string, error) {
+	if authHeader == "" {
+		return "", errors.New("authorization header is missing")
+	}
+
+	// Check if the header has the Bearer prefix
+	const prefix = "Bearer "
+	if len(authHeader) <= len(prefix) || authHeader[:len(prefix)] != prefix {
+		return "", errors.New("authorization header format must be Bearer {token}")
+	}
+
+	// Extract the token
+	token := authHeader[len(prefix):]
+	return token, nil
+}

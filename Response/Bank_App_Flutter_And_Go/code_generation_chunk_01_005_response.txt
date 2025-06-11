@@ -1,0 +1,324 @@
+# LLM Response - code_generation_chunk_01
+# Timestamp: 2025-06-11 10:18:01
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_01_005
+# ==================================================
+
+package models
+
+import (
+	"database/sql"
+	"errors"
+	"fmt"
+	"regexp"
+	"strings"
+	"time"
+
+	"golang.org/x/crypto/bcrypt"
+)
+
+// User represents a user in the system
+type User struct {
+	ID             int64     `json:"id"`
+	Email          string    `json:"email"`
+	Username       string    `json:"username"`
+	PasswordHash   string    `json:"-"` // Never expose password hash in JSON responses
+	FirstName      string    `json:"first_name"`
+	LastName       string    `json:"last_name"`
+	ProfilePicture string    `json:"profile_picture"`
+	Bio            string    `json:"bio"`
+	IsActive       bool      `json:"is_active"`
+	IsAdmin        bool      `json:"is_admin"`
+	CreatedAt      time.Time `json:"created_at"`
+	UpdatedAt      time.Time `json:"updated_at"`
+	LastLoginAt    time.Time `json:"last_login_at"`
+}
+
+// UserInput represents the data needed to create or update a user
+type UserInput struct {
+	Email          string `json:"email"`
+	Username       string `json:"username"`
+	Password       string `json:"password"`
+	FirstName      string `json:"first_name"`
+	LastName       string `json:"last_name"`
+	ProfilePicture string `json:"profile_picture"`
+	Bio            string `json:"bio"`
+}
+
+// Validate checks if the user input is valid
+func (ui *UserInput) Validate() error {
+	// Email validation
+	if ui.Email == "" {
+		return errors.New("email is required")
+	}
+	emailRegex := regexp.MustCompile(`^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$`)
+	if !emailRegex.MatchString(ui.Email) {
+		return errors.New("invalid email format")
+	}
+
+	// Username validation
+	if ui.Username == "" {
+		return errors.New("username is required")
+	}
+	if len(ui.Username) < 3 || len(ui.Username) > 30 {
+		return errors.New("username must be between 3 and 30 characters")
+	}
+	usernameRegex := regexp.MustCompile(`^[a-zA-Z0-9_]+$`)
+	if !usernameRegex.MatchString(ui.Username) {
+		return errors.New("username can only contain letters, numbers, and underscores")
+	}
+
+	// Password validation
+	if ui.Password == "" {
+		return errors.New("password is required")
+	}
+	if len(ui.Password) < 8 {
+		return errors.New("password must be at least 8 characters")
+	}
+
+	// Name validation
+	if ui.FirstName != "" && len(ui.FirstName) > 50 {
+		return errors.New("first name must be less than 50 characters")
+	}
+	if ui.LastName != "" && len(ui.LastName) > 50 {
+		return errors.New("last name must be less than 50 characters")
+	}
+
+	// Bio validation
+	if ui.Bio != "" && len(ui.Bio) > 500 {
+		return errors.New("bio must be less than 500 characters")
+	}
+
+	return nil
+}
+
+// SanitizeInput cleans and normalizes user input
+func (ui *UserInput) SanitizeInput() {
+	ui.Email = strings.TrimSpace(strings.ToLower(ui.Email))
+	ui.Username = strings.TrimSpace(ui.Username)
+	ui.FirstName = strings.TrimSpace(ui.FirstName)
+	ui.LastName = strings.TrimSpace(ui.LastName)
+	ui.Bio = strings.TrimSpace(ui.Bio)
+}
+
+// NewUser creates a new user from input
+func NewUser(input UserInput) (*User, error) {
+	// Validate input
+	if err := input.Validate(); err != nil {
+		return nil, err
+	}
+
+	// Sanitize input
+	input.SanitizeInput()
+
+	// Hash password
+	passwordHash, err := HashPassword(input.Password)
+	if err != nil {
+		return nil, fmt.Errorf("error hashing password: %w", err)
+	}
+
+	// Create user
+	now := time.Now()
+	user := &User{
+		Email:          input.Email,
+		Username:       input.Username,
+		PasswordHash:   passwordHash,
+		FirstName:      input.FirstName,
+		LastName:       input.LastName,
+		ProfilePicture: input.ProfilePicture,
+		Bio:            input.Bio,
+		IsActive:       true,
+		IsAdmin:        false,
+		CreatedAt:      now,
+		UpdatedAt:      now,
+	}
+
+	return user, nil
+}
+
+// UpdateUser updates an existing user with new input
+func (u *User) UpdateUser(input UserInput) error {
+	// Validate input
+	if err := input.Validate(); err != nil {
+		return err
+	}
+
+	// Sanitize input
+	input.SanitizeInput()
+
+	// Update fields
+	u.Email = input.Email
+	u.Username = input.Username
+	u.FirstName = input.FirstName
+	u.LastName = input.LastName
+	
+	if input.ProfilePicture != "" {
+		u.ProfilePicture = input.ProfilePicture
+	}
+	
+	if input.Bio != "" {
+		u.Bio = input.Bio
+	}
+	
+	// Update password if provided
+	if input.Password != "" {
+		passwordHash, err := HashPassword(input.Password)
+		if err != nil {
+			return fmt.Errorf("error hashing password: %w", err)
+		}
+		u.PasswordHash = passwordHash
+	}
+
+	u.UpdatedAt = time.Now()
+	return nil
+}
+
+// HashPassword creates a bcrypt hash of the password
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	if err != nil {
+		return "", err
+	}
+	return string(bytes), nil
+}
+
+// CheckPassword checks if the provided password is correct
+func (u *User) CheckPassword(password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(u.PasswordHash), []byte(password))
+	return err == nil
+}
+
+// UpdateLastLogin updates the last login timestamp
+func (u *User) UpdateLastLogin() {
+	u.LastLoginAt = time.Now()
+}
+
+// Deactivate sets the user as inactive
+func (u *User) Deactivate() {
+	u.IsActive = false
+	u.UpdatedAt = time.Now()
+}
+
+// Activate sets the user as active
+func (u *User) Activate() {
+	u.IsActive = true
+	u.UpdatedAt = time.Now()
+}
+
+// PromoteToAdmin gives the user admin privileges
+func (u *User) PromoteToAdmin() {
+	u.IsAdmin = true
+	u.UpdatedAt = time.Now()
+}
+
+// DemoteFromAdmin removes admin privileges
+func (u *User) DemoteFromAdmin() {
+	u.IsAdmin = false
+	u.UpdatedAt = time.Now()
+}
+
+// GetFullName returns the user's full name
+func (u *User) GetFullName() string {
+	if u.FirstName == "" && u.LastName == "" {
+		return u.Username
+	}
+	return strings.TrimSpace(fmt.Sprintf("%s %s", u.FirstName, u.LastName))
+}
+
+// ScanFromRow scans a database row into a User struct
+func (u *User) ScanFromRow(row *sql.Row) error {
+	var profilePicture, bio sql.NullString
+	var lastLoginAt sql.NullTime
+
+	err := row.Scan(
+		&u.ID,
+		&u.Email,
+		&u.Username,
+		&u.PasswordHash,
+		&u.FirstName,
+		&u.LastName,
+		&profilePicture,
+		&bio,
+		&u.IsActive,
+		&u.IsAdmin,
+		&u.CreatedAt,
+		&u.UpdatedAt,
+		&lastLoginAt,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	if profilePicture.Valid {
+		u.ProfilePicture = profilePicture.String
+	}
+	
+	if bio.Valid {
+		u.Bio = bio.String
+	}
+	
+	if lastLoginAt.Valid {
+		u.LastLoginAt = lastLoginAt.Time
+	}
+
+	return nil
+}
+
+// ScanFromRows scans a database row from Rows into a User struct
+func (u *User) ScanFromRows(rows *sql.Rows) error {
+	var profilePicture, bio sql.NullString
+	var lastLoginAt sql.NullTime
+
+	err := rows.Scan(
+		&u.ID,
+		&u.Email,
+		&u.Username,
+		&u.PasswordHash,
+		&u.FirstName,
+		&u.LastName,
+		&profilePicture,
+		&bio,
+		&u.IsActive,
+		&u.IsAdmin,
+		&u.CreatedAt,
+		&u.UpdatedAt,
+		&lastLoginAt,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	if profilePicture.Valid {
+		u.ProfilePicture = profilePicture.String
+	}
+	
+	if bio.Valid {
+		u.Bio = bio.String
+	}
+	
+	if lastLoginAt.Valid {
+		u.LastLoginAt = lastLoginAt.Time
+	}
+
+	return nil
+}
+
+// SafeUser returns a copy of the user with sensitive information removed
+func (u *User) SafeUser() map[string]interface{} {
+	return map[string]interface{}{
+		"id":              u.ID,
+		"email":           u.Email,
+		"username":        u.Username,
+		"first_name":      u.FirstName,
+		"last_name":       u.LastName,
+		"profile_picture": u.ProfilePicture,
+		"bio":             u.Bio,
+		"is_active":       u.IsActive,
+		"is_admin":        u.IsAdmin,
+		"created_at":      u.CreatedAt,
+		"updated_at":      u.UpdatedAt,
+		"last_login_at":   u.LastLoginAt,
+	}
+}

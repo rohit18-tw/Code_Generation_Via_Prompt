@@ -1,0 +1,138 @@
+# LLM Response - code_generation_chunk_02
+# Timestamp: 2025-06-11 10:20:46
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_02_011
+# ==================================================
+
+package middleware
+
+import (
+	"context"
+	"log"
+	"net/http"
+	"strings"
+
+	"github.com/golang-jwt/jwt/v4"
+
+	"backend/utils"
+)
+
+// contextKey is a custom type for context keys to avoid collisions
+type contextKey string
+
+// UserIDKey is the key used to store the user ID in the request context
+const UserIDKey contextKey = "userID"
+
+// AuthMiddleware is a middleware that validates JWT tokens and extracts user information
+func AuthMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Println("Processing request through auth middleware")
+
+		// Skip auth for certain paths (like login, register)
+		if isExemptPath(r.URL.Path) {
+			log.Printf("Skipping auth for exempt path: %s", r.URL.Path)
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		// Extract token from Authorization header
+		tokenString, err := extractTokenFromHeader(r)
+		if err != nil {
+			log.Printf("Failed to extract token: %v", err)
+			http.Error(w, "Unauthorized: Invalid or missing token", http.StatusUnauthorized)
+			return
+		}
+
+		// Validate the token
+		claims, err := validateToken(tokenString)
+		if err != nil {
+			log.Printf("Token validation failed: %v", err)
+			http.Error(w, "Unauthorized: Invalid token", http.StatusUnauthorized)
+			return
+		}
+
+		// Extract user ID from claims
+		userID, ok := claims["user_id"].(string)
+		if !ok {
+			log.Printf("Failed to extract user_id from token claims")
+			http.Error(w, "Unauthorized: Invalid token claims", http.StatusUnauthorized)
+			return
+		}
+
+		// Add user ID to request context
+		ctx := context.WithValue(r.Context(), UserIDKey, userID)
+		log.Printf("User authenticated: %s", maskPII(userID))
+
+		// Call the next handler with the updated context
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
+}
+
+// GetUserIDFromContext extracts the user ID from the request context
+func GetUserIDFromContext(ctx context.Context) (string, error) {
+	userID, ok := ctx.Value(UserIDKey).(string)
+	if !ok {
+		return "", errors.New("user ID not found in context")
+	}
+	return userID, nil
+}
+
+// isExemptPath checks if the given path is exempt from authentication
+func isExemptPath(path string) bool {
+	exemptPaths := []string{
+		"/api/auth/login",
+		"/api/auth/register",
+		"/api/health",
+		"/api/docs",
+	}
+
+	for _, exemptPath := range exemptPaths {
+		if strings.HasPrefix(path, exemptPath) {
+			return true
+		}
+	}
+	return false
+}
+
+// extractTokenFromHeader extracts the JWT token from the Authorization header
+func extractTokenFromHeader(r *http.Request) (string, error) {
+	return utils.ExtractTokenFromHeader(r)
+}
+
+// validateToken validates the JWT token and returns the claims
+func validateToken(tokenString string) (jwt.MapClaims, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		// Validate the signing method
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("unexpected signing method")
+		}
+		
+		// Return the secret key used for signing
+		return []byte(utils.GetJWTSecret()), nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if !token.Valid {
+		return nil, errors.New("invalid token")
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return nil, errors.New("invalid token claims")
+	}
+
+	return claims, nil
+}
+
+// maskPII masks personally identifiable information for logging
+func maskPII(data string) string {
+	if len(data) <= 4 {
+		return "****"
+	}
+	
+	// Keep first 2 and last 2 characters, mask the rest
+	return data[:2] + strings.Repeat("*", len(data)-4) + data[len(data)-2:]
+}

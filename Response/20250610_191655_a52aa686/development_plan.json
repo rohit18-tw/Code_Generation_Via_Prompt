@@ -1,0 +1,12 @@
+{
+  "error": "Could not parse structured plan from response",
+  "fallback": true,
+  "metadata": {
+    "generated_by": "claude_plan_generator",
+    "validation_approach": "minimal",
+    "validation_issues": [
+      "Could not parse structured plan from response"
+    ],
+    "has_files": false
+  }
+}

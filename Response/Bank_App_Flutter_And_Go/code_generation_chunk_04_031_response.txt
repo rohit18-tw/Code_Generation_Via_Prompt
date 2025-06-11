@@ -1,0 +1,58 @@
+# LLM Response - code_generation_chunk_04
+# Timestamp: 2025-06-11 10:32:58
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_04_031
+# ==================================================
+
+version: '3.8'
+
+services:
+  flutter_dev:
+    image: flutter:latest
+    container_name: flutter_dev
+    volumes:
+      - .:/app
+      - flutter_pub_cache:/root/.pub-cache
+    working_dir: /app
+    command: bash -c "flutter pub get && flutter run -d web-server --web-port=8080 --web-hostname=0.0.0.0"
+    ports:
+      - "8080:8080"
+    environment:
+      - FLUTTER_ROOT=/usr/local/flutter
+      - PUB_HOSTED_URL=https://pub.dartlang.org
+      - FLUTTER_STORAGE_BASE_URL=https://storage.googleapis.com
+    restart: unless-stopped
+    networks:
+      - flutter_network
+
+  api_mock:
+    image: node:alpine
+    container_name: api_mock
+    volumes:
+      - ./mock_api:/app
+    working_dir: /app
+    command: sh -c "npm install -g json-server && json-server --watch db.json --host 0.0.0.0 --port 3000"
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    networks:
+      - flutter_network
+
+  redis:
+    image: redis:alpine
+    container_name: flutter_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - flutter_network
+
+volumes:
+  flutter_pub_cache:
+  redis_data:
+
+networks:
+  flutter_network:
+    driver: bridge

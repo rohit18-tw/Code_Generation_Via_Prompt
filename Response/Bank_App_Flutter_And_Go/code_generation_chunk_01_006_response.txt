@@ -1,0 +1,423 @@
+# LLM Response - code_generation_chunk_01
+# Timestamp: 2025-06-11 10:18:45
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_01_006
+# ==================================================
+
+package models
+
+import (
+	"database/sql"
+	"errors"
+	"fmt"
+	"log"
+	"regexp"
+	"strings"
+	"time"
+)
+
+// AccountType represents the type of bank account
+type AccountType string
+
+// Account status constants
+const (
+	AccountStatusActive   = "active"
+	AccountStatusInactive = "inactive"
+	AccountStatusFrozen   = "frozen"
+	AccountStatusClosed   = "closed"
+)
+
+// Account type constants
+const (
+	AccountTypeChecking AccountType = "checking"
+	AccountTypeSavings  AccountType = "savings"
+	AccountTypeCredit   AccountType = "credit"
+	AccountTypeInvest   AccountType = "investment"
+)
+
+// Account represents a bank account in the system
+type Account struct {
+	ID            int64       `json:"id"`
+	UserID        int64       `json:"user_id"`
+	AccountNumber string      `json:"account_number"`
+	AccountType   AccountType `json:"account_type"`
+	Balance       float64     `json:"balance"`
+	Currency      string      `json:"currency"`
+	Status        string      `json:"status"`
+	CreatedAt     time.Time   `json:"created_at"`
+	UpdatedAt     time.Time   `json:"updated_at"`
+}
+
+// Validate performs validation on the account data
+func (a *Account) Validate() error {
+	// Check required fields
+	if a.UserID <= 0 {
+		return errors.New("user ID is required")
+	}
+
+	if a.AccountNumber == "" {
+		return errors.New("account number is required")
+	}
+
+	// Validate account number format (alphanumeric, 8-20 chars)
+	if !regexp.MustCompile(`^[a-zA-Z0-9]{8,20}$`).MatchString(a.AccountNumber) {
+		return errors.New("account number must be alphanumeric and between 8-20 characters")
+	}
+
+	// Validate account type
+	validTypes := []AccountType{AccountTypeChecking, AccountTypeSavings, AccountTypeCredit, AccountTypeInvest}
+	isValidType := false
+	for _, t := range validTypes {
+		if a.AccountType == t {
+			isValidType = true
+			break
+		}
+	}
+	if !isValidType {
+		return fmt.Errorf("invalid account type: %s", a.AccountType)
+	}
+
+	// Validate currency (3 uppercase letters)
+	if !regexp.MustCompile(`^[A-Z]{3}$`).MatchString(a.Currency) {
+		return errors.New("currency must be a 3-letter ISO code (e.g., USD)")
+	}
+
+	// Validate status
+	validStatuses := []string{AccountStatusActive, AccountStatusInactive, AccountStatusFrozen, AccountStatusClosed}
+	isValidStatus := false
+	for _, s := range validStatuses {
+		if a.Status == s {
+			isValidStatus = true
+			break
+		}
+	}
+	if !isValidStatus {
+		return fmt.Errorf("invalid account status: %s", a.Status)
+	}
+
+	return nil
+}
+
+// Create inserts a new account into the database
+func (a *Account) Create(db *sql.DB) error {
+	// Validate account data before insertion
+	if err := a.Validate(); err != nil {
+		log.Printf("Account validation failed: %v", err)
+		return err
+	}
+
+	// Set timestamps
+	now := time.Now()
+	a.CreatedAt = now
+	a.UpdatedAt = now
+
+	// Default status to active if not specified
+	if a.Status == "" {
+		a.Status = AccountStatusActive
+	}
+
+	// Insert account into database
+	query := `
+		INSERT INTO accounts (user_id, account_number, account_type, balance, currency, status, created_at, updated_at)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+		RETURNING id
+	`
+
+	// Mask PII in logs
+	maskedAccountNum := maskAccountNumber(a.AccountNumber)
+	log.Printf("Creating new account for user ID %d, account type: %s, masked account number: %s", 
+		a.UserID, a.AccountType, maskedAccountNum)
+
+	err := db.QueryRow(
+		query,
+		a.UserID,
+		a.AccountNumber,
+		a.AccountType,
+		a.Balance,
+		a.Currency,
+		a.Status,
+		a.CreatedAt,
+		a.UpdatedAt,
+	).Scan(&a.ID)
+
+	if err != nil {
+		log.Printf("Error creating account: %v", err)
+		return fmt.Errorf("failed to create account: %w", err)
+	}
+
+	log.Printf("Successfully created account ID %d for user ID %d", a.ID, a.UserID)
+	return nil
+}
+
+// GetByID retrieves an account by its ID
+func GetAccountByID(db *sql.DB, id int64) (*Account, error) {
+	log.Printf("Fetching account with ID %d", id)
+	
+	query := `
+		SELECT id, user_id, account_number, account_type, balance, currency, status, created_at, updated_at
+		FROM accounts
+		WHERE id = ?
+	`
+	
+	var account Account
+	err := db.QueryRow(query, id).Scan(
+		&account.ID,
+		&account.UserID,
+		&account.AccountNumber,
+		&account.AccountType,
+		&account.Balance,
+		&account.Currency,
+		&account.Status,
+		&account.CreatedAt,
+		&account.UpdatedAt,
+	)
+	
+	if err != nil {
+		if err == sql.ErrNoRows {
+			log.Printf("Account with ID %d not found", id)
+			return nil, fmt.Errorf("account with ID %d not found", id)
+		}
+		log.Printf("Error fetching account with ID %d: %v", id, err)
+		return nil, fmt.Errorf("failed to fetch account: %w", err)
+	}
+	
+	maskedAccountNum := maskAccountNumber(account.AccountNumber)
+	log.Printf("Successfully fetched account ID %d, masked account number: %s", account.ID, maskedAccountNum)
+	return &account, nil
+}
+
+// GetAccountsByUserID retrieves all accounts for a specific user
+func GetAccountsByUserID(db *sql.DB, userID int64) ([]*Account, error) {
+	log.Printf("Fetching accounts for user ID %d", userID)
+	
+	query := `
+		SELECT id, user_id, account_number, account_type, balance, currency, status, created_at, updated_at
+		FROM accounts
+		WHERE user_id = ?
+	`
+	
+	rows, err := db.Query(query, userID)
+	if err != nil {
+		log.Printf("Error querying accounts for user ID %d: %v", userID, err)
+		return nil, fmt.Errorf("failed to query accounts: %w", err)
+	}
+	defer rows.Close()
+	
+	var accounts []*Account
+	for rows.Next() {
+		var account Account
+		err := rows.Scan(
+			&account.ID,
+			&account.UserID,
+			&account.AccountNumber,
+			&account.AccountType,
+			&account.Balance,
+			&account.Currency,
+			&account.Status,
+			&account.CreatedAt,
+			&account.UpdatedAt,
+		)
+		if err != nil {
+			log.Printf("Error scanning account row: %v", err)
+			return nil, fmt.Errorf("failed to scan account row: %w", err)
+		}
+		accounts = append(accounts, &account)
+	}
+	
+	if err = rows.Err(); err != nil {
+		log.Printf("Error iterating account rows: %v", err)
+		return nil, fmt.Errorf("error iterating account rows: %w", err)
+	}
+	
+	log.Printf("Successfully fetched %d accounts for user ID %d", len(accounts), userID)
+	return accounts, nil
+}
+
+// Update updates an existing account in the database
+func (a *Account) Update(db *sql.DB) error {
+	// Validate account data before update
+	if err := a.Validate(); err != nil {
+		log.Printf("Account validation failed during update: %v", err)
+		return err
+	}
+	
+	// Update timestamp
+	a.UpdatedAt = time.Now()
+	
+	query := `
+		UPDATE accounts
+		SET user_id = ?, account_number = ?, account_type = ?, balance = ?, 
+		    currency = ?, status = ?, updated_at = ?
+		WHERE id = ?
+	`
+	
+	maskedAccountNum := maskAccountNumber(a.AccountNumber)
+	log.Printf("Updating account ID %d, masked account number: %s", a.ID, maskedAccountNum)
+	
+	result, err := db.Exec(
+		query,
+		a.UserID,
+		a.AccountNumber,
+		a.AccountType,
+		a.Balance,
+		a.Currency,
+		a.Status,
+		a.UpdatedAt,
+		a.ID,
+	)
+	
+	if err != nil {
+		log.Printf("Error updating account ID %d: %v", a.ID, err)
+		return fmt.Errorf("failed to update account: %w", err)
+	}
+	
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		log.Printf("Error getting rows affected: %v", err)
+		return fmt.Errorf("error getting rows affected: %w", err)
+	}
+	
+	if rowsAffected == 0 {
+		log.Printf("Account ID %d not found for update", a.ID)
+		return fmt.Errorf("account with ID %d not found", a.ID)
+	}
+	
+	log.Printf("Successfully updated account ID %d", a.ID)
+	return nil
+}
+
+// UpdateBalance updates only the balance of an account
+func (a *Account) UpdateBalance(db *sql.DB, newBalance float64) error {
+	// Update timestamp
+	a.UpdatedAt = time.Now()
+	a.Balance = newBalance
+	
+	query := `
+		UPDATE accounts
+		SET balance = ?, updated_at = ?
+		WHERE id = ?
+	`
+	
+	log.Printf("Updating balance for account ID %d", a.ID)
+	
+	result, err := db.Exec(query, a.Balance, a.UpdatedAt, a.ID)
+	if err != nil {
+		log.Printf("Error updating balance for account ID %d: %v", a.ID, err)
+		return fmt.Errorf("failed to update account balance: %w", err)
+	}
+	
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		log.Printf("Error getting rows affected: %v", err)
+		return fmt.Errorf("error getting rows affected: %w", err)
+	}
+	
+	if rowsAffected == 0 {
+		log.Printf("Account ID %d not found for balance update", a.ID)
+		return fmt.Errorf("account with ID %d not found", a.ID)
+	}
+	
+	log.Printf("Successfully updated balance for account ID %d", a.ID)
+	return nil
+}
+
+// Delete removes an account from the database
+func (a *Account) Delete(db *sql.DB) error {
+	query := `DELETE FROM accounts WHERE id = ?`
+	
+	log.Printf("Deleting account ID %d", a.ID)
+	
+	result, err := db.Exec(query, a.ID)
+	if err != nil {
+		log.Printf("Error deleting account ID %d: %v", a.ID, err)
+		return fmt.Errorf("failed to delete account: %w", err)
+	}
+	
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		log.Printf("Error getting rows affected: %v", err)
+		return fmt.Errorf("error getting rows affected: %w", err)
+	}
+	
+	if rowsAffected == 0 {
+		log.Printf("Account ID %d not found for deletion", a.ID)
+		return fmt.Errorf("account with ID %d not found", a.ID)
+	}
+	
+	log.Printf("Successfully deleted account ID %d", a.ID)
+	return nil
+}
+
+// ChangeStatus updates the status of an account
+func (a *Account) ChangeStatus(db *sql.DB, newStatus string) error {
+	// Validate the new status
+	validStatuses := []string{AccountStatusActive, AccountStatusInactive, AccountStatusFrozen, AccountStatusClosed}
+	isValidStatus := false
+	for _, s := range validStatuses {
+		if newStatus == s {
+			isValidStatus = true
+			break
+		}
+	}
+	
+	if !isValidStatus {
+		err := fmt.Errorf("invalid account status: %s", newStatus)
+		log.Printf("Status validation failed: %v", err)
+		return err
+	}
+	
+	// Update timestamp and status
+	a.UpdatedAt = time.Now()
+	a.Status = newStatus
+	
+	query := `
+		UPDATE accounts
+		SET status = ?, updated_at = ?
+		WHERE id = ?
+	`
+	
+	log.Printf("Changing status for account ID %d to %s", a.ID, newStatus)
+	
+	result, err := db.Exec(query, a.Status, a.UpdatedAt, a.ID)
+	if err != nil {
+		log.Printf("Error changing status for account ID %d: %v", a.ID, err)
+		return fmt.Errorf("failed to update account status: %w", err)
+	}
+	
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		log.Printf("Error getting rows affected: %v", err)
+		return fmt.Errorf("error getting rows affected: %w", err)
+	}
+	
+	if rowsAffected == 0 {
+		log.Printf("Account ID %d not found for status change", a.ID)
+		return fmt.Errorf("account with ID %d not found", a.ID)
+	}
+	
+	log.Printf("Successfully changed status for account ID %d to %s", a.ID, newStatus)
+	return nil
+}
+
+// IsActive checks if the account is active
+func (a *Account) IsActive() bool {
+	return a.Status == AccountStatusActive
+}
+
+// maskAccountNumber masks the account number for logging purposes
+func maskAccountNumber(accountNumber string) string {
+	if len(accountNumber) <= 4 {
+		return strings.Repeat("*", len(accountNumber))
+	}
+	
+	visiblePart := accountNumber[len(accountNumber)-4:]
+	maskedPart := strings.Repeat("*", len(accountNumber)-4)
+	return maskedPart + visiblePart
+}
+
+// GenerateAccountNumber creates a unique account number
+// This is a simplified implementation - in production, you'd want more sophisticated logic
+func GenerateAccountNumber() string {
+	timestamp := time.Now().UnixNano() / int64(time.Millisecond)
+	return fmt.Sprintf("ACC%d", timestamp)
+}

@@ -1,0 +1,260 @@
+# LLM Response - code_generation_chunk_03
+# Timestamp: 2025-06-11 10:27:58
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_023
+# ==================================================
+
+import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
+import '../models/account.dart';
+import '../utils/formatters.dart' show formatCurrency;
+
+/// A reusable widget for displaying account information in a card format.
+///
+/// This widget displays account details including account type, number,
+/// balance, and provides customization options for appearance and actions.
+class AccountCard extends StatelessWidget {
+  /// The account to display
+  final Account account;
+  
+  /// Optional callback when the card is tapped
+  final VoidCallback? onTap;
+  
+  /// Optional callback when the card is long pressed
+  final VoidCallback? onLongPress;
+  
+  /// Whether to show the account balance
+  final bool showBalance;
+  
+  /// Whether to show the account actions
+  final bool showActions;
+  
+  /// Custom elevation for the card
+  final double elevation;
+  
+  /// Logger instance for this widget
+  static final _logger = Logger('AccountCard');
+
+  /// Creates an account card widget.
+  ///
+  /// [account] is required to display account information.
+  /// [onTap] is called when the card is tapped.
+  /// [onLongPress] is called when the card is long pressed.
+  /// [showBalance] determines if the balance is displayed, defaults to true.
+  /// [showActions] determines if action buttons are displayed, defaults to true.
+  /// [elevation] sets the card elevation, defaults to 2.0.
+  const AccountCard({
+    Key? key,
+    required this.account,
+    this.onTap,
+    this.onLongPress,
+    this.showBalance = true,
+    this.showActions = true,
+    this.elevation = 2.0,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    _logger.fine('Building AccountCard for account: ${_maskAccountNumber(account.accountNumber)}');
+    
+    return Card(
+      elevation: elevation,
+      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        onLongPress: onLongPress,
+        borderRadius: BorderRadius.circular(12.0),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildAccountHeader(context),
+              const SizedBox(height: 12.0),
+              if (showBalance) _buildBalanceSection(context),
+              if (showActions) _buildActionButtons(context),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Builds the account header section with account type and number
+  Widget _buildAccountHeader(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            _getAccountTypeIcon(),
+            const SizedBox(width: 8.0),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _getAccountTypeString(),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4.0),
+                Text(
+                  _formatAccountNumber(account.accountNumber),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        Icon(
+          Icons.chevron_right,
+          color: Colors.grey[400],
+        ),
+      ],
+    );
+  }
+
+  /// Builds the balance section of the card
+  Widget _buildBalanceSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Available Balance',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Colors.grey[600],
+          ),
+        ),
+        const SizedBox(height: 4.0),
+        Text(
+          formatCurrency(account.balance),
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 16.0),
+      ],
+    );
+  }
+
+  /// Builds the action buttons section
+  Widget _buildActionButtons(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        _buildActionButton(context, Icons.sync_alt, 'Transfer'),
+        _buildActionButton(context, Icons.receipt_long, 'Statements'),
+        _buildActionButton(context, Icons.more_horiz, 'More'),
+      ],
+    );
+  }
+
+  /// Builds an individual action button
+  Widget _buildActionButton(BuildContext context, IconData icon, String label) {
+    return InkWell(
+      onTap: () {
+        _logger.info('Action button tapped: $label for account: ${_maskAccountNumber(account.accountNumber)}');
+        // Action button functionality would be implemented here
+      },
+      borderRadius: BorderRadius.circular(8.0),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Icon(icon, color: Theme.of(context).primaryColor),
+            const SizedBox(height: 4.0),
+            Text(
+              label,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Returns the appropriate icon for the account type
+  Widget _getAccountTypeIcon() {
+    IconData iconData;
+    Color iconColor;
+
+    switch (account.type) {
+      case AccountType.checking:
+        iconData = Icons.account_balance_wallet;
+        iconColor = Colors.blue;
+        break;
+      case AccountType.savings:
+        iconData = Icons.savings;
+        iconColor = Colors.green;
+        break;
+      case AccountType.investment:
+        iconData = Icons.trending_up;
+        iconColor = Colors.purple;
+        break;
+      case AccountType.credit:
+        iconData = Icons.credit_card;
+        iconColor = Colors.red;
+        break;
+      case AccountType.loan:
+        iconData = Icons.monetization_on;
+        iconColor = Colors.orange;
+        break;
+      default:
+        iconData = Icons.account_balance;
+        iconColor = Colors.grey;
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        color: iconColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: Icon(
+        iconData,
+        color: iconColor,
+        size: 24.0,
+      ),
+    );
+  }
+
+  /// Returns a user-friendly string for the account type
+  String _getAccountTypeString() {
+    switch (account.type) {
+      case AccountType.checking:
+        return 'Checking Account';
+      case AccountType.savings:
+        return 'Savings Account';
+      case AccountType.investment:
+        return 'Investment Account';
+      case AccountType.credit:
+        return 'Credit Card';
+      case AccountType.loan:
+        return 'Loan Account';
+      default:
+        return 'Account';
+    }
+  }
+
+  /// Formats the account number for display (showing only last 4 digits)
+  String _formatAccountNumber(String accountNumber) {
+    if (accountNumber.length <= 4) {
+      return accountNumber;
+    }
+    return '••••${accountNumber.substring(accountNumber.length - 4)}';
+  }
+
+  /// Masks the account number for logging purposes
+  String _maskAccountNumber(String accountNumber) {
+    if (accountNumber.length <= 4) {
+      return '****';
+    }
+    return '****${accountNumber.substring(accountNumber.length - 4)}';
+  }
+}

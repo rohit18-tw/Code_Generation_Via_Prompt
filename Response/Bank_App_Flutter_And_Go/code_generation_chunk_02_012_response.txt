@@ -1,0 +1,533 @@
+# LLM Response - code_generation_chunk_02
+# Timestamp: 2025-06-11 10:21:41
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_02_012
+# ==================================================
+
+package handlers
+
+import (
+	"encoding/json"
+	"errors"
+	"fmt"
+	"log"
+	"net/http"
+	"strings"
+	"time"
+
+	"github.com/your-org/your-app/backend/db"
+	"github.com/your-org/your-app/backend/models"
+	"github.com/your-org/your-app/backend/utils"
+	"golang.org/x/crypto/bcrypt"
+)
+
+// AuthHandler handles authentication related API requests
+type AuthHandler struct {
+	DB *db.Database
+}
+
+// NewAuthHandler creates a new instance of AuthHandler
+func NewAuthHandler(db *db.Database) *AuthHandler {
+	return &AuthHandler{
+		DB: db,
+	}
+}
+
+// LoginRequest represents the login request body
+type LoginRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+// RegisterRequest represents the registration request body
+type RegisterRequest struct {
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+// AuthResponse represents the authentication response
+type AuthResponse struct {
+	Token string       `json:"token"`
+	User  models.User  `json:"user"`
+}
+
+// Login handles user login
+func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
+	// Only allow POST method
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Parse request body
+	var req LoginRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		log.Printf("Error decoding login request: %v", err)
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	// Validate request
+	if req.Email == "" || req.Password == "" {
+		http.Error(w, "Email and password are required", http.StatusBadRequest)
+		return
+	}
+
+	// Find user by email
+	user, err := h.DB.GetUserByEmail(req.Email)
+	if err != nil {
+		if errors.Is(err, db.ErrUserNotFound) {
+			log.Printf("Login attempt with non-existent email: %s", maskEmail(req.Email))
+			http.Error(w, "Invalid email or password", http.StatusUnauthorized)
+			return
+		}
+		log.Printf("Database error during login: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Verify password
+	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.Password)); err != nil {
+		log.Printf("Failed login attempt for user: %s", maskEmail(req.Email))
+		http.Error(w, "Invalid email or password", http.StatusUnauthorized)
+		return
+	}
+
+	// Generate JWT token
+	token, err := utils.GenerateJWT(user.ID, user.Email, user.Username)
+	if err != nil {
+		log.Printf("Error generating JWT: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Update last login time
+	now := time.Now()
+	user.LastLoginAt = &now
+	if err := h.DB.UpdateUser(user); err != nil {
+		log.Printf("Error updating last login time: %v", err)
+		// Continue despite error - non-critical
+	}
+
+	// Prepare response
+	resp := AuthResponse{
+		Token: token,
+		User:  user,
+	}
+
+	// Send response
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(resp); err != nil {
+		log.Printf("Error encoding response: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	log.Printf("User logged in successfully: %s", maskEmail(req.Email))
+}
+
+// Register handles user registration
+func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
+	// Only allow POST method
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Parse request body
+	var req RegisterRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		log.Printf("Error decoding register request: %v", err)
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	// Validate request
+	if req.Email == "" || req.Password == "" || req.Username == "" {
+		http.Error(w, "Email, username, and password are required", http.StatusBadRequest)
+		return
+	}
+
+	// Validate email format
+	if !isValidEmail(req.Email) {
+		http.Error(w, "Invalid email format", http.StatusBadRequest)
+		return
+	}
+
+	// Validate password strength
+	if !isStrongPassword(req.Password) {
+		http.Error(w, "Password must be at least 8 characters and include uppercase, lowercase, number, and special character", http.StatusBadRequest)
+		return
+	}
+
+	// Check if email already exists
+	_, err := h.DB.GetUserByEmail(req.Email)
+	if err == nil {
+		log.Printf("Registration attempt with existing email: %s", maskEmail(req.Email))
+		http.Error(w, "Email already registered", http.StatusConflict)
+		return
+	} else if !errors.Is(err, db.ErrUserNotFound) {
+		log.Printf("Database error during registration: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Check if username already exists
+	_, err = h.DB.GetUserByUsername(req.Username)
+	if err == nil {
+		log.Printf("Registration attempt with existing username: %s", req.Username)
+		http.Error(w, "Username already taken", http.StatusConflict)
+		return
+	} else if !errors.Is(err, db.ErrUserNotFound) {
+		log.Printf("Database error during registration: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Hash password
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	if err != nil {
+		log.Printf("Error hashing password: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Create user
+	now := time.Now()
+	user := models.User{
+		Email:        req.Email,
+		Username:     req.Username,
+		PasswordHash: string(hashedPassword),
+		CreatedAt:    now,
+		UpdatedAt:    now,
+	}
+
+	// Save user to database
+	if err := h.DB.CreateUser(&user); err != nil {
+		log.Printf("Error creating user: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Generate JWT token
+	token, err := utils.GenerateJWT(user.ID, user.Email, user.Username)
+	if err != nil {
+		log.Printf("Error generating JWT: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Prepare response
+	resp := AuthResponse{
+		Token: token,
+		User:  user,
+	}
+
+	// Send response
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	if err := json.NewEncoder(w).Encode(resp); err != nil {
+		log.Printf("Error encoding response: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	log.Printf("User registered successfully: %s", maskEmail(req.Email))
+}
+
+// Logout handles user logout
+func (h *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {
+	// Only allow POST method
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Extract token from Authorization header
+	token, err := utils.ExtractTokenFromHeader(r)
+	if err != nil {
+		// No need to return error, just log it
+		log.Printf("Error extracting token during logout: %v", err)
+	} else {
+		// Add token to blacklist with a reasonable expiry
+		// Note: In a production environment, you might want to use Redis or similar for token blacklisting
+		if err := utils.BlacklistToken(token); err != nil {
+			log.Printf("Error blacklisting token: %v", err)
+		}
+	}
+
+	// Return success regardless of token extraction
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(`{"message":"Logged out successfully"}`))
+}
+
+// VerifyToken handles token verification
+func (h *AuthHandler) VerifyToken(w http.ResponseWriter, r *http.Request) {
+	// Only allow GET method
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Extract token from Authorization header
+	token, err := utils.ExtractTokenFromHeader(r)
+	if err != nil {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	// Verify token
+	claims, err := utils.VerifyJWT(token)
+	if err != nil {
+		log.Printf("Token verification failed: %v", err)
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	// Check if token is blacklisted
+	if utils.IsTokenBlacklisted(token) {
+		log.Printf("Attempt to use blacklisted token")
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	// Get user from database
+	userID, ok := claims["user_id"].(float64)
+	if !ok {
+		log.Printf("Invalid user_id in token claims")
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	user, err := h.DB.GetUserByID(int64(userID))
+	if err != nil {
+		log.Printf("Error fetching user during token verification: %v", err)
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	// Prepare response
+	resp := struct {
+		Valid bool        `json:"valid"`
+		User  models.User `json:"user"`
+	}{
+		Valid: true,
+		User:  user,
+	}
+
+	// Send response
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(resp); err != nil {
+		log.Printf("Error encoding response: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+}
+
+// ResetPasswordRequest represents the password reset request
+type ResetPasswordRequest struct {
+	Email string `json:"email"`
+}
+
+// RequestPasswordReset initiates the password reset process
+func (h *AuthHandler) RequestPasswordReset(w http.ResponseWriter, r *http.Request) {
+	// Only allow POST method
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Parse request body
+	var req ResetPasswordRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		log.Printf("Error decoding reset password request: %v", err)
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	// Validate request
+	if req.Email == "" {
+		http.Error(w, "Email is required", http.StatusBadRequest)
+		return
+	}
+
+	// Check if user exists
+	user, err := h.DB.GetUserByEmail(req.Email)
+	if err != nil {
+		if errors.Is(err, db.ErrUserNotFound) {
+			// Don't reveal that the email doesn't exist
+			log.Printf("Password reset requested for non-existent email: %s", maskEmail(req.Email))
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte(`{"message":"If your email is registered, you will receive a password reset link"}`))
+			return
+		}
+		log.Printf("Database error during password reset request: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Generate reset token
+	resetToken, err := utils.GeneratePasswordResetToken(user.ID)
+	if err != nil {
+		log.Printf("Error generating reset token: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Store reset token in database
+	if err := h.DB.StorePasswordResetToken(user.ID, resetToken, time.Now().Add(24*time.Hour)); err != nil {
+		log.Printf("Error storing reset token: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// In a real application, send email with reset link
+	// For this example, we'll just log it
+	resetLink := fmt.Sprintf("https://your-app.com/reset-password?token=%s", resetToken)
+	log.Printf("Password reset link for %s: %s", maskEmail(req.Email), resetLink)
+
+	// Return success
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(`{"message":"If your email is registered, you will receive a password reset link"}`))
+}
+
+// ChangePasswordRequest represents the change password request
+type ChangePasswordRequest struct {
+	ResetToken   string `json:"reset_token"`
+	NewPassword  string `json:"new_password"`
+	ConfirmPassword string `json:"confirm_password"`
+}
+
+// ResetPassword completes the password reset process
+func (h *AuthHandler) ResetPassword(w http.ResponseWriter, r *http.Request) {
+	// Only allow POST method
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Parse request body
+	var req ChangePasswordRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		log.Printf("Error decoding change password request: %v", err)
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	// Validate request
+	if req.ResetToken == "" || req.NewPassword == "" || req.ConfirmPassword == "" {
+		http.Error(w, "Reset token and new password are required", http.StatusBadRequest)
+		return
+	}
+
+	// Check if passwords match
+	if req.NewPassword != req.ConfirmPassword {
+		http.Error(w, "Passwords do not match", http.StatusBadRequest)
+		return
+	}
+
+	// Validate password strength
+	if !isStrongPassword(req.NewPassword) {
+		http.Error(w, "Password must be at least 8 characters and include uppercase, lowercase, number, and special character", http.StatusBadRequest)
+		return
+	}
+
+	// Verify reset token
+	userID, err := h.DB.VerifyPasswordResetToken(req.ResetToken)
+	if err != nil {
+		log.Printf("Invalid or expired reset token: %v", err)
+		http.Error(w, "Invalid or expired reset token", http.StatusBadRequest)
+		return
+	}
+
+	// Get user
+	user, err := h.DB.GetUserByID(userID)
+	if err != nil {
+		log.Printf("Error fetching user during password reset: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Hash new password
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.NewPassword), bcrypt.DefaultCost)
+	if err != nil {
+		log.Printf("Error hashing password: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Update user password
+	user.PasswordHash = string(hashedPassword)
+	user.UpdatedAt = time.Now()
+	if err := h.DB.UpdateUser(user); err != nil {
+		log.Printf("Error updating user password: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Invalidate reset token
+	if err := h.DB.InvalidatePasswordResetToken(req.ResetToken); err != nil {
+		log.Printf("Error invalidating reset token: %v", err)
+		// Non-critical error, continue
+	}
+
+	// Return success
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(`{"message":"Password has been reset successfully"}`))
+	
+	log.Printf("Password reset successful for user ID: %d", userID)
+}
+
+// Helper functions
+
+// maskEmail masks the email for logging purposes
+func maskEmail(email string) string {
+	parts := strings.Split(email, "@")
+	if len(parts) != 2 {
+		return "invalid-email"
+	}
+	
+	username := parts[0]
+	domain := parts[1]
+	
+	if len(username) <= 2 {
+		return username[0:1] + "***@" + domain
+	}
+	
+	return username[0:2] + "***@" + domain
+}
+
+// isValidEmail validates email format
+func isValidEmail(email string) bool {
+	// Simple validation - in production, consider using a more robust regex
+	return strings.Contains(email, "@") && strings.Contains(email, ".")
+}
+
+// isStrongPassword checks if the password meets strength requirements
+func isStrongPassword(password string) bool {
+	if len(password) < 8 {
+		return false
+	}
+	
+	hasUpper := false
+	hasLower := false
+	hasNumber := false
+	hasSpecial := false
+	
+	for _, char := range password {
+		switch {
+		case 'A' <= char && char <= 'Z':
+			hasUpper = true
+		case 'a' <= char && char <= 'z':
+			hasLower = true
+		case '0' <= char && char <= '9':
+			hasNumber = true
+		case strings.ContainsRune("!@#$%^&*()-_=+[]{}|;:,.<>?", char):
+			hasSpecial = true
+		}
+	}
+	
+	return hasUpper && hasLower && hasNumber && hasSpecial
+}

@@ -1,0 +1,113 @@
+# LLM Response - code_generation_chunk_03
+# Timestamp: 2025-06-11 10:25:44
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_020
+# ==================================================
+
+import 'package:flutter/material.dart';
+
+/// Constants used throughout the application
+class AppConstants {
+  // Private constructor to prevent instantiation
+  AppConstants._();
+
+  /// App information
+  static const String appName = 'MyApp';
+  static const String appVersion = '1.0.0';
+  static const String appBuildNumber = '1';
+  
+  /// API endpoints and configuration
+  static const String baseApiUrl = 'https://api.example.com';
+  static const int apiTimeoutSeconds = 30;
+  static const int maxRetryAttempts = 3;
+  
+  /// Authentication constants
+  static const String authTokenKey = 'auth_token';
+  static const String refreshTokenKey = 'refresh_token';
+  static const int tokenExpiryBufferMinutes = 5;
+  
+  /// Local storage keys
+  static const String userPrefsKey = 'user_preferences';
+  static const String themePreferenceKey = 'theme_preference';
+  static const String languagePreferenceKey = 'language_preference';
+  static const String onboardingCompletedKey = 'onboarding_completed';
+  static const String lastSyncTimeKey = 'last_sync_time';
+  
+  /// Default values
+  static const Locale defaultLocale = Locale('en', 'US');
+  static const ThemeMode defaultThemeMode = ThemeMode.system;
+  
+  /// Timeouts and durations
+  static const Duration splashScreenDuration = Duration(seconds: 2);
+  static const Duration snackBarDuration = Duration(seconds: 4);
+  static const Duration animationDuration = Duration(milliseconds: 300);
+  static const Duration debounceTime = Duration(milliseconds: 500);
+  static const Duration cacheTTL = Duration(hours: 24);
+  
+  /// UI constants
+  static const double defaultPadding = 16.0;
+  static const double smallPadding = 8.0;
+  static const double largePadding = 24.0;
+  static const double defaultBorderRadius = 8.0;
+  static const double defaultElevation = 2.0;
+  static const double defaultIconSize = 24.0;
+  
+  /// Pagination
+  static const int defaultPageSize = 20;
+  static const int searchResultsLimit = 50;
+  
+  /// Validation constants
+  static const int minPasswordLength = 8;
+  static const int maxPasswordLength = 32;
+  static const int minUsernameLength = 3;
+  static const int maxUsernameLength = 20;
+  static const String emailRegexPattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+  static const String passwordRegexPattern = r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$';
+  
+  /// Error messages
+  static const String genericErrorMessage = 'Something went wrong. Please try again later.';
+  static const String networkErrorMessage = 'Network error. Please check your connection.';
+  static const String authErrorMessage = 'Authentication failed. Please log in again.';
+  static const String validationErrorMessage = 'Please check your input and try again.';
+  static const String timeoutErrorMessage = 'Request timed out. Please try again.';
+  
+  /// Logging
+  static const String logTag = 'MyApp';
+  static const bool enableVerboseLogging = false;
+  
+  /// PII masking patterns for logging
+  static final RegExp emailMaskingPattern = RegExp(r'([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})');
+  static final RegExp phoneMaskingPattern = RegExp(r'\d{10,}');
+  static final RegExp creditCardMaskingPattern = RegExp(r'\d{13,16}');
+  
+  /// Mask PII data for logging
+  static String maskPII(String text) {
+    if (text == null || text.isEmpty) return '';
+    
+    // Mask email addresses
+    String masked = text.replaceAllMapped(emailMaskingPattern, 
+        (match) => '${match.group(1)?.substring(0, 1)}***@${match.group(2)}');
+    
+    // Mask phone numbers
+    masked = masked.replaceAllMapped(phoneMaskingPattern, 
+        (match) => '***-***-${match.group(0)?.substring(match.group(0)!.length - 4)}');
+    
+    // Mask credit card numbers
+    masked = masked.replaceAllMapped(creditCardMaskingPattern, 
+        (match) => '****-****-****-${match.group(0)?.substring(match.group(0)!.length - 4)}');
+    
+    return masked;
+  }
+  
+  /// Feature flags
+  static const bool enableDarkMode = true;
+  static const bool enablePushNotifications = true;
+  static const bool enableAnalytics = true;
+  static const bool enableCrashReporting = true;
+  static const bool enableOfflineMode = true;
+  
+  /// Asset paths
+  static const String logoPath = 'assets/images/logo.png';
+  static const String placeholderImagePath = 'assets/images/placeholder.png';
+  static const String errorImagePath = 'assets/images/error.png';
+}

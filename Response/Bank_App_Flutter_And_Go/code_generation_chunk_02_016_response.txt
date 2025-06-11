@@ -1,0 +1,104 @@
+# LLM Response - code_generation_chunk_02
+# Timestamp: 2025-06-11 10:24:08
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_02_016
+# ==================================================
+
+package main
+
+import (
+	"context"
+	"flag"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
+	"github.com/joho/godotenv"
+
+	"backend/api"
+	"backend/config"
+	"backend/db"
+)
+
+func main() {
+	// Load environment variables from .env file if it exists
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found, using environment variables")
+	}
+
+	// Define command line flags
+	configPath := flag.String("config", "config.json", "Path to configuration file")
+	flag.Parse()
+
+	// Initialize logger
+	log.SetOutput(os.Stdout)
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	log.Println("Starting application...")
+
+	// Load configuration
+	cfg, err := config.LoadConfig(*configPath)
+	if err != nil {
+		log.Fatalf("Failed to load configuration: %v", err)
+	}
+	log.Printf("Configuration loaded from %s", *configPath)
+
+	// Initialize database connection
+	database, err := db.InitDB(cfg.Database)
+	if err != nil {
+		log.Fatalf("Failed to initialize database: %v", err)
+	}
+	log.Println("Database connection established")
+
+	// Run database migrations
+	if err := db.RunMigrations(database, cfg.Database); err != nil {
+		log.Fatalf("Failed to run database migrations: %v", err)
+	}
+	log.Println("Database migrations completed")
+
+	// Initialize router
+	router := api.NewRouter(database)
+	log.Println("Router initialized")
+
+	// Create HTTP server
+	server := &http.Server{
+		Addr:         cfg.Server.GetServerAddress(),
+		Handler:      router.GetHandler(),
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 15 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+
+	// Start server in a goroutine
+	go func() {
+		log.Printf("Server starting on %s", server.Addr)
+		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("Failed to start server: %v", err)
+		}
+	}()
+
+	// Set up graceful shutdown
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	log.Println("Shutting down server...")
+
+	// Create a deadline for server shutdown
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	// Attempt graceful shutdown
+	if err := server.Shutdown(ctx); err != nil {
+		log.Fatalf("Server forced to shutdown: %v", err)
+	}
+
+	// Close database connection
+	if err := database.Close(); err != nil {
+		log.Printf("Error closing database connection: %v", err)
+	}
+
+	log.Println("Server exited gracefully")
+}

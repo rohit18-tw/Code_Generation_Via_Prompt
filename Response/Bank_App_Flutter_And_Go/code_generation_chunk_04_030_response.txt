@@ -1,0 +1,176 @@
+# LLM Response - code_generation_chunk_04
+# Timestamp: 2025-06-11 10:32:52
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_04_030
+# ==================================================
+
+import 'dart:async';
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:logging/logging.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:frontend/screens/splash_screen.dart';
+import 'package:frontend/screens/login_screen.dart';
+import 'package:frontend/screens/home_screen.dart';
+import 'package:frontend/screens/account_screen.dart';
+import 'package:frontend/screens/transaction_screen.dart';
+import 'package:frontend/screens/settings_screen.dart';
+
+import 'package:frontend/providers/auth_provider.dart';
+import 'package:frontend/providers/account_provider.dart';
+import 'package:frontend/providers/transaction_provider.dart';
+import 'package:frontend/providers/theme_provider.dart';
+
+import 'package:frontend/utils/constants.dart';
+import 'package:frontend/utils/error_handler.dart';
+import 'package:frontend/utils/logger.dart';
+
+/// The main entry point for the application.
+void main() async {
+  // Ensure Flutter is initialized
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize logging
+  await _initializeLogging();
+
+  // Set preferred orientations
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
+  // Initialize error handling
+  _initializeErrorHandling();
+
+  // Initialize shared preferences
+  final sharedPreferences = await SharedPreferences.getInstance();
+
+  // Run the app
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => ThemeProvider(sharedPreferences),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => AuthProvider(sharedPreferences),
+        ),
+        ChangeNotifierProxyProvider<AuthProvider, AccountProvider>(
+          create: (_) => AccountProvider(),
+          update: (_, authProvider, previousAccountProvider) =>
+              previousAccountProvider!..update(authProvider),
+        ),
+        ChangeNotifierProxyProvider<AuthProvider, TransactionProvider>(
+          create: (_) => TransactionProvider(),
+          update: (_, authProvider, previousTransactionProvider) =>
+              previousTransactionProvider!..update(authProvider),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
+}
+
+/// Initializes the application's logging system.
+Future<void> _initializeLogging() async {
+  // Configure the logging level based on build mode
+  if (kReleaseMode) {
+    Logger.root.level = Level.INFO;
+  } else {
+    Logger.root.level = Level.ALL;
+  }
+
+  // Set up the logger
+  Logger.root.onRecord.listen((record) {
+    // Mask PII in logs
+    final message = LoggerUtils.maskPII(record.message);
+    
+    if (kDebugMode) {
+      print('${record.level.name}: ${record.time}: $message');
+    }
+    
+    // In a production app, you might want to send logs to a service
+    // LoggingService.send(record);
+  });
+
+  final log = Logger('main');
+  log.info('Logging initialized');
+}
+
+/// Initializes global error handling for the application.
+void _initializeErrorHandling() {
+  final log = Logger('error_handler');
+
+  // Handle Flutter errors
+  FlutterError.onError = (FlutterErrorDetails details) {
+    log.severe('Flutter error: ${details.exception}', details.exception, details.stack);
+    ErrorHandler.reportError(details.exception, details.stack);
+  };
+
+  // Handle Dart errors
+  PlatformDispatcher.instance.onError = (error, stack) {
+    log.severe('Uncaught exception: $error', error, stack);
+    ErrorHandler.reportError(error, stack);
+    return true;
+  };
+}
+
+/// The root widget of the application.
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final log = Logger('MyApp');
+    log.fine('Building MyApp');
+
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, _) {
+        return MaterialApp(
+          title: AppConstants.appName,
+          debugShowCheckedModeBanner: false,
+          theme: themeProvider.lightTheme,
+          darkTheme: themeProvider.darkTheme,
+          themeMode: themeProvider.themeMode,
+          initialRoute: '/',
+          routes: {
+            '/': (context) => const SplashScreen(),
+            '/login': (context) => const LoginScreen(),
+            '/home': (context) => const HomeScreen(),
+            '/account': (context) => const AccountScreen(),
+            '/transaction': (context) => const TransactionScreen(),
+            '/settings': (context) => const SettingsScreen(),
+          },
+          navigatorObservers: [
+            // Add route observer for analytics
+            RouteObserver<PageRoute>(),
+          ],
+          builder: (context, child) {
+            // Apply global styling or error handling here
+            return MediaQuery(
+              // Set default text scaling
+              data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+              child: child!,
+            );
+          },
+          onGenerateRoute: (settings) {
+            log.fine('Navigating to: ${settings.name}');
+            // Handle dynamic routes here
+            return null;
+          },
+          onUnknownRoute: (settings) {
+            log.warning('Unknown route: ${settings.name}');
+            // Handle unknown routes here
+            return MaterialPageRoute(
+              builder: (context) => const HomeScreen(),
+            );
+          },
+        );
+      },
+    );
+  }
+}

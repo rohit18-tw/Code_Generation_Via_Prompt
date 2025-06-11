@@ -38,26 +38,11 @@ class PlanGenerator:
         # Create the human prompt with the processed input
         human_prompt = self._create_human_prompt(processed_input)
 
-        # Handle image content if present
-        if processed_input["type"] == "image":
-            # For image inputs, we need to use the vision capabilities
-            messages = [
-                SystemMessage(content=system_prompt),
-                HumanMessage(content=[
-                    {"type": "text", "text": human_prompt},
-                    {
-                        "type": "image_url",
-                        "image_url": {
-                            "url": f"data:image/jpeg;base64,{processed_input['content']}"
-                        }
-                    }
-                ])
-            ]
-        else:
-            messages = [
-                SystemMessage(content=system_prompt),
-                HumanMessage(content=human_prompt)
-            ]
+        # Create messages for LLM
+        messages = [
+            SystemMessage(content=system_prompt),
+            HumanMessage(content=human_prompt)
+        ]
 
         # Log the interaction
         self.logger.log_workflow("🎯 Sending plan generation request to Claude...")
@@ -65,16 +50,15 @@ class PlanGenerator:
         response = self.llm.invoke(messages)
 
         # Log the LLM interaction
-        prompt_text = human_prompt if processed_input["type"] != "image" else f"{human_prompt}\n[Image content included]"
         response_file = self.logger.log_llm_interaction(
             step="plan_generation",
-            prompt=prompt_text,
+            prompt=human_prompt,
             response=response.content,
             model=self.config.DEFAULT_MODEL,
             metadata={
                 "input_type": processed_input["type"],
                 "source": processed_input.get("metadata", {}).get("source", "unknown"),
-                "prompt_length": len(prompt_text),
+                "prompt_length": len(human_prompt),
                 "response_length": len(response.content)
             }
         )
@@ -122,68 +106,36 @@ class PlanGenerator:
         "directories": ["auto-generate based on language/framework conventions"],
         "files": [
             {
-                "path": "auto-generate appropriate paths",
-                "purpose": "Clear description of file purpose",
-                "type": "auto-detect appropriate types based on language/framework",
+                "path": "file path",
+                "purpose": "file purpose",
                 "priority": "high|medium|low",
-                "dependencies": ["list of file dependencies"],
-                "relevant_constraints": {
-                    "technology_restrictions": ["extracted from requirements"],
-                    "architectural_requirements": ["extracted from requirements"],
-                    "business_logic_requirements": ["extracted from requirements"]
-                }
+                "dependencies": ["dependencies"]
             }
         ]
     },
     "code_generation": {
-        "order": ["auto-determine optimal generation order based on dependencies"],
+        "order": ["generation order"],
         "file_templates": {
-            "auto-generate": "templates appropriate for the detected language/framework"
+            "type": "template"
         },
         "implementation_strategy": "file_by_file|batch|incremental",
-        "validation_rules": ["language-appropriate validation rules"]
+        "validation_rules": ["validation rules"]
     },
     "dependencies": {
-        "runtime": ["language/framework appropriate dependencies"],
-        "development": ["language/framework appropriate dev tools"],
-        "build": ["appropriate build tools for the language/framework"]
-    },
-    "steps": [
-        {
-            "step": 1,
-            "title": "Descriptive step title",
-            "files": ["files for this step"],
-            "file_types": ["types for this step"],
-            "estimated_time": "realistic time estimate",
-            "validation": ["appropriate validation for this step"]
-        }
-    ],
-    "constraints": {
-        "technology_restrictions": ["extracted from requirements"],
-        "architectural_requirements": ["extracted from requirements"],
-        "business_logic_requirements": ["extracted from requirements"],
-        "security_requirements": ["extracted from requirements"],
-        "testing_requirements": ["extracted from requirements"],
-        "performance_requirements": ["extracted from requirements"],
-        "coding_standards": ["language/framework appropriate standards"],
-        "best_practices": ["language/framework appropriate practices"]
+        "runtime": ["dependencies"],
+        "development": ["dev tools"],
+        "build": ["build tools"]
     }
 }
 ```
 
 **CRITICAL INSTRUCTIONS**:
 1. **Auto-detect everything**: Analyze the requirements to determine the appropriate language, framework, file types, and structure
-2. **Language-specific file types**: Use appropriate file types for the detected language:
-   - Java: main|config|entity|service|controller|repository|test
-   - Python: main|config|model|service|view|util|test
-   - JavaScript/TypeScript: main|component|page|hook|service|util|test
-   - Dart/Flutter: main|widget|screen|model|service|provider|util|test
-   - Go: main|handler|service|model|middleware|util|test
-   - C#: main|controller|service|model|repository|config|test
-3. **Framework-appropriate structure**: Generate directory structures that follow the framework's conventions
-4. **Language-appropriate dependencies**: Use the correct package managers and dependencies for the detected language
-5. **Realistic generation order**: Order files based on actual dependency requirements
-6. **Extract ALL constraints**: Pull every constraint, requirement, and restriction from the user's input
+2. **Use language/framework conventions**: Apply your knowledge of software architecture to determine the most appropriate file types, directory structures, and naming conventions for the detected language and framework
+3. **Framework-appropriate structure**: Generate directory structures that follow industry best practices and framework conventions
+4. **Language-appropriate dependencies**: Use the correct package managers, dependencies, and build tools for the detected language/framework ecosystem
+5. **Realistic generation order**: Order files based on actual dependency requirements and compilation/build dependencies
+6. **Apply architectural patterns**: Use appropriate design patterns and architectural styles for the detected technology stack
 
 Focus on essential information only. Generate complete code without skipping implementations."""
 
@@ -204,7 +156,6 @@ Focus on essential information only. Generate complete code without skipping imp
 """
 
 
-
         # Add additional context for specific input types
         if input_type == "folder":
             files_info = processed_input.get("files", [])
@@ -212,205 +163,75 @@ Focus on essential information only. Generate complete code without skipping imp
             prompt += f"- Total files processed: {len(files_info)}\n"
             prompt += f"- File types found: {', '.join(set(f['metadata'].get('extension', 'unknown') for f in files_info))}\n"
 
-        elif input_type == "image":
-            prompt += f"\n**Image Details**:\n"
-            prompt += f"- Format: {metadata.get('format', 'unknown')}\n"
-            prompt += f"- Dimensions: {metadata.get('dimensions', 'unknown')}\n"
-
         prompt += "\nPlease provide a comprehensive development plan in the specified JSON format."
         prompt += "\n\nCRITICAL REQUIREMENTS:"
-        prompt += "\n1. Extract ALL constraints from requirements into a global 'constraints' section"
-        prompt += "\n2. For EVERY file in the structure, add a 'relevant_constraints' field with ONLY applicable constraints"
-        prompt += "\n3. Apply intelligent filtering:"
-        prompt += "\n   - Mock services: NO database/PostgreSQL constraints, YES mock-specific constraints"
-        prompt += "\n   - Main services: YES database constraints, NO mock-specific constraints"
-        prompt += "\n   - Test files: YES testing constraints, NO production constraints"
-        prompt += "\n4. Technology restrictions (No Lombok, No Mockito) apply to ALL relevant files"
-        prompt += "\n5. Return ONLY valid JSON"
-        prompt += "\n\nEXAMPLE: {\"path\": \"MockService.java\", \"relevant_constraints\": {\"technology\": [\"No Lombok\"], \"mock_specific\": [\"Use in-memory storage\"]}}"
+        prompt += "\n1. **Extract all requirements**: Identify every requirement, preference, and guideline from the provided content"
+        prompt += "\n2. **Use your expertise**: Apply software engineering best practices and architectural knowledge to determine appropriate structure"
+        prompt += "\n3. **Be comprehensive**: Consider both explicit requirements and implied best practices for the chosen technology stack"
+        prompt += "\n4. Return ONLY valid JSON"
 
         return prompt
 
     def _validate_and_structure_plan(self, plan_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Validate and ensure the plan has all required fields with quality scoring."""
-        required_sections = [
-            "project", "structure", "code_generation", "dependencies", "steps", "constraints"
-        ]
+        """Minimal validation - only check basic completeness and let Claude's structure drive the rest."""
 
-        # Ensure all required sections exist
-        for section in required_sections:
-            if section not in plan_data:
-                plan_data[section] = {}
+        # Basic completeness checks
+        validation_issues = []
 
-        # Enhanced constraint validation
-        plan_data["constraints"] = self._validate_constraints_section(plan_data.get("constraints", {}))
+        # Check if plan has some basic structure
+        if not plan_data:
+            validation_issues.append("Plan is empty")
+            return self._create_fallback_plan("Empty plan data")
 
-        # Validate project structure
-        validation_results = self._validate_project_structure(plan_data)
+        # Check for some form of file structure (flexible field names)
+        files_found = False
+        structure_keys = ["structure", "files", "components", "modules"]  # Common possible names
+        for key in structure_keys:
+            if key in plan_data:
+                structure_data = plan_data[key]
+                if isinstance(structure_data, dict):
+                    # Look for files in various possible field names
+                    file_keys = ["files", "components", "modules", "items"]
+                    for file_key in file_keys:
+                        if file_key in structure_data and structure_data[file_key]:
+                            files_found = True
+                            break
+                elif isinstance(structure_data, list) and structure_data:
+                    files_found = True
+                break
 
-        # Calculate plan quality score
-        quality_score = self._calculate_plan_quality_score(plan_data, validation_results)
+        if not files_found:
+            validation_issues.append("No files or components found in plan")
 
-        # Add enhanced metadata
+        # Add minimal metadata (no complex scoring)
         plan_data["metadata"] = {
             "generated_by": "claude_plan_generator",
-            "total_steps": len(plan_data.get("steps", [])),
-            "total_files": len(plan_data.get("structure", {}).get("files", [])),
-            "quality_score": quality_score,
-            "validation_results": validation_results,
-            "completeness_score": self._calculate_completeness_score(plan_data),
-            "constraint_coverage": self._calculate_constraint_coverage(plan_data)
+            "validation_approach": "minimal",
+            "validation_issues": validation_issues,
+            "has_files": files_found
         }
+
+        # Log validation results
+        if validation_issues:
+            for issue in validation_issues:
+                self.logger.log_workflow(f"⚠️ Validation issue: {issue}")
+        else:
+            self.logger.log_workflow("✅ Plan passed minimal validation")
 
         return plan_data
 
-    def _validate_constraints_section(self, constraints: Dict[str, Any]) -> Dict[str, Any]:
-        """Enhanced constraint validation with categorization."""
-        validated_constraints = {
-            "technology_restrictions": constraints.get("technology_restrictions", []),
-            "architectural_requirements": constraints.get("architectural_requirements", []),
-            "business_logic_requirements": constraints.get("business_logic_requirements", []),
-            "security_requirements": constraints.get("security_requirements", []),
-            "testing_requirements": constraints.get("testing_requirements", []),
-            "performance_requirements": constraints.get("performance_requirements", []),
-            "coding_standards": constraints.get("coding_standards", []),
-            "best_practices": constraints.get("best_practices", []),
-            "other_constraints": constraints.get("other_constraints", [])
-        }
-
-        # Validate constraint format and content
-        for category, constraint_list in validated_constraints.items():
-            if not isinstance(constraint_list, list):
-                validated_constraints[category] = []
-                self.logger.log_workflow(f"⚠️ Fixed invalid constraint format for {category}")
-
-        return validated_constraints
-
-    def _validate_project_structure(self, plan_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Validate project structure and dependencies."""
-        validation_results = {
-            "structure_issues": [],
-            "dependency_issues": [],
-            "constraint_issues": [],
-            "completeness_issues": []
-        }
-
-        structure = plan_data.get("structure", {})
-        files = structure.get("files", [])
-
-        # Check for missing essential files
-        project_type = plan_data.get("project", {}).get("type", "")
-        language = plan_data.get("project", {}).get("language", "")
-
-        essential_files = self._get_essential_files(project_type, language)
-        existing_file_types = {f.get("type", "") for f in files}
-
-        for essential_type in essential_files:
-            if essential_type not in existing_file_types:
-                validation_results["completeness_issues"].append(f"Missing essential file type: {essential_type}")
-
-        # Validate file dependencies
-        for file_info in files:
-            file_deps = file_info.get("dependencies", [])
-            for dep in file_deps:
-                if not any(dep in f.get("path", "") for f in files):
-                    validation_results["dependency_issues"].append(f"Unresolved dependency: {dep} for {file_info.get('path', '')}")
-
-        # Validate constraint application
-        for file_info in files:
-            relevant_constraints = file_info.get("relevant_constraints", {})
-            if not relevant_constraints:
-                validation_results["constraint_issues"].append(f"No constraints applied to: {file_info.get('path', '')}")
-
-        return validation_results
-
-    def _get_essential_files(self, project_type: str, language: str) -> List[str]:
-        """Get essential file types for project type and language."""
-        essential_files = {
-            "web_app": {
-                "java": ["config", "entity", "repository", "service", "controller", "test"],
-                "python": ["config", "model", "service", "controller", "test"],
-                "javascript": ["config", "model", "service", "controller", "test"]
-            },
-            "api": {
-                "java": ["config", "entity", "repository", "service", "controller", "test"],
-                "go": ["config", "model", "service", "handler", "test"],
-                "python": ["config", "model", "service", "router", "test"]
-            },
-            "cli_tool": {
-                "java": ["main", "service", "test"],
-                "go": ["main", "service", "test"],
-                "python": ["main", "service", "test"]
+    def _create_fallback_plan(self, error_reason: str) -> Dict[str, Any]:
+        """Create a minimal fallback plan when validation fails."""
+        return {
+            "error": error_reason,
+            "fallback": True,
+            "metadata": {
+                "generated_by": "claude_plan_generator",
+                "validation_approach": "minimal",
+                "validation_issues": [error_reason],
+                "has_files": False
             }
         }
-
-        return essential_files.get(project_type, {}).get(language, ["main", "test"])
-
-    def _calculate_plan_quality_score(self, plan_data: Dict[str, Any], validation_results: Dict[str, Any]) -> float:
-        """Calculate overall plan quality score (0.0 to 1.0)."""
-        score = 1.0
-
-        # Deduct for validation issues
-        total_issues = sum(len(issues) for issues in validation_results.values())
-        if total_issues > 0:
-            score -= min(0.3, total_issues * 0.05)  # Max 30% deduction for issues
-
-        # Check completeness
-        structure = plan_data.get("structure", {})
-        files = structure.get("files", [])
-
-        if not files:
-            score -= 0.4  # Major deduction for no files
-        elif len(files) < 3:
-            score -= 0.2  # Minor deduction for too few files
-
-        # Check constraint coverage
-        constraints = plan_data.get("constraints", {})
-        constraint_count = sum(len(v) if isinstance(v, list) else 0 for v in constraints.values())
-        if constraint_count == 0:
-            score -= 0.2  # Deduction for no constraints
-
-        # Check dependency mapping
-        files_with_deps = sum(1 for f in files if f.get("dependencies"))
-        if files_with_deps == 0 and len(files) > 1:
-            score -= 0.1  # Minor deduction for no dependencies in multi-file project
-
-        return max(0.0, min(1.0, score))
-
-    def _calculate_completeness_score(self, plan_data: Dict[str, Any]) -> float:
-        """Calculate plan completeness score."""
-        required_fields = {
-            "project": ["title", "language", "type", "framework"],
-            "structure": ["directories", "files"],
-            "code_generation": ["order", "file_templates"],
-            "dependencies": ["runtime"],
-            "constraints": []
-        }
-
-        total_fields = 0
-        present_fields = 0
-
-        for section, fields in required_fields.items():
-            section_data = plan_data.get(section, {})
-            total_fields += len(fields) if fields else 1
-
-            if not fields:  # Just check if section exists
-                present_fields += 1 if section_data else 0
-            else:
-                for field in fields:
-                    if field in section_data and section_data[field]:
-                        present_fields += 1
-
-        return present_fields / total_fields if total_fields > 0 else 0.0
-
-    def _calculate_constraint_coverage(self, plan_data: Dict[str, Any]) -> float:
-        """Calculate how well constraints are applied to files."""
-        files = plan_data.get("structure", {}).get("files", [])
-        if not files:
-            return 0.0
-
-        files_with_constraints = sum(1 for f in files if f.get("relevant_constraints"))
-        return files_with_constraints / len(files)
 
     def _extract_plan_from_text(self, text: str) -> Dict[str, Any]:
         """Fallback method to extract plan from text response."""
@@ -425,57 +246,65 @@ Focus on essential information only. Generate complete code without skipping imp
             except json.JSONDecodeError:
                 pass
 
-        # If no valid JSON found, create a basic plan structure
-        return {
-            "project": {
-                "title": "Generated Project",
-                "description": "Project based on provided requirements",
-                "language": "python",
-                "type": "other",
-                "framework": "unknown"
-            },
-            "structure": {"directories": [], "files": []},
-            "code_generation": {
-                "order": ["main"],
-                "file_templates": {},
-                "implementation_strategy": "file_by_file",
-                "validation_rules": ["syntax_check"]
-            },
-            "dependencies": {"runtime": [], "development": [], "build": []},
-            "steps": [],
-            "error": "Could not parse structured plan from response"
-        }
+        # If no valid JSON found, return minimal fallback
+        return self._create_fallback_plan("Could not parse structured plan from response")
 
     def format_plan_summary(self, plan: Dict[str, Any]) -> str:
-        """Format the plan into a readable summary."""
-        project = plan.get("project", {})
-        steps = plan.get("steps", [])
-        code_gen = plan.get("code_generation", {})
+        """Format the plan into a readable summary - adaptive to any plan structure."""
+
+        # Handle fallback plans
+        if plan.get("fallback") or plan.get("error"):
+            return f"⚠️ **Plan Generation Issue**: {plan.get('error', 'Unknown error')}"
+
+        # Try to extract project info from various possible structures
+        project = plan.get("project", plan.get("application", plan.get("software", {})))
+
+        # Try to find files in various possible locations
+        files = []
+        structure = plan.get("structure", plan.get("files", plan.get("components", {})))
+        if isinstance(structure, dict):
+            files = structure.get("files", structure.get("components", structure.get("modules", [])))
+        elif isinstance(structure, list):
+            files = structure
+
+        # Try to find code generation info
+        code_gen = plan.get("code_generation", plan.get("implementation", plan.get("build", {})))
 
         summary = f"""
-🎯 **Enhanced Project Plan Generated**
+🎯 **Project Plan Generated**
 
-**Title**: {project.get('title', 'Unknown Project')}
-**Language**: {project.get('language', 'Not specified')}
-**Framework**: {project.get('framework', 'Not specified')}
-**Type**: {project.get('type', 'Unknown')}
+**Title**: {project.get('title', project.get('name', 'Generated Project'))}
+**Language**: {project.get('language', project.get('tech', 'Not specified'))}
+**Framework**: {project.get('framework', project.get('stack', 'Not specified'))}
+**Type**: {project.get('type', project.get('category', 'Unknown'))}
 
-**Code Generation Strategy**: {code_gen.get('implementation_strategy', 'file_by_file')}
-**Generation Order**: {' → '.join(code_gen.get('order', []))}
-**Implementation Steps**: {len(steps)} steps planned
-**Files to Create**: {plan.get('metadata', {}).get('total_files', 'Unknown')} files
+**Files to Create**: {len(files)} files
+**Strategy**: {code_gen.get('implementation_strategy', code_gen.get('approach', 'Adaptive'))}
+**Generation Order**: {' → '.join(code_gen.get('order', [])[:5])}{'...' if len(code_gen.get('order', [])) > 5 else ''}
 
-Ready for enhanced code generation!
+Ready for code generation!
 """
         return summary.strip()
 
     def generate_tree_structure(self, plan: Dict[str, Any]) -> str:
-        """Generate a tree-like visualization of the project structure."""
+        """Generate a tree-like visualization of the project structure - adaptive to any plan format."""
         from pathlib import Path
 
-        structure = plan.get("structure", {})
-        directories = structure.get("directories", [])
-        files = structure.get("files", [])
+        # Handle fallback plans
+        if plan.get("fallback") or plan.get("error"):
+            return f"⚠️ No structure available: {plan.get('error', 'Plan generation failed')}"
+
+        # Try to find structure in various possible locations
+        structure = plan.get("structure", plan.get("files", plan.get("components", {})))
+
+        directories = []
+        files = []
+
+        if isinstance(structure, dict):
+            directories = structure.get("directories", structure.get("folders", []))
+            files = structure.get("files", structure.get("components", structure.get("modules", [])))
+        elif isinstance(structure, list):
+            files = structure
 
         # Create a tree structure
         tree = {}
@@ -489,9 +318,18 @@ Ready for enhanced code generation!
                     current[part] = {}
                 current = current[part]
 
-        # Add all files
+        # Add all files - handle different possible file formats
         for file_info in files:
-            file_path = file_info["path"]
+            # Try to extract file path from various possible field names
+            file_path = None
+            if isinstance(file_info, dict):
+                file_path = file_info.get("path", file_info.get("file", file_info.get("name", file_info.get("location"))))
+            elif isinstance(file_info, str):
+                file_path = file_info
+
+            if not file_path:
+                continue  # Skip files without identifiable paths
+
             parts = file_path.split("/")
             current = tree
 
@@ -537,18 +375,45 @@ Ready for enhanced code generation!
         return "\n".join(tree_lines)
 
     def analyze_code_generation_plan(self, plan: Dict[str, Any]) -> Dict[str, Any]:
-        """Analyze the enhanced plan structure for code generation insights."""
-        code_gen = plan.get("code_generation", {})
-        structure = plan.get("structure", {})
-        files = structure.get("files", [])
+        """Analyze the plan structure for code generation insights - adaptive to any format."""
 
-        # Group files by type
+        # Handle fallback plans
+        if plan.get("fallback") or plan.get("error"):
+            return {
+                "total_files": 0,
+                "files_by_type": {},
+                "files_by_priority": {"high": [], "medium": [], "low": []},
+                "generation_order": [],
+                "ordered_files": [],
+                "implementation_strategy": "unknown",
+                "validation_rules": [],
+                "file_templates": {},
+                "error": plan.get("error", "Plan generation failed")
+            }
+
+        # Try to find code generation info in various locations
+        code_gen = plan.get("code_generation", plan.get("implementation", plan.get("build", {})))
+
+        # Try to find files in various locations
+        structure = plan.get("structure", plan.get("files", plan.get("components", {})))
+        files = []
+        if isinstance(structure, dict):
+            files = structure.get("files", structure.get("components", structure.get("modules", [])))
+        elif isinstance(structure, list):
+            files = structure
+
+        # Group files by type - handle different file formats
         files_by_type = {}
         files_by_priority = {"high": [], "medium": [], "low": []}
 
         for file_info in files:
-            file_type = file_info.get("type", "unknown")
-            priority = file_info.get("priority", "medium")
+            # Handle both dict and string file formats
+            if isinstance(file_info, dict):
+                file_type = file_info.get("type", file_info.get("category", file_info.get("kind", "unknown")))
+                priority = file_info.get("priority", file_info.get("importance", "medium"))
+            else:
+                file_type = "unknown"
+                priority = "medium"
 
             if file_type not in files_by_type:
                 files_by_type[file_type] = []

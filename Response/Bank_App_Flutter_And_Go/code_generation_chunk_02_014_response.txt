@@ -1,0 +1,770 @@
+# LLM Response - code_generation_chunk_02
+# Timestamp: 2025-06-11 10:23:44
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_02_014
+# ==================================================
+
+package handlers
+
+import (
+	"database/sql"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"log"
+	"net/http"
+	"strconv"
+	"time"
+
+	"github.com/your-username/your-project/backend/db"
+	"github.com/your-username/your-project/backend/models"
+)
+
+// TransactionHandler handles all transaction-related API requests
+type TransactionHandler struct {
+	DB *sql.DB
+}
+
+// NewTransactionHandler creates a new transaction handler with the given database connection
+func NewTransactionHandler(db *sql.DB) *TransactionHandler {
+	return &TransactionHandler{DB: db}
+}
+
+// CreateTransaction handles the creation of a new transaction
+func (h *TransactionHandler) CreateTransaction(w http.ResponseWriter, r *http.Request) {
+	// Only allow POST method
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Parse request body
+	var transaction models.Transaction
+	err := json.NewDecoder(r.Body).Decode(&transaction)
+	if err != nil {
+		log.Printf("Error decoding transaction request: %v", err)
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	// Validate transaction data
+	if transaction.AccountID <= 0 {
+		http.Error(w, "Invalid account ID", http.StatusBadRequest)
+		return
+	}
+
+	if transaction.Amount <= 0 {
+		http.Error(w, "Transaction amount must be positive", http.StatusBadRequest)
+		return
+	}
+
+	// Set transaction timestamp
+	transaction.Timestamp = time.Now()
+
+	// Begin transaction
+	tx, err := h.DB.Begin()
+	if err != nil {
+		log.Printf("Error beginning database transaction: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+	}()
+
+	// Check if source account exists and has sufficient funds
+	var sourceAccount models.Account
+	err = tx.QueryRow("SELECT id, balance, status FROM accounts WHERE id = ?", transaction.AccountID).Scan(
+		&sourceAccount.ID, &sourceAccount.Balance, &sourceAccount.Status)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			http.Error(w, "Source account not found", http.StatusNotFound)
+		} else {
+			log.Printf("Error querying source account: %v", err)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+		}
+		return
+	}
+
+	// Check if account is active
+	if sourceAccount.Status != string(models.AccountStatusActive) {
+		http.Error(w, "Source account is not active", http.StatusBadRequest)
+		return
+	}
+
+	// Process based on transaction type
+	switch transaction.Type {
+	case models.TransactionTypeDeposit:
+		// For deposits, update source account balance
+		_, err = tx.Exec("UPDATE accounts SET balance = balance + ? WHERE id = ?",
+			transaction.Amount, transaction.AccountID)
+		if err != nil {
+			log.Printf("Error updating source account balance: %v", err)
+			http.Error(w, "Failed to process deposit", http.StatusInternalServerError)
+			return
+		}
+		transaction.Status = models.TransactionStatusCompleted
+
+	case models.TransactionTypeWithdrawal:
+		// Check if source account has sufficient funds
+		if sourceAccount.Balance < transaction.Amount {
+			transaction.Status = models.TransactionStatusFailed
+			transaction.Description = fmt.Sprintf("%s: Insufficient funds", transaction.Description)
+		} else {
+			// Update source account balance
+			_, err = tx.Exec("UPDATE accounts SET balance = balance - ? WHERE id = ?",
+				transaction.Amount, transaction.AccountID)
+			if err != nil {
+				log.Printf("Error updating source account balance: %v", err)
+				http.Error(w, "Failed to process withdrawal", http.StatusInternalServerError)
+				return
+			}
+			transaction.Status = models.TransactionStatusCompleted
+		}
+
+	case models.TransactionTypeTransfer:
+		// For transfers, we need a destination account
+		if !transaction.DestAccountID.Valid {
+			http.Error(w, "Destination account ID is required for transfers", http.StatusBadRequest)
+			return
+		}
+
+		// Check if source account has sufficient funds
+		if sourceAccount.Balance < transaction.Amount {
+			transaction.Status = models.TransactionStatusFailed
+			transaction.Description = fmt.Sprintf("%s: Insufficient funds", transaction.Description)
+		} else {
+			// Check if destination account exists
+			var destAccount models.Account
+			err = tx.QueryRow("SELECT id, status FROM accounts WHERE id = ?", transaction.DestAccountID.Int64).Scan(
+				&destAccount.ID, &destAccount.Status)
+			if err != nil {
+				if errors.Is(err, sql.ErrNoRows) {
+					http.Error(w, "Destination account not found", http.StatusNotFound)
+				} else {
+					log.Printf("Error querying destination account: %v", err)
+					http.Error(w, "Internal server error", http.StatusInternalServerError)
+				}
+				return
+			}
+
+			// Check if destination account is active
+			if destAccount.Status != string(models.AccountStatusActive) {
+				http.Error(w, "Destination account is not active", http.StatusBadRequest)
+				return
+			}
+
+			// Update source account balance
+			_, err = tx.Exec("UPDATE accounts SET balance = balance - ? WHERE id = ?",
+				transaction.Amount, transaction.AccountID)
+			if err != nil {
+				log.Printf("Error updating source account balance: %v", err)
+				http.Error(w, "Failed to process transfer", http.StatusInternalServerError)
+				return
+			}
+
+			// Update destination account balance
+			_, err = tx.Exec("UPDATE accounts SET balance = balance + ? WHERE id = ?",
+				transaction.Amount, transaction.DestAccountID.Int64)
+			if err != nil {
+				log.Printf("Error updating destination account balance: %v", err)
+				http.Error(w, "Failed to process transfer", http.StatusInternalServerError)
+				return
+			}
+
+			transaction.Status = models.TransactionStatusCompleted
+		}
+
+	default:
+		http.Error(w, "Invalid transaction type", http.StatusBadRequest)
+		return
+	}
+
+	// Insert transaction record
+	result, err := tx.Exec(
+		"INSERT INTO transactions (account_id, dest_account_id, amount, type, description, status, timestamp, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+		transaction.AccountID,
+		transaction.DestAccountID,
+		transaction.Amount,
+		transaction.Type,
+		transaction.Description,
+		transaction.Status,
+		transaction.Timestamp,
+		transaction.Category,
+	)
+	if err != nil {
+		log.Printf("Error inserting transaction: %v", err)
+		http.Error(w, "Failed to save transaction", http.StatusInternalServerError)
+		return
+	}
+
+	// Get the ID of the newly inserted transaction
+	transactionID, err := result.LastInsertId()
+	if err != nil {
+		log.Printf("Error getting transaction ID: %v", err)
+		http.Error(w, "Failed to get transaction ID", http.StatusInternalServerError)
+		return
+	}
+	transaction.ID = transactionID
+
+	// Commit the transaction
+	err = tx.Commit()
+	if err != nil {
+		log.Printf("Error committing transaction: %v", err)
+		http.Error(w, "Failed to complete transaction", http.StatusInternalServerError)
+		return
+	}
+
+	// Return the created transaction
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	if err := json.NewEncoder(w).Encode(transaction); err != nil {
+		log.Printf("Error encoding response: %v", err)
+	}
+}
+
+// GetTransaction retrieves a transaction by ID
+func (h *TransactionHandler) GetTransaction(w http.ResponseWriter, r *http.Request) {
+	// Only allow GET method
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Extract transaction ID from URL
+	idStr := r.URL.Query().Get("id")
+	if idStr == "" {
+		http.Error(w, "Transaction ID is required", http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid transaction ID", http.StatusBadRequest)
+		return
+	}
+
+	// Query the transaction
+	var transaction models.Transaction
+	var destAccountID sql.NullInt64
+	var timestamp time.Time
+
+	err = h.DB.QueryRow(
+		"SELECT id, account_id, dest_account_id, amount, type, description, status, timestamp, category FROM transactions WHERE id = ?",
+		id,
+	).Scan(
+		&transaction.ID,
+		&transaction.AccountID,
+		&destAccountID,
+		&transaction.Amount,
+		&transaction.Type,
+		&transaction.Description,
+		&transaction.Status,
+		&timestamp,
+		&transaction.Category,
+	)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			http.Error(w, "Transaction not found", http.StatusNotFound)
+		} else {
+			log.Printf("Error querying transaction: %v", err)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+		}
+		return
+	}
+
+	transaction.DestAccountID = destAccountID
+	transaction.Timestamp = timestamp
+
+	// Return the transaction
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(transaction); err != nil {
+		log.Printf("Error encoding response: %v", err)
+	}
+}
+
+// GetAccountTransactions retrieves all transactions for a specific account
+func (h *TransactionHandler) GetAccountTransactions(w http.ResponseWriter, r *http.Request) {
+	// Only allow GET method
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Extract account ID from URL
+	accountIDStr := r.URL.Query().Get("account_id")
+	if accountIDStr == "" {
+		http.Error(w, "Account ID is required", http.StatusBadRequest)
+		return
+	}
+
+	accountID, err := strconv.ParseInt(accountIDStr, 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid account ID", http.StatusBadRequest)
+		return
+	}
+
+	// Extract optional limit and offset parameters
+	limitStr := r.URL.Query().Get("limit")
+	offsetStr := r.URL.Query().Get("offset")
+
+	limit := 50 // Default limit
+	if limitStr != "" {
+		parsedLimit, err := strconv.Atoi(limitStr)
+		if err == nil && parsedLimit > 0 {
+			limit = parsedLimit
+		}
+	}
+
+	offset := 0 // Default offset
+	if offsetStr != "" {
+		parsedOffset, err := strconv.Atoi(offsetStr)
+		if err == nil && parsedOffset >= 0 {
+			offset = parsedOffset
+		}
+	}
+
+	// Query transactions for the account
+	rows, err := h.DB.Query(
+		`SELECT id, account_id, dest_account_id, amount, type, description, status, timestamp, category 
+		FROM transactions 
+		WHERE account_id = ? OR dest_account_id = ? 
+		ORDER BY timestamp DESC 
+		LIMIT ? OFFSET ?`,
+		accountID, accountID, limit, offset,
+	)
+	if err != nil {
+		log.Printf("Error querying account transactions: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	transactions := []models.Transaction{}
+	for rows.Next() {
+		var transaction models.Transaction
+		var destAccountID sql.NullInt64
+		var timestamp time.Time
+
+		err := rows.Scan(
+			&transaction.ID,
+			&transaction.AccountID,
+			&destAccountID,
+			&transaction.Amount,
+			&transaction.Type,
+			&transaction.Description,
+			&transaction.Status,
+			&timestamp,
+			&transaction.Category,
+		)
+		if err != nil {
+			log.Printf("Error scanning transaction row: %v", err)
+			continue
+		}
+
+		transaction.DestAccountID = destAccountID
+		transaction.Timestamp = timestamp
+
+		transactions = append(transactions, transaction)
+	}
+
+	if err = rows.Err(); err != nil {
+		log.Printf("Error iterating transaction rows: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Return the transactions
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(transactions); err != nil {
+		log.Printf("Error encoding response: %v", err)
+	}
+}
+
+// GetUserTransactions retrieves all transactions for a specific user across all their accounts
+func (h *TransactionHandler) GetUserTransactions(w http.ResponseWriter, r *http.Request) {
+	// Only allow GET method
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Extract user ID from URL
+	userIDStr := r.URL.Query().Get("user_id")
+	if userIDStr == "" {
+		http.Error(w, "User ID is required", http.StatusBadRequest)
+		return
+	}
+
+	userID, err := strconv.ParseInt(userIDStr, 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		return
+	}
+
+	// Extract optional limit and offset parameters
+	limitStr := r.URL.Query().Get("limit")
+	offsetStr := r.URL.Query().Get("offset")
+
+	limit := 50 // Default limit
+	if limitStr != "" {
+		parsedLimit, err := strconv.Atoi(limitStr)
+		if err == nil && parsedLimit > 0 {
+			limit = parsedLimit
+		}
+	}
+
+	offset := 0 // Default offset
+	if offsetStr != "" {
+		parsedOffset, err := strconv.Atoi(offsetStr)
+		if err == nil && parsedOffset >= 0 {
+			offset = parsedOffset
+		}
+	}
+
+	// Query transactions for all accounts owned by the user
+	rows, err := h.DB.Query(
+		`SELECT t.id, t.account_id, t.dest_account_id, t.amount, t.type, t.description, t.status, t.timestamp, t.category 
+		FROM transactions t
+		JOIN accounts a ON t.account_id = a.id OR t.dest_account_id = a.id
+		WHERE a.user_id = ?
+		GROUP BY t.id
+		ORDER BY t.timestamp DESC 
+		LIMIT ? OFFSET ?`,
+		userID, limit, offset,
+	)
+	if err != nil {
+		log.Printf("Error querying user transactions: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	transactions := []models.Transaction{}
+	for rows.Next() {
+		var transaction models.Transaction
+		var destAccountID sql.NullInt64
+		var timestamp time.Time
+
+		err := rows.Scan(
+			&transaction.ID,
+			&transaction.AccountID,
+			&destAccountID,
+			&transaction.Amount,
+			&transaction.Type,
+			&transaction.Description,
+			&transaction.Status,
+			&timestamp,
+			&transaction.Category,
+		)
+		if err != nil {
+			log.Printf("Error scanning transaction row: %v", err)
+			continue
+		}
+
+		transaction.DestAccountID = destAccountID
+		transaction.Timestamp = timestamp
+
+		transactions = append(transactions, transaction)
+	}
+
+	if err = rows.Err(); err != nil {
+		log.Printf("Error iterating transaction rows: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Return the transactions
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(transactions); err != nil {
+		log.Printf("Error encoding response: %v", err)
+	}
+}
+
+// UpdateTransactionCategory updates the category of a transaction
+func (h *TransactionHandler) UpdateTransactionCategory(w http.ResponseWriter, r *http.Request) {
+	// Only allow PUT method
+	if r.Method != http.MethodPut {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Parse request body
+	var request struct {
+		ID       int64  `json:"id"`
+		Category string `json:"category"`
+	}
+
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		log.Printf("Error decoding request: %v", err)
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	// Validate request
+	if request.ID <= 0 {
+		http.Error(w, "Invalid transaction ID", http.StatusBadRequest)
+		return
+	}
+
+	if request.Category == "" {
+		http.Error(w, "Category cannot be empty", http.StatusBadRequest)
+		return
+	}
+
+	// Update the transaction category
+	result, err := h.DB.Exec(
+		"UPDATE transactions SET category = ? WHERE id = ?",
+		request.Category, request.ID,
+	)
+	if err != nil {
+		log.Printf("Error updating transaction category: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		log.Printf("Error getting rows affected: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	if rowsAffected == 0 {
+		http.Error(w, "Transaction not found", http.StatusNotFound)
+		return
+	}
+
+	// Return success response
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	response := map[string]string{"message": "Transaction category updated successfully"}
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Printf("Error encoding response: %v", err)
+	}
+}
+
+// GetTransactionStats retrieves transaction statistics for a user
+func (h *TransactionHandler) GetTransactionStats(w http.ResponseWriter, r *http.Request) {
+	// Only allow GET method
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Extract user ID from URL
+	userIDStr := r.URL.Query().Get("user_id")
+	if userIDStr == "" {
+		http.Error(w, "User ID is required", http.StatusBadRequest)
+		return
+	}
+
+	userID, err := strconv.ParseInt(userIDStr, 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		return
+	}
+
+	// Extract optional period parameter (daily, weekly, monthly, yearly)
+	period := r.URL.Query().Get("period")
+	if period == "" {
+		period = "monthly" // Default period
+	}
+
+	// Validate period
+	validPeriods := map[string]bool{
+		"daily":   true,
+		"weekly":  true,
+		"monthly": true,
+		"yearly":  true,
+	}
+	if !validPeriods[period] {
+		http.Error(w, "Invalid period. Must be one of: daily, weekly, monthly, yearly", http.StatusBadRequest)
+		return
+	}
+
+	// Determine the date format and grouping based on the period
+	var dateFormat, groupBy string
+	switch period {
+	case "daily":
+		dateFormat = "%Y-%m-%d"
+		groupBy = "DATE(timestamp)"
+	case "weekly":
+		dateFormat = "%Y-%U" // Year and week number
+		groupBy = "YEARWEEK(timestamp)"
+	case "monthly":
+		dateFormat = "%Y-%m"
+		groupBy = "DATE_FORMAT(timestamp, '%Y-%m')"
+	case "yearly":
+		dateFormat = "%Y"
+		groupBy = "YEAR(timestamp)"
+	}
+
+	// Query transaction statistics
+	rows, err := h.DB.Query(
+		`SELECT 
+			DATE_FORMAT(t.timestamp, ?) as period,
+			t.type,
+			SUM(t.amount) as total_amount,
+			COUNT(t.id) as transaction_count
+		FROM transactions t
+		JOIN accounts a ON t.account_id = a.id
+		WHERE a.user_id = ?
+		GROUP BY period, t.type
+		ORDER BY period DESC, t.type`,
+		dateFormat, userID,
+	)
+	if err != nil {
+		log.Printf("Error querying transaction statistics: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	// Prepare the response structure
+	type StatEntry struct {
+		Period           string  `json:"period"`
+		Type             string  `json:"type"`
+		TotalAmount      float64 `json:"total_amount"`
+		TransactionCount int     `json:"transaction_count"`
+	}
+
+	stats := []StatEntry{}
+	for rows.Next() {
+		var entry StatEntry
+		err := rows.Scan(
+			&entry.Period,
+			&entry.Type,
+			&entry.TotalAmount,
+			&entry.TransactionCount,
+		)
+		if err != nil {
+			log.Printf("Error scanning statistics row: %v", err)
+			continue
+		}
+		stats = append(stats, entry)
+	}
+
+	if err = rows.Err(); err != nil {
+		log.Printf("Error iterating statistics rows: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Return the statistics
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(stats); err != nil {
+		log.Printf("Error encoding response: %v", err)
+	}
+}
+
+// GetCategorySummary retrieves a summary of transactions by category for a user
+func (h *TransactionHandler) GetCategorySummary(w http.ResponseWriter, r *http.Request) {
+	// Only allow GET method
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Extract user ID from URL
+	userIDStr := r.URL.Query().Get("user_id")
+	if userIDStr == "" {
+		http.Error(w, "User ID is required", http.StatusBadRequest)
+		return
+	}
+
+	userID, err := strconv.ParseInt(userIDStr, 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		return
+	}
+
+	// Extract optional time range parameters
+	startDateStr := r.URL.Query().Get("start_date")
+	endDateStr := r.URL.Query().Get("end_date")
+
+	var startDate, endDate time.Time
+	if startDateStr != "" {
+		startDate, err = time.Parse("2006-01-02", startDateStr)
+		if err != nil {
+			http.Error(w, "Invalid start date format. Use YYYY-MM-DD", http.StatusBadRequest)
+			return
+		}
+	} else {
+		// Default to 30 days ago if not specified
+		startDate = time.Now().AddDate(0, 0, -30)
+	}
+
+	if endDateStr != "" {
+		endDate, err = time.Parse("2006-01-02", endDateStr)
+		if err != nil {
+			http.Error(w, "Invalid end date format. Use YYYY-MM-DD", http.StatusBadRequest)
+			return
+		}
+	} else {
+		// Default to current date if not specified
+		endDate = time.Now()
+	}
+
+	// Query transaction summary by category
+	rows, err := h.DB.Query(
+		`SELECT 
+			COALESCE(t.category, 'Uncategorized') as category,
+			t.type,
+			SUM(t.amount) as total_amount,
+			COUNT(t.id) as transaction_count
+		FROM transactions t
+		JOIN accounts a ON t.account_id = a.id
+		WHERE a.user_id = ? AND t.timestamp BETWEEN ? AND ?
+		GROUP BY category, t.type
+		ORDER BY total_amount DESC`,
+		userID, startDate, endDate,
+	)
+	if err != nil {
+		log.Printf("Error querying category summary: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	// Prepare the response structure
+	type CategorySummary struct {
+		Category         string  `json:"category"`
+		Type             string  `json:"type"`
+		TotalAmount      float64 `json:"total_amount"`
+		TransactionCount int     `json:"transaction_count"`
+	}
+
+	summary := []CategorySummary{}
+	for rows.Next() {
+		var entry CategorySummary
+		err := rows.Scan(
+			&entry.Category,
+			&entry.Type,
+			&entry.TotalAmount,
+			&entry.TransactionCount,
+		)
+		if err != nil {
+			log.Printf("Error scanning category summary row: %v", err)
+			continue
+		}
+		summary = append(summary, entry)
+	}
+
+	if err = rows.Err(); err != nil {
+		log.Printf("Error iterating category summary rows: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Return the category summary
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(summary); err != nil {
+		log.Printf("Error encoding response: %v", err)
+	}
+}

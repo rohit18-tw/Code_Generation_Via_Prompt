@@ -1,0 +1,244 @@
+# LLM Response - code_generation_chunk_03
+# Timestamp: 2025-06-11 10:29:22
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_024
+# ==================================================
+
+import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
+import '../models/transaction.dart';
+import '../utils/formatters.dart' show formatCurrency, formatDate;
+
+/// A reusable widget for displaying transaction information in a list item format.
+///
+/// This widget displays transaction details including type, amount, date, status,
+/// and provides customization options for appearance and actions.
+class TransactionListItem extends StatelessWidget {
+  /// The transaction to display
+  final Transaction transaction;
+
+  /// Optional callback when the item is tapped
+  final Function()? onTap;
+
+  /// Optional callback when the item is long pressed
+  final Function()? onLongPress;
+
+  /// Whether to show the transaction status
+  final bool showStatus;
+
+  /// Whether to show the transaction type icon
+  final bool showIcon;
+
+  /// Logger instance for this widget
+  static final _logger = Logger('TransactionListItem');
+
+  /// Creates a transaction list item widget
+  ///
+  /// [transaction] is required, other parameters are optional
+  const TransactionListItem({
+    Key? key,
+    required this.transaction,
+    this.onTap,
+    this.onLongPress,
+    this.showStatus = true,
+    this.showIcon = true,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    _logger.fine('Building transaction list item for transaction ID: ${_maskId(transaction.id)}');
+    
+    return Card(
+      elevation: 2.0,
+      margin: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
+      child: ListTile(
+        onTap: onTap,
+        onLongPress: onLongPress,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        leading: showIcon ? _buildLeadingIcon() : null,
+        title: _buildTitle(),
+        subtitle: _buildSubtitle(context),
+        trailing: _buildTrailing(context),
+      ),
+    );
+  }
+
+  /// Builds the leading icon based on transaction type
+  Widget _buildLeadingIcon() {
+    IconData iconData;
+    Color iconColor;
+
+    switch (transaction.type) {
+      case TransactionType.deposit:
+        iconData = Icons.arrow_downward;
+        iconColor = Colors.green;
+        break;
+      case TransactionType.withdrawal:
+        iconData = Icons.arrow_upward;
+        iconColor = Colors.red;
+        break;
+      case TransactionType.transfer:
+        iconData = Icons.swap_horiz;
+        iconColor = Colors.blue;
+        break;
+      default:
+        iconData = Icons.attach_money;
+        iconColor = Colors.grey;
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        color: iconColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: Icon(
+        iconData,
+        color: iconColor,
+        size: 24.0,
+      ),
+    );
+  }
+
+  /// Builds the title widget showing transaction description or type
+  Widget _buildTitle() {
+    String title = transaction.description ?? _getTransactionTypeLabel();
+    
+    return Text(
+      title,
+      style: const TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 16.0,
+      ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+
+  /// Builds the subtitle widget showing date and reference
+  Widget _buildSubtitle(BuildContext context) {
+    final dateText = formatDate(transaction.date);
+    final referenceText = transaction.reference != null 
+        ? 'Ref: ${_truncateReference(transaction.reference!)}'
+        : '';
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          dateText,
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        if (transaction.reference != null)
+          Text(
+            referenceText,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Colors.grey[600],
+            ),
+          ),
+      ],
+    );
+  }
+
+  /// Builds the trailing widget showing amount and status
+  Widget _buildTrailing(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          formatCurrency(transaction.amount),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: _getAmountColor(),
+            fontSize: 16.0,
+          ),
+        ),
+        if (showStatus)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+            margin: const EdgeInsets.only(top: 4.0),
+            decoration: BoxDecoration(
+              color: _getStatusColor().withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+            child: Text(
+              _getStatusLabel(),
+              style: TextStyle(
+                fontSize: 12.0,
+                color: _getStatusColor(),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  /// Returns the appropriate color for the transaction amount
+  Color _getAmountColor() {
+    switch (transaction.type) {
+      case TransactionType.deposit:
+        return Colors.green;
+      case TransactionType.withdrawal:
+        return Colors.red;
+      case TransactionType.transfer:
+        return Colors.blue;
+      default:
+        return Colors.black;
+    }
+  }
+
+  /// Returns the appropriate color for the transaction status
+  Color _getStatusColor() {
+    switch (transaction.status) {
+      case TransactionStatus.completed:
+        return Colors.green;
+      case TransactionStatus.pending:
+        return Colors.orange;
+      case TransactionStatus.failed:
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  /// Returns a user-friendly label for the transaction status
+  String _getStatusLabel() {
+    switch (transaction.status) {
+      case TransactionStatus.completed:
+        return 'Completed';
+      case TransactionStatus.pending:
+        return 'Pending';
+      case TransactionStatus.failed:
+        return 'Failed';
+      default:
+        return 'Unknown';
+    }
+  }
+
+  /// Returns a user-friendly label for the transaction type
+  String _getTransactionTypeLabel() {
+    switch (transaction.type) {
+      case TransactionType.deposit:
+        return 'Deposit';
+      case TransactionType.withdrawal:
+        return 'Withdrawal';
+      case TransactionType.transfer:
+        return 'Transfer';
+      default:
+        return 'Transaction';
+    }
+  }
+
+  /// Truncates long reference numbers for display
+  String _truncateReference(String reference) {
+    if (reference.length <= 10) return reference;
+    return '${reference.substring(0, 10)}...';
+  }
+
+  /// Masks transaction ID for logging purposes
+  String _maskId(String id) {
+    if (id.length <= 4) return id;
+    return '${id.substring(0, 2)}...${id.substring(id.length - 2)}';
+  }
+}

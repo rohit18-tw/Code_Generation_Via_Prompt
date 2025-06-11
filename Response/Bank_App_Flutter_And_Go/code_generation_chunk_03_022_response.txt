@@ -1,0 +1,467 @@
+# LLM Response - code_generation_chunk_03
+# Timestamp: 2025-06-11 10:27:31
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_022
+# ==================================================
+
+import 'dart:async';
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../models/user.dart';
+
+/// Exception thrown when authentication fails
+class AuthException implements Exception {
+  final String message;
+  final int? statusCode;
+
+  AuthException(this.message, {this.statusCode});
+
+  @override
+  String toString() => 'AuthException: $message${statusCode != null ? ' (Status code: $statusCode)' : ''}';
+}
+
+/// Interface for authentication services
+abstract class IAuthService {
+  /// The currently authenticated user
+  User? get currentUser;
+
+  /// Stream of authentication state changes
+  Stream<User?> get authStateChanges;
+
+  /// Registers a new user with email and password
+  Future<User> register({required String email, required String username, required String password});
+
+  /// Signs in a user with email and password
+  Future<User> signIn({required String email, required String password});
+
+  /// Signs out the current user
+  Future<void> signOut();
+
+  /// Checks if a user is currently signed in
+  Future<bool> isSignedIn();
+
+  /// Retrieves the current user from storage
+  Future<User?> getCurrentUser();
+
+  /// Updates the user's profile information
+  Future<User> updateProfile({required User user});
+
+  /// Changes the user's password
+  Future<void> changePassword({required String currentPassword, required String newPassword});
+
+  /// Sends a password reset email
+  Future<void> resetPassword({required String email});
+
+  /// Refreshes the authentication token
+  Future<void> refreshToken();
+}
+
+/// Service that handles authentication operations
+class AuthService implements IAuthService {
+  static final Logger _logger = Logger('AuthService');
+  final http.Client _httpClient;
+  final String _baseUrl;
+  
+  User? _currentUser;
+  String? _authToken;
+  
+  final _authStateController = StreamController<User?>.broadcast();
+
+  /// Constructor that initializes the HTTP client and base URL
+  AuthService({
+    http.Client? httpClient,
+    String baseUrl = 'https://api.example.com',
+  }) : 
+    _httpClient = httpClient ?? http.Client(),
+    _baseUrl = baseUrl {
+    // Initialize by trying to load the user from storage
+    getCurrentUser().then((user) {
+      _currentUser = user;
+      _authStateController.add(user);
+    }).catchError((error) {
+      _logger.warning('Failed to load user from storage', error);
+    });
+  }
+
+  @override
+  User? get currentUser => _currentUser;
+
+  @override
+  Stream<User?> get authStateChanges => _authStateController.stream;
+
+  @override
+  Future<User> register({
+    required String email, 
+    required String username, 
+    required String password
+  }) async {
+    _logger.info('Registering new user with email: ${_maskEmail(email)}');
+    
+    try {
+      final response = await _httpClient.post(
+        Uri.parse('$_baseUrl/auth/register'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': email,
+          'username': username,
+          'password': password,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        
+        // Save the auth token
+        _authToken = data['token'];
+        await _saveAuthToken(_authToken!);
+        
+        // Create and save the user
+        final user = User.fromJson(data['user']);
+        _currentUser = user;
+        await _saveUser(user);
+        
+        _authStateController.add(user);
+        _logger.info('User registered successfully: ${_maskEmail(email)}');
+        
+        return user;
+      } else {
+        final Map<String, dynamic> error = jsonDecode(response.body);
+        final message = error['message'] ?? 'Registration failed';
+        _logger.warning('Registration failed: $message, Status: ${response.statusCode}');
+        throw AuthException(message, statusCode: response.statusCode);
+      }
+    } catch (e) {
+      if (e is AuthException) rethrow;
+      
+      _logger.severe('Registration error', e);
+      throw AuthException('Registration failed: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<User> signIn({required String email, required String password}) async {
+    _logger.info('Signing in user with email: ${_maskEmail(email)}');
+    
+    try {
+      final response = await _httpClient.post(
+        Uri.parse('$_baseUrl/auth/login'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': email,
+          'password': password,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        
+        // Save the auth token
+        _authToken = data['token'];
+        await _saveAuthToken(_authToken!);
+        
+        // Create and save the user
+        final user = User.fromJson(data['user']);
+        _currentUser = user;
+        await _saveUser(user);
+        
+        _authStateController.add(user);
+        _logger.info('User signed in successfully: ${_maskEmail(email)}');
+        
+        return user;
+      } else {
+        final Map<String, dynamic> error = jsonDecode(response.body);
+        final message = error['message'] ?? 'Authentication failed';
+        _logger.warning('Sign in failed: $message, Status: ${response.statusCode}');
+        throw AuthException(message, statusCode: response.statusCode);
+      }
+    } catch (e) {
+      if (e is AuthException) rethrow;
+      
+      _logger.severe('Sign in error', e);
+      throw AuthException('Sign in failed: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<void> signOut() async {
+    _logger.info('Signing out user');
+    
+    try {
+      if (_authToken != null) {
+        // Attempt to notify the server about logout
+        await _httpClient.post(
+          Uri.parse('$_baseUrl/auth/logout'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $_authToken',
+          },
+        ).catchError((error) {
+          // Just log the error but continue with local sign out
+          _logger.warning('Failed to notify server about logout', error);
+        });
+      }
+      
+      // Clear local storage
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('auth_token');
+      await prefs.remove('user_data');
+      
+      // Update state
+      _authToken = null;
+      _currentUser = null;
+      _authStateController.add(null);
+      
+      _logger.info('User signed out successfully');
+    } catch (e) {
+      _logger.warning('Error during sign out', e);
+      // Still clear local state even if server request fails
+      _authToken = null;
+      _currentUser = null;
+      _authStateController.add(null);
+      
+      throw AuthException('Sign out failed: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<bool> isSignedIn() async {
+    final token = await _getAuthToken();
+    return token != null;
+  }
+
+  @override
+  Future<User?> getCurrentUser() async {
+    if (_currentUser != null) {
+      return _currentUser;
+    }
+    
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final userData = prefs.getString('user_data');
+      
+      if (userData != null) {
+        final user = User.fromJson(jsonDecode(userData));
+        _currentUser = user;
+        _authStateController.add(user);
+        return user;
+      }
+      
+      return null;
+    } catch (e) {
+      _logger.warning('Error retrieving current user', e);
+      return null;
+    }
+  }
+
+  @override
+  Future<User> updateProfile({required User user}) async {
+    _logger.info('Updating profile for user: ${_maskEmail(user.email)}');
+    
+    if (_authToken == null) {
+      throw AuthException('Not authenticated');
+    }
+    
+    try {
+      final response = await _httpClient.put(
+        Uri.parse('$_baseUrl/users/${user.id}'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $_authToken',
+        },
+        body: jsonEncode(user.toJson()),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        
+        // Update and save the user
+        final updatedUser = User.fromJson(data);
+        _currentUser = updatedUser;
+        await _saveUser(updatedUser);
+        
+        _authStateController.add(updatedUser);
+        _logger.info('Profile updated successfully for: ${_maskEmail(user.email)}');
+        
+        return updatedUser;
+      } else {
+        final Map<String, dynamic> error = jsonDecode(response.body);
+        final message = error['message'] ?? 'Profile update failed';
+        _logger.warning('Profile update failed: $message, Status: ${response.statusCode}');
+        throw AuthException(message, statusCode: response.statusCode);
+      }
+    } catch (e) {
+      if (e is AuthException) rethrow;
+      
+      _logger.severe('Profile update error', e);
+      throw AuthException('Profile update failed: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<void> changePassword({
+    required String currentPassword, 
+    required String newPassword
+  }) async {
+    _logger.info('Changing password for user');
+    
+    if (_authToken == null || _currentUser == null) {
+      throw AuthException('Not authenticated');
+    }
+    
+    try {
+      final response = await _httpClient.post(
+        Uri.parse('$_baseUrl/auth/change-password'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $_authToken',
+        },
+        body: jsonEncode({
+          'currentPassword': currentPassword,
+          'newPassword': newPassword,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        _logger.info('Password changed successfully');
+      } else {
+        final Map<String, dynamic> error = jsonDecode(response.body);
+        final message = error['message'] ?? 'Password change failed';
+        _logger.warning('Password change failed: $message, Status: ${response.statusCode}');
+        throw AuthException(message, statusCode: response.statusCode);
+      }
+    } catch (e) {
+      if (e is AuthException) rethrow;
+      
+      _logger.severe('Password change error', e);
+      throw AuthException('Password change failed: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<void> resetPassword({required String email}) async {
+    _logger.info('Requesting password reset for: ${_maskEmail(email)}');
+    
+    try {
+      final response = await _httpClient.post(
+        Uri.parse('$_baseUrl/auth/reset-password'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email}),
+      );
+
+      if (response.statusCode == 200) {
+        _logger.info('Password reset email sent to: ${_maskEmail(email)}');
+      } else {
+        final Map<String, dynamic> error = jsonDecode(response.body);
+        final message = error['message'] ?? 'Password reset request failed';
+        _logger.warning('Password reset failed: $message, Status: ${response.statusCode}');
+        throw AuthException(message, statusCode: response.statusCode);
+      }
+    } catch (e) {
+      if (e is AuthException) rethrow;
+      
+      _logger.severe('Password reset error', e);
+      throw AuthException('Password reset failed: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<void> refreshToken() async {
+    _logger.info('Refreshing authentication token');
+    
+    final currentToken = await _getAuthToken();
+    if (currentToken == null) {
+      throw AuthException('No token to refresh');
+    }
+    
+    try {
+      final response = await _httpClient.post(
+        Uri.parse('$_baseUrl/auth/refresh-token'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $currentToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        
+        // Save the new auth token
+        _authToken = data['token'];
+        await _saveAuthToken(_authToken!);
+        
+        _logger.info('Token refreshed successfully');
+      } else {
+        final Map<String, dynamic> error = jsonDecode(response.body);
+        final message = error['message'] ?? 'Token refresh failed';
+        _logger.warning('Token refresh failed: $message, Status: ${response.statusCode}');
+        
+        // If token refresh fails, sign out the user
+        await signOut();
+        throw AuthException(message, statusCode: response.statusCode);
+      }
+    } catch (e) {
+      if (e is AuthException) rethrow;
+      
+      _logger.severe('Token refresh error', e);
+      // If token refresh fails, sign out the user
+      await signOut();
+      throw AuthException('Token refresh failed: ${e.toString()}');
+    }
+  }
+
+  // Private helper methods
+  
+  Future<void> _saveAuthToken(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('auth_token', token);
+  }
+  
+  Future<String?> _getAuthToken() async {
+    if (_authToken != null) {
+      return _authToken;
+    }
+    
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('auth_token');
+    _authToken = token;
+    return token;
+  }
+  
+  Future<void> _saveUser(User user) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('user_data', jsonEncode(user.toJson()));
+  }
+  
+  /// Masks an email address for privacy in logs
+  /// Example: j***@e***.com
+  String _maskEmail(String email) {
+    if (email.isEmpty) return '';
+    
+    final parts = email.split('@');
+    if (parts.length != 2) return '***@***.***';
+    
+    final name = parts[0];
+    final domain = parts[1];
+    
+    final maskedName = name.length > 1 
+        ? '${name[0]}${'*' * (name.length - 1)}'
+        : '*';
+    
+    final domainParts = domain.split('.');
+    final maskedDomain = domainParts.length > 1
+        ? '${domainParts[0][0]}${'*' * (domainParts[0].length - 1)}.${domainParts.sublist(1).join('.')}'
+        : '${'*' * domain.length}';
+    
+    return '$maskedName@$maskedDomain';
+  }
+  
+  /// Dispose method to clean up resources
+  void dispose() {
+    _authStateController.close();
+    _httpClient.close();
+  }
+}

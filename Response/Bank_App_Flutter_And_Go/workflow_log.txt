@@ -1,0 +1,867 @@
+[2025-06-11 10:16:10] [INFO] 🚀 Session started: 20250611_101610_219b15c7
+[2025-06-11 10:16:10] [INFO] 📁 Session directory: Response/20250611_101610_219b15c7
+[2025-06-11 10:16:10] [INFO] 🎯 CTX Manager initialized - relying on Claude's natural intelligence
+[2025-06-11 10:16:10] [INFO] 🔗 MCP Integration initialized with file system tools
+[2025-06-11 10:16:10] [INFO] 🔗 MCP Integration initialized with file system tools
+[2025-06-11 10:16:10] [INFO] 📁 File Creator initialized - Output: generated_code, Dry Run: False, Validation: True
+[2025-06-11 10:16:10] [INFO] 🚀 Code Generator initialized with CTX and MCP integration
+[2025-06-11 10:16:10] [INFO] 🔗 MCP Integration initialized with file system tools
+[2025-06-11 10:16:10] [INFO] 📁 File Creator initialized - Output: generated_code, Dry Run: False, Validation: True
+[2025-06-11 10:16:10] [INFO] 🚀 Starting Agentic Workflow
+[2025-06-11 10:16:10] [INFO]    Input: Create a simple bank application using flutter and go
+
+[2025-06-11 10:16:10] [INFO]    Session ID: 20250611_101610_219b15c7
+[2025-06-11 10:16:10] [INFO] --------------------------------------------------
+[2025-06-11 10:16:10] [INFO] 🔍 Processing input: Create a simple bank application using flutter and go
+
+[2025-06-11 10:16:10] [SUCCESS] ✅ SUCCESS in input_processing: Input processed - Type: text, Source: direct_input
+[2025-06-11 10:16:10] [INFO] 🎯 Starting development plan generation...
+[2025-06-11 10:16:10] [INFO] 🎯 Sending plan generation request to Claude...
+[2025-06-11 10:16:44] [INFO] 💬 LLM Interaction: plan_generation -> plan_generation_001_response.txt
+[2025-06-11 10:16:44] [INFO] 📝 Plan generation response saved to: plan_generation_001_response.txt
+[2025-06-11 10:16:44] [ERROR] ❌ ERROR in plan_generation: Response appears to be truncated - increase MAX_TOKENS in config
+[2025-06-11 10:16:44] [ERROR] ❌ ERROR in plan_generation: JSON parsing failed: Expecting value: line 1 column 1 (char 0)
+[2025-06-11 10:16:44] [WARNING] ⚠️ Failed to parse JSON, attempting text extraction...
+[2025-06-11 10:16:44] [INFO] ✅ Plan passed minimal validation
+[2025-06-11 10:16:44] [INFO] 🌳 Project tree structure saved to: project_structure.txt
+[2025-06-11 10:16:44] [INFO] 📊 Code generation analysis saved to: code_generation_analysis.json
+[2025-06-11 10:16:44] [INFO] 📋 Code Generation Insights:
+[2025-06-11 10:16:44] [INFO]    Strategy: incremental
+[2025-06-11 10:16:44] [INFO]    Total Files: 31
+[2025-06-11 10:16:44] [INFO]    Generation Order: frontend/pubspec.yaml → backend/go.mod → backend/config/config.go → backend/models/user.go → backend/models/account.go → backend/models/transaction.go → backend/utils/password.go → backend/utils/jwt.go → backend/db/db.go → backend/middleware/auth_middleware.go → backend/api/handlers/auth_handler.go → backend/api/handlers/account_handler.go → backend/api/handlers/transaction_handler.go → backend/api/router.go → backend/main.go → frontend/lib/models/user.dart → frontend/lib/models/account.dart → frontend/lib/models/transaction.dart → frontend/lib/utils/constants.dart → frontend/lib/services/api_service.dart → frontend/lib/services/auth_service.dart → frontend/lib/widgets/account_card.dart → frontend/lib/widgets/transaction_list_item.dart → frontend/lib/screens/login_screen.dart → frontend/lib/screens/register_screen.dart → frontend/lib/screens/home_screen.dart → frontend/lib/screens/account_details_screen.dart → frontend/lib/screens/transfer_screen.dart → frontend/lib/main.dart → docker-compose.yml → README.md
+[2025-06-11 10:16:44] [INFO]    High Priority Files: 24
+[2025-06-11 10:16:44] [INFO] 📋 Plan Summary:
+[2025-06-11 10:16:44] [INFO]    🎯 **Project Plan Generated**
+[2025-06-11 10:16:44] [INFO]    **Title**: Simple Bank Application
+[2025-06-11 10:16:44] [INFO]    **Language**: dart|go
+[2025-06-11 10:16:44] [INFO]    **Framework**: flutter
+[2025-06-11 10:16:44] [INFO]    **Type**: mobile_app
+[2025-06-11 10:16:44] [INFO]    **Files to Create**: 31 files
+[2025-06-11 10:16:44] [INFO]    **Strategy**: incremental
+[2025-06-11 10:16:44] [INFO]    **Generation Order**: frontend/pubspec.yaml → backend/go.mod → backend/config/config.go → backend/models/user.go → backend/models/account.go...
+[2025-06-11 10:16:44] [INFO]    Ready for code generation!
+[2025-06-11 10:16:44] [INFO] 
+🌳 Project Structure:
+[2025-06-11 10:16:44] [INFO]    simple-bank-application/
+[2025-06-11 10:16:44] [INFO]    ├── README.md
+[2025-06-11 10:16:44] [INFO]    ├── backend/
+[2025-06-11 10:16:44] [INFO]    │   ├── /
+[2025-06-11 10:16:44] [INFO]    │   ├── api/
+[2025-06-11 10:16:44] [INFO]    │   │   ├── /
+[2025-06-11 10:16:44] [INFO]    │   │   ├── handlers/
+[2025-06-11 10:16:44] [INFO]    │   │   │   ├── account_handler.go
+[2025-06-11 10:16:44] [INFO]    │   │   │   ├── auth_handler.go
+[2025-06-11 10:16:44] [INFO]    │   │   │   └── transaction_handler.go
+[2025-06-11 10:16:44] [INFO]    │   │   └── router.go
+[2025-06-11 10:16:44] [INFO]    │   ├── config/
+[2025-06-11 10:16:44] [INFO]    │   │   ├── /
+[2025-06-11 10:16:44] [INFO]    │   │   └── config.go
+[2025-06-11 10:16:44] [INFO]    │   ├── db/
+[2025-06-11 10:16:44] [INFO]    │   │   ├── /
+[2025-06-11 10:16:44] [INFO]    │   │   └── db.go
+[2025-06-11 10:16:44] [INFO]    │   ├── go.mod
+[2025-06-11 10:16:44] [INFO]    │   ├── main.go
+[2025-06-11 10:16:44] [INFO]    │   ├── middleware/
+[2025-06-11 10:16:44] [INFO]    │   │   ├── /
+[2025-06-11 10:16:44] [INFO]    │   │   └── auth_middleware.go
+[2025-06-11 10:16:44] [INFO]    │   ├── models/
+[2025-06-11 10:16:44] [INFO]    │   │   ├── /
+[2025-06-11 10:16:44] [INFO]    │   │   ├── account.go
+[2025-06-11 10:16:44] [INFO]    │   │   ├── transaction.go
+[2025-06-11 10:16:44] [INFO]    │   │   └── user.go
+[2025-06-11 10:16:44] [INFO]    │   ├── tests/
+[2025-06-11 10:16:44] [INFO]    │   │   └── /
+[2025-06-11 10:16:44] [INFO]    │   └── utils/
+[2025-06-11 10:16:44] [INFO]    │       ├── /
+[2025-06-11 10:16:44] [INFO]    │       ├── jwt.go
+[2025-06-11 10:16:44] [INFO]    │       └── password.go
+[2025-06-11 10:16:44] [INFO]    ├── docker-compose.yml
+[2025-06-11 10:16:44] [INFO]    └── frontend/
+[2025-06-11 10:16:44] [INFO]        ├── /
+[2025-06-11 10:16:44] [INFO]        ├── assets/
+[2025-06-11 10:16:44] [INFO]        │   └── /
+[2025-06-11 10:16:44] [INFO]        ├── lib/
+[2025-06-11 10:16:44] [INFO]        │   ├── /
+[2025-06-11 10:16:44] [INFO]        │   ├── main.dart
+[2025-06-11 10:16:44] [INFO]        │   ├── models/
+[2025-06-11 10:16:44] [INFO]        │   │   ├── /
+[2025-06-11 10:16:44] [INFO]        │   │   ├── account.dart
+[2025-06-11 10:16:44] [INFO]        │   │   ├── transaction.dart
+[2025-06-11 10:16:44] [INFO]        │   │   └── user.dart
+[2025-06-11 10:16:44] [INFO]        │   ├── screens/
+[2025-06-11 10:16:44] [INFO]        │   │   ├── /
+[2025-06-11 10:16:44] [INFO]        │   │   ├── account_details_screen.dart
+[2025-06-11 10:16:44] [INFO]        │   │   ├── home_screen.dart
+[2025-06-11 10:16:44] [INFO]        │   │   ├── login_screen.dart
+[2025-06-11 10:16:44] [INFO]        │   │   ├── register_screen.dart
+[2025-06-11 10:16:44] [INFO]        │   │   └── transfer_screen.dart
+[2025-06-11 10:16:44] [INFO]        │   ├── services/
+[2025-06-11 10:16:44] [INFO]        │   │   ├── /
+[2025-06-11 10:16:44] [INFO]        │   │   ├── api_service.dart
+[2025-06-11 10:16:44] [INFO]        │   │   └── auth_service.dart
+[2025-06-11 10:16:44] [INFO]        │   ├── utils/
+[2025-06-11 10:16:44] [INFO]        │   │   ├── /
+[2025-06-11 10:16:44] [INFO]        │   │   └── constants.dart
+[2025-06-11 10:16:44] [INFO]        │   └── widgets/
+[2025-06-11 10:16:44] [INFO]        │       ├── /
+[2025-06-11 10:16:44] [INFO]        │       ├── account_card.dart
+[2025-06-11 10:16:44] [INFO]        │       └── transaction_list_item.dart
+[2025-06-11 10:16:44] [INFO]        ├── pubspec.yaml
+[2025-06-11 10:16:44] [INFO]        └── test/
+[2025-06-11 10:16:44] [INFO]            └── /
+[2025-06-11 10:16:44] [SUCCESS] ✅ SUCCESS in plan_generation: Development plan generated and saved to development_plan.json
+[2025-06-11 10:16:44] [INFO] 🔨 Starting code generation...
+[2025-06-11 10:16:44] [INFO] 🎯 Starting code generation from enhanced plan
+[2025-06-11 10:16:44] [INFO] 📁 Created directory: frontend/
+[2025-06-11 10:16:44] [INFO] 📁 Created directory: frontend/lib/
+[2025-06-11 10:16:44] [INFO] 📁 Created directory: frontend/lib/screens/
+[2025-06-11 10:16:44] [INFO] 📁 Created directory: frontend/lib/models/
+[2025-06-11 10:16:44] [INFO] 📁 Created directory: frontend/lib/services/
+[2025-06-11 10:16:44] [INFO] 📁 Created directory: frontend/lib/widgets/
+[2025-06-11 10:16:44] [INFO] 📁 Created directory: frontend/lib/utils/
+[2025-06-11 10:16:44] [INFO] 📁 Created directory: frontend/assets/
+[2025-06-11 10:16:44] [INFO] 📁 Created directory: frontend/test/
+[2025-06-11 10:16:44] [INFO] 📁 Created directory: backend/
+[2025-06-11 10:16:44] [INFO] 📁 Created directory: backend/api/
+[2025-06-11 10:16:44] [INFO] 📁 Created directory: backend/models/
+[2025-06-11 10:16:44] [INFO] 📁 Created directory: backend/db/
+[2025-06-11 10:16:44] [INFO] 📁 Created directory: backend/middleware/
+[2025-06-11 10:16:44] [INFO] 📁 Created directory: backend/utils/
+[2025-06-11 10:16:44] [INFO] 📁 Created directory: backend/config/
+[2025-06-11 10:16:44] [INFO] 📁 Created directory: backend/tests/
+[2025-06-11 10:16:44] [INFO] 📁 Created 17 directories
+[2025-06-11 10:16:44] [INFO] 📦 Created 4 generation chunks
+[2025-06-11 10:16:44] [INFO] 🔨 Generating chunk: chunk_01 (8 files)
+[2025-06-11 10:16:44] [INFO] 📝 Generating: frontend/pubspec.yaml
+[2025-06-11 10:16:44] [INFO] 🎯 Building context for: frontend/pubspec.yaml
+[2025-06-11 10:16:44] [INFO] 📊 Context built: 0 items, 285 tokens, 0.00 compression
+[2025-06-11 10:16:44] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:16:44] [INFO] 📊 Scanned: 17 dirs, 0 files, 0 bytes
+[2025-06-11 10:16:52] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:16:52] [INFO] 💬 LLM Interaction: code_generation_chunk_01 -> code_generation_chunk_01_002_response.txt
+[2025-06-11 10:16:52] [INFO] 📁 Creating file immediately: frontend/pubspec.yaml
+[2025-06-11 10:16:52] [INFO] 📄 Creating file: frontend/pubspec.yaml
+[2025-06-11 10:16:52] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:16:52] [INFO] ✅ Created: frontend/pubspec.yaml (1,215 bytes)
+[2025-06-11 10:16:52] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:16:52] [INFO] ✅ File created: frontend/pubspec.yaml (1,215 bytes)
+[2025-06-11 10:16:52] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:16:52] [INFO] 📊 Scanned: 17 dirs, 1 files, 1,215 bytes
+[2025-06-11 10:16:52] [INFO] 📚 Learned universal patterns for test
+[2025-06-11 10:16:52] [INFO] 🔄 Updated context with: frontend/pubspec.yaml
+[2025-06-11 10:16:52] [INFO] 📝 Generating: backend/go.mod
+[2025-06-11 10:16:52] [INFO] 🎯 Building context for: backend/go.mod
+[2025-06-11 10:16:52] [INFO] 📊 Context built: 0 items, 285 tokens, 0.00 compression
+[2025-06-11 10:16:52] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:16:52] [INFO] 📊 Scanned: 17 dirs, 1 files, 1,215 bytes
+[2025-06-11 10:17:04] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:17:04] [INFO] 💬 LLM Interaction: code_generation_chunk_01 -> code_generation_chunk_01_003_response.txt
+[2025-06-11 10:17:04] [INFO] 📁 Creating file immediately: backend/go.mod
+[2025-06-11 10:17:04] [INFO] 📄 Creating file: backend/go.mod
+[2025-06-11 10:17:04] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:17:04] [INFO] ✅ Created: backend/go.mod (1,976 bytes)
+[2025-06-11 10:17:04] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:17:04] [INFO] ✅ File created: backend/go.mod (1,976 bytes)
+[2025-06-11 10:17:04] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:17:04] [INFO] 📊 Scanned: 17 dirs, 2 files, 3,191 bytes
+[2025-06-11 10:17:04] [INFO] 📚 Learned universal patterns for generic
+[2025-06-11 10:17:04] [INFO] 🔄 Updated context with: backend/go.mod
+[2025-06-11 10:17:04] [INFO] 📝 Generating: backend/config/config.go
+[2025-06-11 10:17:04] [INFO] 🎯 Building context for: backend/config/config.go
+[2025-06-11 10:17:04] [INFO] 📊 Context built: 0 items, 285 tokens, 0.00 compression
+[2025-06-11 10:17:04] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:17:04] [INFO] 📊 Scanned: 17 dirs, 2 files, 3,191 bytes
+[2025-06-11 10:17:31] [INFO] ✅ Validation: PASS (0 errors, 48 warnings)
+[2025-06-11 10:17:31] [INFO] 💬 LLM Interaction: code_generation_chunk_01 -> code_generation_chunk_01_004_response.txt
+[2025-06-11 10:17:31] [INFO] 📁 Creating file immediately: backend/config/config.go
+[2025-06-11 10:17:31] [INFO] 📄 Creating file: backend/config/config.go
+[2025-06-11 10:17:31] [INFO] ✅ Validation: PASS (0 errors, 48 warnings)
+[2025-06-11 10:17:31] [INFO] ✅ Created: backend/config/config.go (7,364 bytes)
+[2025-06-11 10:17:31] [INFO] ✅ Validation: PASS (0 errors, 48 warnings)
+[2025-06-11 10:17:31] [INFO] ✅ File created: backend/config/config.go (7,364 bytes)
+[2025-06-11 10:17:31] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:17:31] [INFO] 📊 Scanned: 17 dirs, 3 files, 10,555 bytes
+[2025-06-11 10:17:31] [INFO] 📚 Learned universal patterns for configuration
+[2025-06-11 10:17:31] [INFO] 🔄 Updated context with: backend/config/config.go
+[2025-06-11 10:17:31] [INFO] 📝 Generating: backend/models/user.go
+[2025-06-11 10:17:31] [INFO] 🎯 Building context for: backend/models/user.go
+[2025-06-11 10:17:31] [INFO] 📊 Context built: 0 items, 286 tokens, 0.00 compression
+[2025-06-11 10:17:31] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:17:31] [INFO] 📊 Scanned: 17 dirs, 3 files, 10,555 bytes
+[2025-06-11 10:18:01] [INFO] ✅ Validation: PASS (0 errors, 39 warnings)
+[2025-06-11 10:18:01] [INFO] 💬 LLM Interaction: code_generation_chunk_01 -> code_generation_chunk_01_005_response.txt
+[2025-06-11 10:18:01] [INFO] 📁 Creating file immediately: backend/models/user.go
+[2025-06-11 10:18:01] [INFO] 📄 Creating file: backend/models/user.go
+[2025-06-11 10:18:01] [INFO] ✅ Validation: PASS (0 errors, 39 warnings)
+[2025-06-11 10:18:01] [INFO] ✅ Created: backend/models/user.go (7,457 bytes)
+[2025-06-11 10:18:01] [INFO] ✅ Validation: PASS (0 errors, 39 warnings)
+[2025-06-11 10:18:01] [INFO] ✅ File created: backend/models/user.go (7,457 bytes)
+[2025-06-11 10:18:01] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:18:01] [INFO] 📊 Scanned: 17 dirs, 4 files, 18,012 bytes
+[2025-06-11 10:18:01] [INFO] 📚 Learned universal patterns for data_structure
+[2025-06-11 10:18:01] [INFO] 🔄 Updated context with: backend/models/user.go
+[2025-06-11 10:18:01] [INFO] 📝 Generating: backend/models/account.go
+[2025-06-11 10:18:01] [INFO] 🎯 Building context for: backend/models/account.go
+[2025-06-11 10:18:01] [INFO] 📊 Context built: 0 items, 298 tokens, 0.00 compression
+[2025-06-11 10:18:01] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:18:01] [INFO] 📊 Scanned: 17 dirs, 4 files, 18,012 bytes
+[2025-06-11 10:18:01] [INFO] 📖 Read file: backend/models/user.go
+[2025-06-11 10:18:01] [INFO] 🔗 MCP found 1 related files for context
+[2025-06-11 10:18:45] [INFO] ✅ Validation: PASS (0 errors, 10 warnings)
+[2025-06-11 10:18:45] [INFO] 💬 LLM Interaction: code_generation_chunk_01 -> code_generation_chunk_01_006_response.txt
+[2025-06-11 10:18:45] [INFO] 📁 Creating file immediately: backend/models/account.go
+[2025-06-11 10:18:45] [INFO] 📄 Creating file: backend/models/account.go
+[2025-06-11 10:18:45] [INFO] ✅ Validation: PASS (0 errors, 10 warnings)
+[2025-06-11 10:18:45] [INFO] ✅ Created: backend/models/account.go (11,236 bytes)
+[2025-06-11 10:18:45] [INFO] ✅ Validation: PASS (0 errors, 10 warnings)
+[2025-06-11 10:18:45] [INFO] ✅ File created: backend/models/account.go (11,236 bytes)
+[2025-06-11 10:18:45] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:18:45] [INFO] 📊 Scanned: 17 dirs, 5 files, 29,248 bytes
+[2025-06-11 10:18:45] [INFO] 📚 Learned universal patterns for data_structure
+[2025-06-11 10:18:45] [INFO] 🔄 Updated context with: backend/models/account.go
+[2025-06-11 10:18:45] [INFO] 📝 Generating: backend/models/transaction.go
+[2025-06-11 10:18:45] [INFO] 🎯 Building context for: backend/models/transaction.go
+[2025-06-11 10:18:45] [INFO] 📊 Context built: 0 items, 306 tokens, 0.00 compression
+[2025-06-11 10:18:45] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:18:45] [INFO] 📊 Scanned: 17 dirs, 5 files, 29,248 bytes
+[2025-06-11 10:18:45] [INFO] 📖 Read file: backend/models/account.go
+[2025-06-11 10:18:45] [INFO] 📖 Read file: backend/models/user.go
+[2025-06-11 10:18:45] [INFO] 🔗 MCP found 2 related files for context
+[2025-06-11 10:19:24] [INFO] ✅ Validation: PASS (0 errors, 16 warnings)
+[2025-06-11 10:19:24] [INFO] 💬 LLM Interaction: code_generation_chunk_01 -> code_generation_chunk_01_007_response.txt
+[2025-06-11 10:19:24] [INFO] 📁 Creating file immediately: backend/models/transaction.go
+[2025-06-11 10:19:24] [INFO] 📄 Creating file: backend/models/transaction.go
+[2025-06-11 10:19:24] [INFO] ✅ Validation: PASS (0 errors, 16 warnings)
+[2025-06-11 10:19:24] [INFO] ✅ Created: backend/models/transaction.go (10,373 bytes)
+[2025-06-11 10:19:24] [INFO] ✅ Validation: PASS (0 errors, 16 warnings)
+[2025-06-11 10:19:24] [INFO] ✅ File created: backend/models/transaction.go (10,373 bytes)
+[2025-06-11 10:19:24] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:19:24] [INFO] 📊 Scanned: 17 dirs, 6 files, 39,621 bytes
+[2025-06-11 10:19:24] [INFO] 📚 Learned universal patterns for data_structure
+[2025-06-11 10:19:24] [INFO] 🔄 Updated context with: backend/models/transaction.go
+[2025-06-11 10:19:24] [INFO] 📝 Generating: backend/utils/password.go
+[2025-06-11 10:19:24] [INFO] 🎯 Building context for: backend/utils/password.go
+[2025-06-11 10:19:24] [INFO] 📊 Context built: 0 items, 290 tokens, 0.00 compression
+[2025-06-11 10:19:24] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:19:24] [INFO] 📊 Scanned: 17 dirs, 6 files, 39,621 bytes
+[2025-06-11 10:19:48] [INFO] ✅ Validation: PASS (0 errors, 2 warnings)
+[2025-06-11 10:19:48] [INFO] 💬 LLM Interaction: code_generation_chunk_01 -> code_generation_chunk_01_008_response.txt
+[2025-06-11 10:19:48] [INFO] 📁 Creating file immediately: backend/utils/password.go
+[2025-06-11 10:19:48] [INFO] 📄 Creating file: backend/utils/password.go
+[2025-06-11 10:19:48] [INFO] ✅ Validation: PASS (0 errors, 2 warnings)
+[2025-06-11 10:19:48] [INFO] ✅ Created: backend/utils/password.go (6,158 bytes)
+[2025-06-11 10:19:48] [INFO] ✅ Validation: PASS (0 errors, 2 warnings)
+[2025-06-11 10:19:48] [INFO] ✅ File created: backend/utils/password.go (6,158 bytes)
+[2025-06-11 10:19:48] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:19:48] [INFO] 📊 Scanned: 17 dirs, 7 files, 45,779 bytes
+[2025-06-11 10:19:48] [INFO] 📚 Learned universal patterns for generic
+[2025-06-11 10:19:48] [INFO] 🔄 Updated context with: backend/utils/password.go
+[2025-06-11 10:19:48] [INFO] 📝 Generating: backend/utils/jwt.go
+[2025-06-11 10:19:48] [INFO] 🎯 Building context for: backend/utils/jwt.go
+[2025-06-11 10:19:48] [INFO] 📊 Context built: 8 items, 481 tokens, 1.00 compression
+[2025-06-11 10:19:48] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:19:48] [INFO] 📊 Scanned: 17 dirs, 7 files, 45,779 bytes
+[2025-06-11 10:19:48] [INFO] 📖 Read file: backend/utils/password.go
+[2025-06-11 10:19:48] [INFO] 🔗 MCP found 1 related files for context
+[2025-06-11 10:20:09] [INFO] ✅ Validation: PASS (0 errors, 10 warnings)
+[2025-06-11 10:20:09] [INFO] 💬 LLM Interaction: code_generation_chunk_01 -> code_generation_chunk_01_009_response.txt
+[2025-06-11 10:20:09] [INFO] 📁 Creating file immediately: backend/utils/jwt.go
+[2025-06-11 10:20:09] [INFO] 📄 Creating file: backend/utils/jwt.go
+[2025-06-11 10:20:09] [INFO] ✅ Validation: PASS (0 errors, 10 warnings)
+[2025-06-11 10:20:09] [INFO] ✅ Created: backend/utils/jwt.go (5,352 bytes)
+[2025-06-11 10:20:09] [INFO] ✅ Validation: PASS (0 errors, 10 warnings)
+[2025-06-11 10:20:09] [INFO] ✅ File created: backend/utils/jwt.go (5,352 bytes)
+[2025-06-11 10:20:09] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:20:09] [INFO] 📊 Scanned: 17 dirs, 8 files, 51,131 bytes
+[2025-06-11 10:20:09] [INFO] 📚 Learned universal patterns for generic
+[2025-06-11 10:20:09] [INFO] 🔄 Updated context with: backend/utils/jwt.go
+[2025-06-11 10:20:09] [INFO] ✅ Chunk chunk_01 complete: 100.0% success rate
+[2025-06-11 10:20:09] [INFO] 🔨 Generating chunk: chunk_02 (8 files)
+[2025-06-11 10:20:09] [INFO] 📝 Generating: backend/db/db.go
+[2025-06-11 10:20:09] [INFO] 🎯 Building context for: backend/db/db.go
+[2025-06-11 10:20:09] [INFO] 📊 Context built: 4 items, 369 tokens, 1.00 compression
+[2025-06-11 10:20:09] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:20:09] [INFO] 📊 Scanned: 17 dirs, 8 files, 51,131 bytes
+[2025-06-11 10:20:32] [INFO] ✅ Validation: PASS (0 errors, 15 warnings)
+[2025-06-11 10:20:32] [INFO] 💬 LLM Interaction: code_generation_chunk_02 -> code_generation_chunk_02_010_response.txt
+[2025-06-11 10:20:32] [INFO] 📁 Creating file immediately: backend/db/db.go
+[2025-06-11 10:20:32] [INFO] 📄 Creating file: backend/db/db.go
+[2025-06-11 10:20:32] [INFO] ✅ Validation: PASS (0 errors, 15 warnings)
+[2025-06-11 10:20:32] [INFO] ✅ Created: backend/db/db.go (5,484 bytes)
+[2025-06-11 10:20:32] [INFO] ✅ Validation: PASS (0 errors, 15 warnings)
+[2025-06-11 10:20:32] [INFO] ✅ File created: backend/db/db.go (5,484 bytes)
+[2025-06-11 10:20:32] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:20:32] [INFO] 📊 Scanned: 17 dirs, 9 files, 56,615 bytes
+[2025-06-11 10:20:32] [INFO] 📚 Learned universal patterns for database
+[2025-06-11 10:20:32] [INFO] 🔄 Updated context with: backend/db/db.go
+[2025-06-11 10:20:32] [INFO] 📝 Generating: backend/middleware/auth_middleware.go
+[2025-06-11 10:20:32] [INFO] 🎯 Building context for: backend/middleware/auth_middleware.go
+[2025-06-11 10:20:32] [INFO] 📊 Context built: 3 items, 357 tokens, 1.00 compression
+[2025-06-11 10:20:32] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:20:32] [INFO] 📊 Scanned: 17 dirs, 9 files, 56,615 bytes
+[2025-06-11 10:20:46] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:20:46] [INFO] 💬 LLM Interaction: code_generation_chunk_02 -> code_generation_chunk_02_011_response.txt
+[2025-06-11 10:20:46] [INFO] 📁 Creating file immediately: backend/middleware/auth_middleware.go
+[2025-06-11 10:20:46] [INFO] 📄 Creating file: backend/middleware/auth_middleware.go
+[2025-06-11 10:20:46] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:20:46] [INFO] ✅ Created: backend/middleware/auth_middleware.go (3,532 bytes)
+[2025-06-11 10:20:46] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:20:46] [INFO] ✅ File created: backend/middleware/auth_middleware.go (3,532 bytes)
+[2025-06-11 10:20:46] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:20:46] [INFO] 📊 Scanned: 17 dirs, 10 files, 60,147 bytes
+[2025-06-11 10:20:46] [INFO] 📚 Learned universal patterns for generic
+[2025-06-11 10:20:46] [INFO] 🔄 Updated context with: backend/middleware/auth_middleware.go
+[2025-06-11 10:20:46] [INFO] 📝 Generating: backend/api/handlers/auth_handler.go
+[2025-06-11 10:20:46] [INFO] 🎯 Building context for: backend/api/handlers/auth_handler.go
+[2025-06-11 10:20:46] [INFO] 📊 Context built: 10 items, 522 tokens, 1.00 compression
+[2025-06-11 10:20:46] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:20:46] [INFO] 📊 Scanned: 17 dirs, 10 files, 60,147 bytes
+[2025-06-11 10:21:41] [INFO] ✅ Validation: PASS (0 errors, 11 warnings)
+[2025-06-11 10:21:41] [INFO] 💬 LLM Interaction: code_generation_chunk_02 -> code_generation_chunk_02_012_response.txt
+[2025-06-11 10:21:41] [INFO] 📁 Creating file immediately: backend/api/handlers/auth_handler.go
+[2025-06-11 10:21:41] [INFO] 📄 Creating file: backend/api/handlers/auth_handler.go
+[2025-06-11 10:21:41] [INFO] ✅ Validation: PASS (0 errors, 11 warnings)
+[2025-06-11 10:21:41] [INFO] ✅ Created: backend/api/handlers/auth_handler.go (15,283 bytes)
+[2025-06-11 10:21:41] [INFO] ✅ Validation: PASS (0 errors, 11 warnings)
+[2025-06-11 10:21:41] [INFO] ✅ File created: backend/api/handlers/auth_handler.go (15,283 bytes)
+[2025-06-11 10:21:41] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:21:41] [INFO] 📊 Scanned: 18 dirs, 11 files, 75,430 bytes
+[2025-06-11 10:21:41] [INFO] 📚 Learned universal patterns for business_logic
+[2025-06-11 10:21:41] [INFO] 🔄 Updated context with: backend/api/handlers/auth_handler.go
+[2025-06-11 10:21:41] [INFO] 📝 Generating: backend/api/handlers/account_handler.go
+[2025-06-11 10:21:41] [INFO] 🎯 Building context for: backend/api/handlers/account_handler.go
+[2025-06-11 10:21:41] [INFO] 📊 Context built: 9 items, 509 tokens, 1.00 compression
+[2025-06-11 10:21:41] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:21:41] [INFO] 📊 Scanned: 18 dirs, 11 files, 75,430 bytes
+[2025-06-11 10:21:41] [INFO] 📖 Read file: backend/api/handlers/auth_handler.go
+[2025-06-11 10:21:41] [INFO] 🔗 MCP found 1 related files for context
+[2025-06-11 10:22:30] [INFO] ✅ Validation: PASS (0 errors, 5 warnings)
+[2025-06-11 10:22:30] [INFO] 💬 LLM Interaction: code_generation_chunk_02 -> code_generation_chunk_02_013_response.txt
+[2025-06-11 10:22:30] [INFO] 📁 Creating file immediately: backend/api/handlers/account_handler.go
+[2025-06-11 10:22:30] [INFO] 📄 Creating file: backend/api/handlers/account_handler.go
+[2025-06-11 10:22:30] [INFO] ✅ Validation: PASS (0 errors, 5 warnings)
+[2025-06-11 10:22:30] [INFO] ✅ Created: backend/api/handlers/account_handler.go (14,364 bytes)
+[2025-06-11 10:22:30] [INFO] ✅ Validation: PASS (0 errors, 5 warnings)
+[2025-06-11 10:22:30] [INFO] ✅ File created: backend/api/handlers/account_handler.go (14,364 bytes)
+[2025-06-11 10:22:30] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:22:30] [INFO] 📊 Scanned: 18 dirs, 12 files, 89,794 bytes
+[2025-06-11 10:22:30] [INFO] 📚 Learned universal patterns for business_logic
+[2025-06-11 10:22:30] [INFO] 🔄 Updated context with: backend/api/handlers/account_handler.go
+[2025-06-11 10:22:30] [INFO] 📝 Generating: backend/api/handlers/transaction_handler.go
+[2025-06-11 10:22:30] [INFO] 🎯 Building context for: backend/api/handlers/transaction_handler.go
+[2025-06-11 10:22:30] [INFO] 📊 Context built: 15 items, 632 tokens, 1.00 compression
+[2025-06-11 10:22:30] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:22:30] [INFO] 📊 Scanned: 18 dirs, 12 files, 89,794 bytes
+[2025-06-11 10:22:30] [INFO] 📖 Read file: backend/api/handlers/account_handler.go
+[2025-06-11 10:22:30] [INFO] 📖 Read file: backend/api/handlers/auth_handler.go
+[2025-06-11 10:22:30] [INFO] 🔗 MCP found 2 related files for context
+[2025-06-11 10:23:44] [INFO] ✅ Validation: PASS (0 errors, 11 warnings)
+[2025-06-11 10:23:44] [INFO] 💬 LLM Interaction: code_generation_chunk_02 -> code_generation_chunk_02_014_response.txt
+[2025-06-11 10:23:44] [INFO] 📁 Creating file immediately: backend/api/handlers/transaction_handler.go
+[2025-06-11 10:23:44] [INFO] 📄 Creating file: backend/api/handlers/transaction_handler.go
+[2025-06-11 10:23:44] [INFO] ✅ Validation: PASS (0 errors, 11 warnings)
+[2025-06-11 10:23:44] [INFO] ✅ Created: backend/api/handlers/transaction_handler.go (21,608 bytes)
+[2025-06-11 10:23:44] [INFO] ✅ Validation: PASS (0 errors, 11 warnings)
+[2025-06-11 10:23:44] [INFO] ✅ File created: backend/api/handlers/transaction_handler.go (21,608 bytes)
+[2025-06-11 10:23:44] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:23:44] [INFO] 📊 Scanned: 18 dirs, 13 files, 111,402 bytes
+[2025-06-11 10:23:44] [INFO] 📚 Learned universal patterns for business_logic
+[2025-06-11 10:23:44] [INFO] 🔄 Updated context with: backend/api/handlers/transaction_handler.go
+[2025-06-11 10:23:44] [INFO] 📝 Generating: backend/api/router.go
+[2025-06-11 10:23:44] [INFO] 🎯 Building context for: backend/api/router.go
+[2025-06-11 10:23:44] [INFO] 📊 Context built: 24 items, 1054 tokens, 1.00 compression
+[2025-06-11 10:23:44] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:23:44] [INFO] 📊 Scanned: 18 dirs, 13 files, 111,402 bytes
+[2025-06-11 10:23:44] [INFO] 📖 Read file: backend/api/handlers/account_handler.go
+[2025-06-11 10:23:44] [INFO] 📖 Read file: backend/api/handlers/auth_handler.go
+[2025-06-11 10:23:44] [INFO] 📖 Read file: backend/api/handlers/transaction_handler.go
+[2025-06-11 10:23:44] [INFO] 🔗 MCP found 3 related files for context
+[2025-06-11 10:23:57] [INFO] ✅ Validation: PASS (0 errors, 3 warnings)
+[2025-06-11 10:23:57] [INFO] 💬 LLM Interaction: code_generation_chunk_02 -> code_generation_chunk_02_015_response.txt
+[2025-06-11 10:23:57] [INFO] 📁 Creating file immediately: backend/api/router.go
+[2025-06-11 10:23:57] [INFO] 📄 Creating file: backend/api/router.go
+[2025-06-11 10:23:57] [INFO] ✅ Validation: PASS (0 errors, 3 warnings)
+[2025-06-11 10:23:57] [INFO] ✅ Created: backend/api/router.go (2,829 bytes)
+[2025-06-11 10:23:57] [INFO] ✅ Validation: PASS (0 errors, 3 warnings)
+[2025-06-11 10:23:57] [INFO] ✅ File created: backend/api/router.go (2,829 bytes)
+[2025-06-11 10:23:57] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:23:57] [INFO] 📊 Scanned: 18 dirs, 14 files, 114,231 bytes
+[2025-06-11 10:23:57] [INFO] 📚 Learned universal patterns for business_logic
+[2025-06-11 10:23:57] [INFO] 🔄 Updated context with: backend/api/router.go
+[2025-06-11 10:23:57] [INFO] 📝 Generating: backend/main.go
+[2025-06-11 10:23:57] [INFO] 🎯 Building context for: backend/main.go
+[2025-06-11 10:23:57] [INFO] 📊 Context built: 14 items, 612 tokens, 1.00 compression
+[2025-06-11 10:23:57] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:23:57] [INFO] 📊 Scanned: 18 dirs, 14 files, 114,231 bytes
+[2025-06-11 10:23:57] [INFO] 📖 Read file: backend/api/handlers/account_handler.go
+[2025-06-11 10:23:57] [INFO] 📖 Read file: backend/api/handlers/auth_handler.go
+[2025-06-11 10:23:57] [INFO] 📖 Read file: backend/api/handlers/transaction_handler.go
+[2025-06-11 10:23:57] [INFO] 📖 Read file: backend/api/router.go
+[2025-06-11 10:23:57] [INFO] 📖 Read file: backend/config/config.go
+[2025-06-11 10:23:57] [INFO] 🔗 MCP found 5 related files for context
+[2025-06-11 10:24:08] [INFO] ✅ Validation: PASS (0 errors, 2 warnings)
+[2025-06-11 10:24:08] [INFO] 💬 LLM Interaction: code_generation_chunk_02 -> code_generation_chunk_02_016_response.txt
+[2025-06-11 10:24:08] [INFO] 📁 Creating file immediately: backend/main.go
+[2025-06-11 10:24:08] [INFO] 📄 Creating file: backend/main.go
+[2025-06-11 10:24:08] [INFO] ✅ Validation: PASS (0 errors, 2 warnings)
+[2025-06-11 10:24:08] [INFO] ✅ Created: backend/main.go (2,407 bytes)
+[2025-06-11 10:24:08] [INFO] ✅ Validation: PASS (0 errors, 2 warnings)
+[2025-06-11 10:24:08] [INFO] ✅ File created: backend/main.go (2,407 bytes)
+[2025-06-11 10:24:08] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:24:08] [INFO] 📊 Scanned: 18 dirs, 15 files, 116,638 bytes
+[2025-06-11 10:24:08] [INFO] 📚 Learned universal patterns for generic
+[2025-06-11 10:24:08] [INFO] 🔄 Updated context with: backend/main.go
+[2025-06-11 10:24:08] [INFO] 📝 Generating: frontend/lib/models/user.dart
+[2025-06-11 10:24:08] [INFO] 🎯 Building context for: frontend/lib/models/user.dart
+[2025-06-11 10:24:08] [INFO] 📊 Context built: 0 items, 306 tokens, 0.00 compression
+[2025-06-11 10:24:08] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:24:08] [INFO] 📊 Scanned: 18 dirs, 15 files, 116,638 bytes
+[2025-06-11 10:24:33] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:24:33] [INFO] 💬 LLM Interaction: code_generation_chunk_02 -> code_generation_chunk_02_017_response.txt
+[2025-06-11 10:24:33] [INFO] 📁 Creating file immediately: frontend/lib/models/user.dart
+[2025-06-11 10:24:33] [INFO] 📄 Creating file: frontend/lib/models/user.dart
+[2025-06-11 10:24:33] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:24:33] [INFO] ✅ Created: frontend/lib/models/user.dart (6,965 bytes)
+[2025-06-11 10:24:33] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:24:33] [INFO] ✅ File created: frontend/lib/models/user.dart (6,965 bytes)
+[2025-06-11 10:24:33] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:24:33] [INFO] 📊 Scanned: 18 dirs, 16 files, 123,603 bytes
+[2025-06-11 10:24:33] [INFO] 📚 Learned universal patterns for data_structure
+[2025-06-11 10:24:33] [INFO] 🔄 Updated context with: frontend/lib/models/user.dart
+[2025-06-11 10:24:33] [INFO] ✅ Chunk chunk_02 complete: 100.0% success rate
+[2025-06-11 10:24:33] [INFO] 🔨 Generating chunk: chunk_03 (8 files)
+[2025-06-11 10:24:33] [INFO] 📝 Generating: frontend/lib/models/account.dart
+[2025-06-11 10:24:33] [INFO] 🎯 Building context for: frontend/lib/models/account.dart
+[2025-06-11 10:24:33] [INFO] 📊 Context built: 0 items, 311 tokens, 0.00 compression
+[2025-06-11 10:24:33] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:24:33] [INFO] 📊 Scanned: 18 dirs, 16 files, 123,603 bytes
+[2025-06-11 10:24:33] [INFO] 📖 Read file: frontend/lib/models/user.dart
+[2025-06-11 10:24:33] [INFO] 🔗 MCP found 1 related files for context
+[2025-06-11 10:24:56] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:24:56] [INFO] 💬 LLM Interaction: code_generation_chunk_03 -> code_generation_chunk_03_018_response.txt
+[2025-06-11 10:24:56] [INFO] 📁 Creating file immediately: frontend/lib/models/account.dart
+[2025-06-11 10:24:56] [INFO] 📄 Creating file: frontend/lib/models/account.dart
+[2025-06-11 10:24:56] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:24:56] [INFO] ✅ Created: frontend/lib/models/account.dart (6,999 bytes)
+[2025-06-11 10:24:56] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:24:56] [INFO] ✅ File created: frontend/lib/models/account.dart (6,999 bytes)
+[2025-06-11 10:24:56] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:24:56] [INFO] 📊 Scanned: 18 dirs, 17 files, 130,602 bytes
+[2025-06-11 10:24:56] [INFO] 📚 Learned universal patterns for data_structure
+[2025-06-11 10:24:56] [INFO] 🔄 Updated context with: frontend/lib/models/account.dart
+[2025-06-11 10:24:56] [INFO] 📝 Generating: frontend/lib/models/transaction.dart
+[2025-06-11 10:24:56] [INFO] 🎯 Building context for: frontend/lib/models/transaction.dart
+[2025-06-11 10:24:56] [INFO] 📊 Context built: 0 items, 311 tokens, 0.00 compression
+[2025-06-11 10:24:56] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:24:56] [INFO] 📊 Scanned: 18 dirs, 17 files, 130,602 bytes
+[2025-06-11 10:24:56] [INFO] 📖 Read file: frontend/lib/models/account.dart
+[2025-06-11 10:24:56] [INFO] 📖 Read file: frontend/lib/models/user.dart
+[2025-06-11 10:24:56] [INFO] 🔗 MCP found 2 related files for context
+[2025-06-11 10:25:25] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-11 10:25:25] [INFO] 💬 LLM Interaction: code_generation_chunk_03 -> code_generation_chunk_03_019_response.txt
+[2025-06-11 10:25:25] [INFO] 📁 Creating file immediately: frontend/lib/models/transaction.dart
+[2025-06-11 10:25:25] [INFO] 📄 Creating file: frontend/lib/models/transaction.dart
+[2025-06-11 10:25:25] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-11 10:25:25] [INFO] ✅ Created: frontend/lib/models/transaction.dart (8,865 bytes)
+[2025-06-11 10:25:25] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-11 10:25:25] [INFO] ✅ File created: frontend/lib/models/transaction.dart (8,865 bytes)
+[2025-06-11 10:25:25] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:25:25] [INFO] 📊 Scanned: 18 dirs, 18 files, 139,467 bytes
+[2025-06-11 10:25:25] [INFO] 📚 Learned universal patterns for data_structure
+[2025-06-11 10:25:25] [INFO] 🔄 Updated context with: frontend/lib/models/transaction.dart
+[2025-06-11 10:25:25] [INFO] 📝 Generating: frontend/lib/utils/constants.dart
+[2025-06-11 10:25:25] [INFO] 🎯 Building context for: frontend/lib/utils/constants.dart
+[2025-06-11 10:25:25] [INFO] 📊 Context built: 0 items, 298 tokens, 0.00 compression
+[2025-06-11 10:25:25] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:25:25] [INFO] 📊 Scanned: 18 dirs, 18 files, 139,467 bytes
+[2025-06-11 10:25:44] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:25:44] [INFO] 💬 LLM Interaction: code_generation_chunk_03 -> code_generation_chunk_03_020_response.txt
+[2025-06-11 10:25:44] [INFO] 📁 Creating file immediately: frontend/lib/utils/constants.dart
+[2025-06-11 10:25:44] [INFO] 📄 Creating file: frontend/lib/utils/constants.dart
+[2025-06-11 10:25:44] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:25:44] [INFO] ✅ Created: frontend/lib/utils/constants.dart (4,394 bytes)
+[2025-06-11 10:25:44] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:25:44] [INFO] ✅ File created: frontend/lib/utils/constants.dart (4,394 bytes)
+[2025-06-11 10:25:44] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:25:44] [INFO] 📊 Scanned: 18 dirs, 19 files, 143,861 bytes
+[2025-06-11 10:25:44] [INFO] 📚 Learned universal patterns for generic
+[2025-06-11 10:25:44] [INFO] 🔄 Updated context with: frontend/lib/utils/constants.dart
+[2025-06-11 10:25:44] [INFO] 📝 Generating: frontend/lib/services/api_service.dart
+[2025-06-11 10:25:44] [INFO] 🎯 Building context for: frontend/lib/services/api_service.dart
+[2025-06-11 10:25:44] [INFO] 📊 Context built: 17 items, 765 tokens, 1.00 compression
+[2025-06-11 10:25:44] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:25:44] [INFO] 📊 Scanned: 18 dirs, 19 files, 143,861 bytes
+[2025-06-11 10:26:46] [INFO] ✅ Validation: PASS (0 errors, 2 warnings)
+[2025-06-11 10:26:46] [INFO] 💬 LLM Interaction: code_generation_chunk_03 -> code_generation_chunk_03_021_response.txt
+[2025-06-11 10:26:46] [INFO] 📁 Creating file immediately: frontend/lib/services/api_service.dart
+[2025-06-11 10:26:46] [INFO] 📄 Creating file: frontend/lib/services/api_service.dart
+[2025-06-11 10:26:46] [INFO] ✅ Validation: PASS (0 errors, 2 warnings)
+[2025-06-11 10:26:46] [INFO] ✅ Created: frontend/lib/services/api_service.dart (21,044 bytes)
+[2025-06-11 10:26:46] [INFO] ✅ Validation: PASS (0 errors, 2 warnings)
+[2025-06-11 10:26:46] [INFO] ✅ File created: frontend/lib/services/api_service.dart (21,044 bytes)
+[2025-06-11 10:26:46] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:26:46] [INFO] 📊 Scanned: 18 dirs, 20 files, 164,905 bytes
+[2025-06-11 10:26:46] [INFO] 📚 Learned universal patterns for business_logic
+[2025-06-11 10:26:46] [INFO] 🔄 Updated context with: frontend/lib/services/api_service.dart
+[2025-06-11 10:26:46] [INFO] 📝 Generating: frontend/lib/services/auth_service.dart
+[2025-06-11 10:26:46] [INFO] 🎯 Building context for: frontend/lib/services/auth_service.dart
+[2025-06-11 10:26:46] [INFO] 📊 Context built: 10 items, 630 tokens, 1.00 compression
+[2025-06-11 10:26:46] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:26:46] [INFO] 📊 Scanned: 18 dirs, 20 files, 164,905 bytes
+[2025-06-11 10:26:46] [INFO] 📖 Read file: frontend/lib/services/api_service.dart
+[2025-06-11 10:26:46] [INFO] 🔗 MCP found 1 related files for context
+[2025-06-11 10:27:31] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:27:31] [INFO] 💬 LLM Interaction: code_generation_chunk_03 -> code_generation_chunk_03_022_response.txt
+[2025-06-11 10:27:31] [INFO] 📁 Creating file immediately: frontend/lib/services/auth_service.dart
+[2025-06-11 10:27:31] [INFO] 📄 Creating file: frontend/lib/services/auth_service.dart
+[2025-06-11 10:27:31] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:27:31] [INFO] ✅ Created: frontend/lib/services/auth_service.dart (14,305 bytes)
+[2025-06-11 10:27:31] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:27:31] [INFO] ✅ File created: frontend/lib/services/auth_service.dart (14,305 bytes)
+[2025-06-11 10:27:31] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:27:31] [INFO] 📊 Scanned: 18 dirs, 21 files, 179,210 bytes
+[2025-06-11 10:27:31] [INFO] 📚 Learned universal patterns for business_logic
+[2025-06-11 10:27:31] [INFO] 🔄 Updated context with: frontend/lib/services/auth_service.dart
+[2025-06-11 10:27:31] [INFO] 📝 Generating: frontend/lib/widgets/account_card.dart
+[2025-06-11 10:27:31] [INFO] 🎯 Building context for: frontend/lib/widgets/account_card.dart
+[2025-06-11 10:27:31] [INFO] 📊 Context built: 6 items, 441 tokens, 1.00 compression
+[2025-06-11 10:27:31] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:27:31] [INFO] 📊 Scanned: 18 dirs, 21 files, 179,210 bytes
+[2025-06-11 10:27:58] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:27:58] [INFO] 💬 LLM Interaction: code_generation_chunk_03 -> code_generation_chunk_03_023_response.txt
+[2025-06-11 10:27:58] [INFO] 📁 Creating file immediately: frontend/lib/widgets/account_card.dart
+[2025-06-11 10:27:58] [INFO] 📄 Creating file: frontend/lib/widgets/account_card.dart
+[2025-06-11 10:27:58] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:27:58] [INFO] ✅ Created: frontend/lib/widgets/account_card.dart (7,686 bytes)
+[2025-06-11 10:27:58] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:27:58] [INFO] ✅ File created: frontend/lib/widgets/account_card.dart (7,686 bytes)
+[2025-06-11 10:27:58] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:27:58] [INFO] 📊 Scanned: 18 dirs, 22 files, 186,896 bytes
+[2025-06-11 10:27:58] [INFO] 📚 Learned universal patterns for ui_component
+[2025-06-11 10:27:58] [INFO] 🔄 Updated context with: frontend/lib/widgets/account_card.dart
+[2025-06-11 10:27:58] [INFO] 📝 Generating: frontend/lib/widgets/transaction_list_item.dart
+[2025-06-11 10:27:58] [INFO] 🎯 Building context for: frontend/lib/widgets/transaction_list_item.dart
+[2025-06-11 10:27:58] [INFO] 📊 Context built: 6 items, 455 tokens, 1.00 compression
+[2025-06-11 10:27:58] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:27:58] [INFO] 📊 Scanned: 18 dirs, 22 files, 186,896 bytes
+[2025-06-11 10:27:58] [INFO] 📖 Read file: frontend/lib/widgets/account_card.dart
+[2025-06-11 10:27:58] [INFO] 🔗 MCP found 1 related files for context
+[2025-06-11 10:29:22] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:29:22] [INFO] 💬 LLM Interaction: code_generation_chunk_03 -> code_generation_chunk_03_024_response.txt
+[2025-06-11 10:29:22] [INFO] 📁 Creating file immediately: frontend/lib/widgets/transaction_list_item.dart
+[2025-06-11 10:29:22] [INFO] 📄 Creating file: frontend/lib/widgets/transaction_list_item.dart
+[2025-06-11 10:29:22] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:29:22] [INFO] ✅ Created: frontend/lib/widgets/transaction_list_item.dart (6,848 bytes)
+[2025-06-11 10:29:22] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:29:22] [INFO] ✅ File created: frontend/lib/widgets/transaction_list_item.dart (6,848 bytes)
+[2025-06-11 10:29:22] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:29:22] [INFO] 📊 Scanned: 18 dirs, 23 files, 193,744 bytes
+[2025-06-11 10:29:22] [INFO] 📚 Learned universal patterns for ui_component
+[2025-06-11 10:29:22] [INFO] 🔄 Updated context with: frontend/lib/widgets/transaction_list_item.dart
+[2025-06-11 10:29:22] [INFO] 📝 Generating: frontend/lib/screens/login_screen.dart
+[2025-06-11 10:29:22] [INFO] 🎯 Building context for: frontend/lib/screens/login_screen.dart
+[2025-06-11 10:29:22] [INFO] 📊 Context built: 5 items, 461 tokens, 1.00 compression
+[2025-06-11 10:29:22] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:29:22] [INFO] 📊 Scanned: 18 dirs, 23 files, 193,744 bytes
+[2025-06-11 10:29:47] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-11 10:29:47] [INFO] 💬 LLM Interaction: code_generation_chunk_03 -> code_generation_chunk_03_025_response.txt
+[2025-06-11 10:29:47] [INFO] 📁 Creating file immediately: frontend/lib/screens/login_screen.dart
+[2025-06-11 10:29:47] [INFO] 📄 Creating file: frontend/lib/screens/login_screen.dart
+[2025-06-11 10:29:47] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-11 10:29:47] [INFO] ✅ Created: frontend/lib/screens/login_screen.dart (9,002 bytes)
+[2025-06-11 10:29:47] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-11 10:29:47] [INFO] ✅ File created: frontend/lib/screens/login_screen.dart (9,002 bytes)
+[2025-06-11 10:29:47] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:29:47] [INFO] 📊 Scanned: 18 dirs, 24 files, 202,746 bytes
+[2025-06-11 10:29:47] [INFO] 📚 Learned universal patterns for ui_component
+[2025-06-11 10:29:47] [INFO] 🔄 Updated context with: frontend/lib/screens/login_screen.dart
+[2025-06-11 10:29:47] [INFO] ✅ Chunk chunk_03 complete: 100.0% success rate
+[2025-06-11 10:29:47] [INFO] 🔨 Generating chunk: chunk_04 (7 files)
+[2025-06-11 10:29:47] [INFO] 📝 Generating: frontend/lib/screens/register_screen.dart
+[2025-06-11 10:29:47] [INFO] 🎯 Building context for: frontend/lib/screens/register_screen.dart
+[2025-06-11 10:29:47] [INFO] 📊 Context built: 5 items, 461 tokens, 1.00 compression
+[2025-06-11 10:29:47] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:29:47] [INFO] 📊 Scanned: 18 dirs, 24 files, 202,746 bytes
+[2025-06-11 10:29:47] [INFO] 📖 Read file: frontend/lib/screens/login_screen.dart
+[2025-06-11 10:29:47] [INFO] 🔗 MCP found 1 related files for context
+[2025-06-11 10:30:14] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:30:14] [INFO] 💬 LLM Interaction: code_generation_chunk_04 -> code_generation_chunk_04_026_response.txt
+[2025-06-11 10:30:14] [INFO] 📁 Creating file immediately: frontend/lib/screens/register_screen.dart
+[2025-06-11 10:30:14] [INFO] 📄 Creating file: frontend/lib/screens/register_screen.dart
+[2025-06-11 10:30:14] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:30:14] [INFO] ✅ Created: frontend/lib/screens/register_screen.dart (10,586 bytes)
+[2025-06-11 10:30:14] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:30:14] [INFO] ✅ File created: frontend/lib/screens/register_screen.dart (10,586 bytes)
+[2025-06-11 10:30:14] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:30:14] [INFO] 📊 Scanned: 18 dirs, 25 files, 213,332 bytes
+[2025-06-11 10:30:14] [INFO] 📚 Learned universal patterns for ui_component
+[2025-06-11 10:30:14] [INFO] 🔄 Updated context with: frontend/lib/screens/register_screen.dart
+[2025-06-11 10:30:14] [INFO] 📝 Generating: frontend/lib/screens/home_screen.dart
+[2025-06-11 10:30:14] [INFO] 🎯 Building context for: frontend/lib/screens/home_screen.dart
+[2025-06-11 10:30:14] [INFO] 📊 Context built: 11 items, 630 tokens, 1.00 compression
+[2025-06-11 10:30:14] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:30:14] [INFO] 📊 Scanned: 18 dirs, 25 files, 213,332 bytes
+[2025-06-11 10:30:14] [INFO] 📖 Read file: frontend/lib/screens/login_screen.dart
+[2025-06-11 10:30:14] [INFO] 📖 Read file: frontend/lib/screens/register_screen.dart
+[2025-06-11 10:30:14] [INFO] 🔗 MCP found 2 related files for context
+[2025-06-11 10:31:10] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:31:10] [INFO] 💬 LLM Interaction: code_generation_chunk_04 -> code_generation_chunk_04_027_response.txt
+[2025-06-11 10:31:10] [INFO] 📁 Creating file immediately: frontend/lib/screens/home_screen.dart
+[2025-06-11 10:31:10] [INFO] 📄 Creating file: frontend/lib/screens/home_screen.dart
+[2025-06-11 10:31:10] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:31:10] [INFO] ✅ Created: frontend/lib/screens/home_screen.dart (18,485 bytes)
+[2025-06-11 10:31:10] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:31:10] [INFO] ✅ File created: frontend/lib/screens/home_screen.dart (18,485 bytes)
+[2025-06-11 10:31:10] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:31:10] [INFO] 📊 Scanned: 18 dirs, 26 files, 231,817 bytes
+[2025-06-11 10:31:10] [INFO] 📚 Learned universal patterns for ui_component
+[2025-06-11 10:31:10] [INFO] 🔄 Updated context with: frontend/lib/screens/home_screen.dart
+[2025-06-11 10:31:10] [INFO] 📝 Generating: frontend/lib/screens/account_details_screen.dart
+[2025-06-11 10:31:10] [INFO] 🎯 Building context for: frontend/lib/screens/account_details_screen.dart
+[2025-06-11 10:31:10] [INFO] 📊 Context built: 17 items, 786 tokens, 1.00 compression
+[2025-06-11 10:31:10] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:31:10] [INFO] 📊 Scanned: 18 dirs, 26 files, 231,817 bytes
+[2025-06-11 10:31:10] [INFO] 📖 Read file: frontend/lib/screens/home_screen.dart
+[2025-06-11 10:31:10] [INFO] 📖 Read file: frontend/lib/screens/login_screen.dart
+[2025-06-11 10:31:10] [INFO] 📖 Read file: frontend/lib/screens/register_screen.dart
+[2025-06-11 10:31:10] [INFO] 🔗 MCP found 3 related files for context
+[2025-06-11 10:32:00] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:32:00] [INFO] 💬 LLM Interaction: code_generation_chunk_04 -> code_generation_chunk_04_028_response.txt
+[2025-06-11 10:32:00] [INFO] 📁 Creating file immediately: frontend/lib/screens/account_details_screen.dart
+[2025-06-11 10:32:00] [INFO] 📄 Creating file: frontend/lib/screens/account_details_screen.dart
+[2025-06-11 10:32:00] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:32:00] [INFO] ✅ Created: frontend/lib/screens/account_details_screen.dart (16,261 bytes)
+[2025-06-11 10:32:00] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:32:00] [INFO] ✅ File created: frontend/lib/screens/account_details_screen.dart (16,261 bytes)
+[2025-06-11 10:32:00] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:32:00] [INFO] 📊 Scanned: 18 dirs, 27 files, 248,078 bytes
+[2025-06-11 10:32:00] [INFO] 📚 Learned universal patterns for ui_component
+[2025-06-11 10:32:00] [INFO] 🔄 Updated context with: frontend/lib/screens/account_details_screen.dart
+[2025-06-11 10:32:00] [INFO] 📝 Generating: frontend/lib/screens/transfer_screen.dart
+[2025-06-11 10:32:00] [INFO] 🎯 Building context for: frontend/lib/screens/transfer_screen.dart
+[2025-06-11 10:32:00] [INFO] 📊 Context built: 11 items, 630 tokens, 1.00 compression
+[2025-06-11 10:32:00] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:32:00] [INFO] 📊 Scanned: 18 dirs, 27 files, 248,078 bytes
+[2025-06-11 10:32:00] [INFO] 📖 Read file: frontend/lib/screens/account_details_screen.dart
+[2025-06-11 10:32:00] [INFO] 📖 Read file: frontend/lib/screens/home_screen.dart
+[2025-06-11 10:32:00] [INFO] 📖 Read file: frontend/lib/screens/login_screen.dart
+[2025-06-11 10:32:00] [INFO] 📖 Read file: frontend/lib/screens/register_screen.dart
+[2025-06-11 10:32:00] [INFO] 🔗 MCP found 4 related files for context
+[2025-06-11 10:32:32] [INFO] ✅ Validation: PASS (0 errors, 2 warnings)
+[2025-06-11 10:32:32] [INFO] 💬 LLM Interaction: code_generation_chunk_04 -> code_generation_chunk_04_029_response.txt
+[2025-06-11 10:32:32] [INFO] 📁 Creating file immediately: frontend/lib/screens/transfer_screen.dart
+[2025-06-11 10:32:32] [INFO] 📄 Creating file: frontend/lib/screens/transfer_screen.dart
+[2025-06-11 10:32:32] [INFO] ✅ Validation: PASS (0 errors, 2 warnings)
+[2025-06-11 10:32:32] [INFO] ✅ Created: frontend/lib/screens/transfer_screen.dart (10,084 bytes)
+[2025-06-11 10:32:32] [INFO] ✅ Validation: PASS (0 errors, 2 warnings)
+[2025-06-11 10:32:32] [INFO] ✅ File created: frontend/lib/screens/transfer_screen.dart (10,084 bytes)
+[2025-06-11 10:32:32] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:32:32] [INFO] 📊 Scanned: 18 dirs, 28 files, 258,162 bytes
+[2025-06-11 10:32:32] [INFO] 📚 Learned universal patterns for ui_component
+[2025-06-11 10:32:32] [INFO] 🔄 Updated context with: frontend/lib/screens/transfer_screen.dart
+[2025-06-11 10:32:32] [INFO] 📝 Generating: frontend/lib/main.dart
+[2025-06-11 10:32:32] [INFO] 🎯 Building context for: frontend/lib/main.dart
+[2025-06-11 10:32:32] [INFO] 📊 Context built: 0 items, 298 tokens, 0.00 compression
+[2025-06-11 10:32:32] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:32:32] [INFO] 📊 Scanned: 18 dirs, 28 files, 258,162 bytes
+[2025-06-11 10:32:32] [INFO] 📖 Read file: frontend/lib/models/account.dart
+[2025-06-11 10:32:32] [INFO] 📖 Read file: frontend/lib/models/transaction.dart
+[2025-06-11 10:32:32] [INFO] 📖 Read file: frontend/lib/models/user.dart
+[2025-06-11 10:32:32] [INFO] 📖 Read file: frontend/lib/screens/account_details_screen.dart
+[2025-06-11 10:32:32] [INFO] 📖 Read file: frontend/lib/screens/home_screen.dart
+[2025-06-11 10:32:32] [INFO] 🔗 MCP found 5 related files for context
+[2025-06-11 10:32:52] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-11 10:32:52] [INFO] 💬 LLM Interaction: code_generation_chunk_04 -> code_generation_chunk_04_030_response.txt
+[2025-06-11 10:32:52] [INFO] 📁 Creating file immediately: frontend/lib/main.dart
+[2025-06-11 10:32:52] [INFO] 📄 Creating file: frontend/lib/main.dart
+[2025-06-11 10:32:52] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-11 10:32:52] [INFO] ✅ Created: frontend/lib/main.dart (5,488 bytes)
+[2025-06-11 10:32:52] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-11 10:32:52] [INFO] ✅ File created: frontend/lib/main.dart (5,488 bytes)
+[2025-06-11 10:32:52] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:32:52] [INFO] 📊 Scanned: 18 dirs, 29 files, 263,650 bytes
+[2025-06-11 10:32:52] [INFO] 📚 Learned universal patterns for generic
+[2025-06-11 10:32:52] [INFO] 🔄 Updated context with: frontend/lib/main.dart
+[2025-06-11 10:32:52] [INFO] 📝 Generating: docker-compose.yml
+[2025-06-11 10:32:52] [INFO] 🎯 Building context for: docker-compose.yml
+[2025-06-11 10:32:52] [INFO] 📊 Context built: 0 items, 286 tokens, 0.00 compression
+[2025-06-11 10:32:52] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:32:52] [INFO] 📊 Scanned: 18 dirs, 29 files, 263,650 bytes
+[2025-06-11 10:32:58] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:32:58] [INFO] 💬 LLM Interaction: code_generation_chunk_04 -> code_generation_chunk_04_031_response.txt
+[2025-06-11 10:32:58] [INFO] 📁 Creating file immediately: docker-compose.yml
+[2025-06-11 10:32:58] [INFO] 📄 Creating file: docker-compose.yml
+[2025-06-11 10:32:58] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:32:58] [INFO] ✅ Created: docker-compose.yml (1,188 bytes)
+[2025-06-11 10:32:58] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:32:58] [INFO] ✅ File created: docker-compose.yml (1,188 bytes)
+[2025-06-11 10:32:58] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:32:58] [INFO] 📊 Scanned: 18 dirs, 30 files, 264,838 bytes
+[2025-06-11 10:32:58] [INFO] 📚 Learned universal patterns for infrastructure
+[2025-06-11 10:32:58] [INFO] 🔄 Updated context with: docker-compose.yml
+[2025-06-11 10:32:58] [INFO] 📝 Generating: README.md
+[2025-06-11 10:32:58] [INFO] 🎯 Building context for: README.md
+[2025-06-11 10:32:58] [INFO] 📊 Context built: 0 items, 298 tokens, 0.00 compression
+[2025-06-11 10:32:58] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:32:58] [INFO] 📊 Scanned: 18 dirs, 30 files, 264,838 bytes
+[2025-06-11 10:33:10] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:10] [INFO] 💬 LLM Interaction: code_generation_chunk_04 -> code_generation_chunk_04_032_response.txt
+[2025-06-11 10:33:10] [INFO] 📁 Creating file immediately: README.md
+[2025-06-11 10:33:10] [INFO] 📄 Creating file: README.md
+[2025-06-11 10:33:10] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:10] [INFO] ✅ Created: README.md (65 bytes)
+[2025-06-11 10:33:10] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:10] [INFO] ✅ File created: README.md (65 bytes)
+[2025-06-11 10:33:10] [INFO] 🔍 Scanning codebase at: generated_code
+[2025-06-11 10:33:10] [INFO] 📊 Scanned: 18 dirs, 31 files, 264,903 bytes
+[2025-06-11 10:33:10] [INFO] 📚 Learned universal patterns for generic
+[2025-06-11 10:33:10] [INFO] 🔄 Updated context with: README.md
+[2025-06-11 10:33:10] [INFO] ✅ Chunk chunk_04 complete: 100.0% success rate
+[2025-06-11 10:33:10] [INFO] ✅ Code generation complete: 31 files, 100.0% success rate
+[2025-06-11 10:33:10] [INFO] 📊 Code generation results saved to: code_generation_results.json
+[2025-06-11 10:33:10] [INFO] 📈 Generation Statistics:
+[2025-06-11 10:33:10] [INFO]    Total Files: 31
+[2025-06-11 10:33:10] [INFO]    Successful: 31
+[2025-06-11 10:33:10] [INFO]    Success Rate: 100.0%
+[2025-06-11 10:33:10] [SUCCESS] ✅ SUCCESS in code_generation: Code generation completed successfully
+[2025-06-11 10:33:10] [INFO] 📁 Creating files from generated code...
+[2025-06-11 10:33:10] [INFO] 📝 Starting file creation from generation results
+[2025-06-11 10:33:10] [INFO] 📄 Creating file: frontend/pubspec.yaml
+[2025-06-11 10:33:10] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:10] [INFO] ✅ Created: frontend/pubspec.yaml (1,215 bytes)
+[2025-06-11 10:33:10] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:10] [INFO] 📄 Creating file: backend/go.mod
+[2025-06-11 10:33:10] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:10] [INFO] ✅ Created: backend/go.mod (1,976 bytes)
+[2025-06-11 10:33:10] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:10] [INFO] 📄 Creating file: backend/config/config.go
+[2025-06-11 10:33:10] [INFO] ✅ Validation: PASS (0 errors, 48 warnings)
+[2025-06-11 10:33:10] [INFO] ✅ Created: backend/config/config.go (7,364 bytes)
+[2025-06-11 10:33:10] [INFO] ✅ Validation: PASS (0 errors, 48 warnings)
+[2025-06-11 10:33:10] [INFO] 📄 Creating file: backend/models/user.go
+[2025-06-11 10:33:10] [INFO] ✅ Validation: PASS (0 errors, 39 warnings)
+[2025-06-11 10:33:10] [INFO] ✅ Created: backend/models/user.go (7,457 bytes)
+[2025-06-11 10:33:10] [INFO] ✅ Validation: PASS (0 errors, 39 warnings)
+[2025-06-11 10:33:10] [INFO] 📄 Creating file: backend/models/account.go
+[2025-06-11 10:33:10] [INFO] ✅ Validation: PASS (0 errors, 10 warnings)
+[2025-06-11 10:33:10] [INFO] ✅ Created: backend/models/account.go (11,236 bytes)
+[2025-06-11 10:33:10] [INFO] ✅ Validation: PASS (0 errors, 10 warnings)
+[2025-06-11 10:33:10] [INFO] 📄 Creating file: backend/models/transaction.go
+[2025-06-11 10:33:10] [INFO] ✅ Validation: PASS (0 errors, 16 warnings)
+[2025-06-11 10:33:10] [INFO] ✅ Created: backend/models/transaction.go (10,373 bytes)
+[2025-06-11 10:33:10] [INFO] ✅ Validation: PASS (0 errors, 16 warnings)
+[2025-06-11 10:33:10] [INFO] 📄 Creating file: backend/utils/password.go
+[2025-06-11 10:33:10] [INFO] ✅ Validation: PASS (0 errors, 2 warnings)
+[2025-06-11 10:33:10] [INFO] ✅ Created: backend/utils/password.go (6,158 bytes)
+[2025-06-11 10:33:10] [INFO] ✅ Validation: PASS (0 errors, 2 warnings)
+[2025-06-11 10:33:10] [INFO] 📄 Creating file: backend/utils/jwt.go
+[2025-06-11 10:33:10] [INFO] ✅ Validation: PASS (0 errors, 10 warnings)
+[2025-06-11 10:33:11] [INFO] ✅ Created: backend/utils/jwt.go (5,352 bytes)
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 10 warnings)
+[2025-06-11 10:33:11] [INFO] 📄 Creating file: backend/db/db.go
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 15 warnings)
+[2025-06-11 10:33:11] [INFO] ✅ Created: backend/db/db.go (5,484 bytes)
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 15 warnings)
+[2025-06-11 10:33:11] [INFO] 📄 Creating file: backend/middleware/auth_middleware.go
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:11] [INFO] ✅ Created: backend/middleware/auth_middleware.go (3,532 bytes)
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:11] [INFO] 📄 Creating file: backend/api/handlers/auth_handler.go
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 11 warnings)
+[2025-06-11 10:33:11] [INFO] ✅ Created: backend/api/handlers/auth_handler.go (15,283 bytes)
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 11 warnings)
+[2025-06-11 10:33:11] [INFO] 📄 Creating file: backend/api/handlers/account_handler.go
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 5 warnings)
+[2025-06-11 10:33:11] [INFO] ✅ Created: backend/api/handlers/account_handler.go (14,364 bytes)
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 5 warnings)
+[2025-06-11 10:33:11] [INFO] 📄 Creating file: backend/api/handlers/transaction_handler.go
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 11 warnings)
+[2025-06-11 10:33:11] [INFO] ✅ Created: backend/api/handlers/transaction_handler.go (21,608 bytes)
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 11 warnings)
+[2025-06-11 10:33:11] [INFO] 📄 Creating file: backend/api/router.go
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 3 warnings)
+[2025-06-11 10:33:11] [INFO] ✅ Created: backend/api/router.go (2,829 bytes)
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 3 warnings)
+[2025-06-11 10:33:11] [INFO] 📄 Creating file: backend/main.go
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 2 warnings)
+[2025-06-11 10:33:11] [INFO] ✅ Created: backend/main.go (2,407 bytes)
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 2 warnings)
+[2025-06-11 10:33:11] [INFO] 📄 Creating file: frontend/lib/models/user.dart
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:11] [INFO] ✅ Created: frontend/lib/models/user.dart (6,965 bytes)
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:11] [INFO] 📄 Creating file: frontend/lib/models/account.dart
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:11] [INFO] ✅ Created: frontend/lib/models/account.dart (6,999 bytes)
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:11] [INFO] 📄 Creating file: frontend/lib/models/transaction.dart
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-11 10:33:11] [INFO] ✅ Created: frontend/lib/models/transaction.dart (8,865 bytes)
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-11 10:33:11] [INFO] 📄 Creating file: frontend/lib/utils/constants.dart
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:11] [INFO] ✅ Created: frontend/lib/utils/constants.dart (4,394 bytes)
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:11] [INFO] 📄 Creating file: frontend/lib/services/api_service.dart
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 2 warnings)
+[2025-06-11 10:33:11] [INFO] ✅ Created: frontend/lib/services/api_service.dart (21,044 bytes)
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 2 warnings)
+[2025-06-11 10:33:11] [INFO] 📄 Creating file: frontend/lib/services/auth_service.dart
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:11] [INFO] ✅ Created: frontend/lib/services/auth_service.dart (14,305 bytes)
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:11] [INFO] 📄 Creating file: frontend/lib/widgets/account_card.dart
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:11] [INFO] ✅ Created: frontend/lib/widgets/account_card.dart (7,686 bytes)
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:11] [INFO] 📄 Creating file: frontend/lib/widgets/transaction_list_item.dart
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:11] [INFO] ✅ Created: frontend/lib/widgets/transaction_list_item.dart (6,848 bytes)
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:11] [INFO] 📄 Creating file: frontend/lib/screens/login_screen.dart
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-11 10:33:11] [INFO] ✅ Created: frontend/lib/screens/login_screen.dart (9,002 bytes)
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-11 10:33:11] [INFO] 📄 Creating file: frontend/lib/screens/register_screen.dart
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:11] [INFO] ✅ Created: frontend/lib/screens/register_screen.dart (10,586 bytes)
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:11] [INFO] 📄 Creating file: frontend/lib/screens/home_screen.dart
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:11] [INFO] ✅ Created: frontend/lib/screens/home_screen.dart (18,485 bytes)
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:11] [INFO] 📄 Creating file: frontend/lib/screens/account_details_screen.dart
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:11] [INFO] ✅ Created: frontend/lib/screens/account_details_screen.dart (16,261 bytes)
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:11] [INFO] 📄 Creating file: frontend/lib/screens/transfer_screen.dart
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 2 warnings)
+[2025-06-11 10:33:11] [INFO] ✅ Created: frontend/lib/screens/transfer_screen.dart (10,084 bytes)
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 2 warnings)
+[2025-06-11 10:33:11] [INFO] 📄 Creating file: frontend/lib/main.dart
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-11 10:33:11] [INFO] ✅ Created: frontend/lib/main.dart (5,488 bytes)
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 1 warnings)
+[2025-06-11 10:33:11] [INFO] 📄 Creating file: docker-compose.yml
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:11] [INFO] ✅ Created: docker-compose.yml (1,188 bytes)
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:11] [INFO] 📄 Creating file: README.md
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:11] [INFO] ✅ Created: README.md (65 bytes)
+[2025-06-11 10:33:11] [INFO] ✅ Validation: PASS (0 errors, 0 warnings)
+[2025-06-11 10:33:11] [INFO] ✅ File creation complete: 31/31 files created in 0.10s
+[2025-06-11 10:33:11] [INFO] 📊 File creation summary saved to: file_creation_summary.json
+[2025-06-11 10:33:11] [INFO] 📋 Creation report saved to: creation_report.txt
+[2025-06-11 10:33:11] [INFO] 📈 File Creation Statistics:
+[2025-06-11 10:33:11] [INFO]    Total Files: 31
+[2025-06-11 10:33:11] [INFO]    Created: 31
+[2025-06-11 10:33:11] [INFO]    Failed: 0
+[2025-06-11 10:33:11] [INFO]    Total Size: 264,903 bytes
+[2025-06-11 10:33:11] [INFO]    Creation Time: 0.10s
+[2025-06-11 10:33:11] [SUCCESS] ✅ SUCCESS in file_creation: Created 31 files successfully
+[2025-06-11 10:33:11] [INFO] 📁 Output directory: generated_code
+[2025-06-11 10:33:11] [INFO] --------------------------------------------------
+[2025-06-11 10:33:11] [SUCCESS] ✅ SUCCESS in workflow: Workflow completed!
+[2025-06-11 10:33:11] [INFO]    Final step: files_created
+[2025-06-11 10:33:11] [INFO]    Errors: 0

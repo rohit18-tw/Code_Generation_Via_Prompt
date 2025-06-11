@@ -1,0 +1,67 @@
+simple-bank-application/
+├── README.md
+├── backend/
+│   ├── /
+│   ├── api/
+│   │   ├── /
+│   │   ├── handlers/
+│   │   │   ├── account_handler.go
+│   │   │   ├── auth_handler.go
+│   │   │   └── transaction_handler.go
+│   │   └── router.go
+│   ├── config/
+│   │   ├── /
+│   │   └── config.go
+│   ├── db/
+│   │   ├── /
+│   │   └── db.go
+│   ├── go.mod
+│   ├── main.go
+│   ├── middleware/
+│   │   ├── /
+│   │   └── auth_middleware.go
+│   ├── models/
+│   │   ├── /
+│   │   ├── account.go
+│   │   ├── transaction.go
+│   │   └── user.go
+│   ├── tests/
+│   │   └── /
+│   └── utils/
+│       ├── /
+│       ├── jwt.go
+│       └── password.go
+├── docker-compose.yml
+└── frontend/
+    ├── /
+    ├── assets/
+    │   └── /
+    ├── lib/
+    │   ├── /
+    │   ├── main.dart
+    │   ├── models/
+    │   │   ├── /
+    │   │   ├── account.dart
+    │   │   ├── transaction.dart
+    │   │   └── user.dart
+    │   ├── screens/
+    │   │   ├── /
+    │   │   ├── account_details_screen.dart
+    │   │   ├── home_screen.dart
+    │   │   ├── login_screen.dart
+    │   │   ├── register_screen.dart
+    │   │   └── transfer_screen.dart
+    │   ├── services/
+    │   │   ├── /
+    │   │   ├── api_service.dart
+    │   │   └── auth_service.dart
+    │   ├── utils/
+    │   │   ├── /
+    │   │   └── constants.dart
+    │   └── widgets/
+    │       ├── /
+    │       ├── account_card.dart
+    │       └── transaction_list_item.dart
+    ├── pubspec.yaml
+    └── test/
+        └── /

@@ -1,0 +1,447 @@
+# LLM Response - code_generation_chunk_02
+# Timestamp: 2025-06-11 10:22:30
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_02_013
+# ==================================================
+
+package handlers
+
+import (
+	"database/sql"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"log"
+	"net/http"
+	"strconv"
+	"strings"
+	"time"
+
+	"github.com/gorilla/mux"
+
+	"backend/db"
+	"backend/models"
+	"backend/utils"
+)
+
+// AccountHandler handles all account-related API requests
+type AccountHandler struct {
+	DB *sql.DB
+}
+
+// NewAccountHandler creates a new instance of AccountHandler
+func NewAccountHandler(db *sql.DB) *AccountHandler {
+	return &AccountHandler{DB: db}
+}
+
+// CreateAccount handles the creation of a new bank account
+func (h *AccountHandler) CreateAccount(w http.ResponseWriter, r *http.Request) {
+	// Extract user ID from context (set by auth middleware)
+	userID, ok := r.Context().Value("userID").(int64)
+	if !ok {
+		log.Println("Error: Failed to get userID from context")
+		utils.RespondWithError(w, http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+
+	// Parse request body
+	var account models.Account
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&account); err != nil {
+		log.Printf("Error decoding request body: %v", err)
+		utils.RespondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+	defer r.Body.Close()
+
+	// Set user ID from authenticated context
+	account.UserID = userID
+
+	// Validate account type
+	if !isValidAccountType(string(account.Type)) {
+		log.Printf("Invalid account type requested: %s", account.Type)
+		utils.RespondWithError(w, http.StatusBadRequest, "Invalid account type")
+		return
+	}
+
+	// Generate account number
+	account.AccountNumber = models.GenerateAccountNumber()
+	account.Status = models.AccountStatusActive
+	account.CreatedAt = time.Now()
+	account.UpdatedAt = time.Now()
+
+	// Default balance to 0 if not specified
+	if account.Balance <= 0 {
+		account.Balance = 0
+	}
+
+	// Insert account into database
+	err := models.CreateAccount(h.DB, &account)
+	if err != nil {
+		log.Printf("Error creating account: %v", err)
+		utils.RespondWithError(w, http.StatusInternalServerError, "Failed to create account")
+		return
+	}
+
+	// Log account creation (mask sensitive data)
+	log.Printf("Account created: ID=%d, Type=%s, UserID=%d, Number=***%s", 
+		account.ID, 
+		account.Type, 
+		account.UserID, 
+		maskAccountNumber(account.AccountNumber))
+
+	utils.RespondWithJSON(w, http.StatusCreated, account)
+}
+
+// GetAccounts retrieves all accounts for the authenticated user
+func (h *AccountHandler) GetAccounts(w http.ResponseWriter, r *http.Request) {
+	// Extract user ID from context (set by auth middleware)
+	userID, ok := r.Context().Value("userID").(int64)
+	if !ok {
+		log.Println("Error: Failed to get userID from context")
+		utils.RespondWithError(w, http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+
+	// Get accounts from database
+	accounts, err := models.GetAccountsByUserID(h.DB, userID)
+	if err != nil {
+		log.Printf("Error retrieving accounts for user %d: %v", userID, err)
+		utils.RespondWithError(w, http.StatusInternalServerError, "Failed to retrieve accounts")
+		return
+	}
+
+	log.Printf("Retrieved %d accounts for user %d", len(accounts), userID)
+	utils.RespondWithJSON(w, http.StatusOK, accounts)
+}
+
+// GetAccount retrieves a specific account by ID
+func (h *AccountHandler) GetAccount(w http.ResponseWriter, r *http.Request) {
+	// Extract user ID from context (set by auth middleware)
+	userID, ok := r.Context().Value("userID").(int64)
+	if !ok {
+		log.Println("Error: Failed to get userID from context")
+		utils.RespondWithError(w, http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+
+	// Get account ID from URL
+	vars := mux.Vars(r)
+	accountID, err := strconv.ParseInt(vars["id"], 10, 64)
+	if err != nil {
+		log.Printf("Invalid account ID format: %v", err)
+		utils.RespondWithError(w, http.StatusBadRequest, "Invalid account ID")
+		return
+	}
+
+	// Get account from database
+	account, err := models.GetAccountByID(h.DB, accountID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			log.Printf("Account not found: ID=%d", accountID)
+			utils.RespondWithError(w, http.StatusNotFound, "Account not found")
+			return
+		}
+		log.Printf("Error retrieving account %d: %v", accountID, err)
+		utils.RespondWithError(w, http.StatusInternalServerError, "Failed to retrieve account")
+		return
+	}
+
+	// Verify account belongs to authenticated user
+	if account.UserID != userID {
+		log.Printf("Unauthorized access attempt: User %d tried to access account %d belonging to user %d", 
+			userID, accountID, account.UserID)
+		utils.RespondWithError(w, http.StatusForbidden, "Access denied")
+		return
+	}
+
+	log.Printf("Retrieved account: ID=%d, UserID=%d", account.ID, account.UserID)
+	utils.RespondWithJSON(w, http.StatusOK, account)
+}
+
+// UpdateAccount updates an existing account
+func (h *AccountHandler) UpdateAccount(w http.ResponseWriter, r *http.Request) {
+	// Extract user ID from context (set by auth middleware)
+	userID, ok := r.Context().Value("userID").(int64)
+	if !ok {
+		log.Println("Error: Failed to get userID from context")
+		utils.RespondWithError(w, http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+
+	// Get account ID from URL
+	vars := mux.Vars(r)
+	accountID, err := strconv.ParseInt(vars["id"], 10, 64)
+	if err != nil {
+		log.Printf("Invalid account ID format: %v", err)
+		utils.RespondWithError(w, http.StatusBadRequest, "Invalid account ID")
+		return
+	}
+
+	// Get existing account from database
+	existingAccount, err := models.GetAccountByID(h.DB, accountID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			log.Printf("Account not found: ID=%d", accountID)
+			utils.RespondWithError(w, http.StatusNotFound, "Account not found")
+			return
+		}
+		log.Printf("Error retrieving account %d: %v", accountID, err)
+		utils.RespondWithError(w, http.StatusInternalServerError, "Failed to retrieve account")
+		return
+	}
+
+	// Verify account belongs to authenticated user
+	if existingAccount.UserID != userID {
+		log.Printf("Unauthorized update attempt: User %d tried to update account %d belonging to user %d", 
+			userID, accountID, existingAccount.UserID)
+		utils.RespondWithError(w, http.StatusForbidden, "Access denied")
+		return
+	}
+
+	// Parse request body
+	var updatedAccount models.Account
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&updatedAccount); err != nil {
+		log.Printf("Error decoding request body: %v", err)
+		utils.RespondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+	defer r.Body.Close()
+
+	// Set non-modifiable fields
+	updatedAccount.ID = existingAccount.ID
+	updatedAccount.UserID = existingAccount.UserID
+	updatedAccount.AccountNumber = existingAccount.AccountNumber
+	updatedAccount.CreatedAt = existingAccount.CreatedAt
+	updatedAccount.UpdatedAt = time.Now()
+
+	// Validate account type if it's being changed
+	if updatedAccount.Type != "" && !isValidAccountType(string(updatedAccount.Type)) {
+		log.Printf("Invalid account type requested: %s", updatedAccount.Type)
+		utils.RespondWithError(w, http.StatusBadRequest, "Invalid account type")
+		return
+	}
+
+	// Update account in database
+	err = models.UpdateAccount(h.DB, &updatedAccount)
+	if err != nil {
+		log.Printf("Error updating account %d: %v", accountID, err)
+		utils.RespondWithError(w, http.StatusInternalServerError, "Failed to update account")
+		return
+	}
+
+	log.Printf("Account updated: ID=%d, UserID=%d", updatedAccount.ID, updatedAccount.UserID)
+	utils.RespondWithJSON(w, http.StatusOK, updatedAccount)
+}
+
+// CloseAccount changes an account status to closed
+func (h *AccountHandler) CloseAccount(w http.ResponseWriter, r *http.Request) {
+	// Extract user ID from context (set by auth middleware)
+	userID, ok := r.Context().Value("userID").(int64)
+	if !ok {
+		log.Println("Error: Failed to get userID from context")
+		utils.RespondWithError(w, http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+
+	// Get account ID from URL
+	vars := mux.Vars(r)
+	accountID, err := strconv.ParseInt(vars["id"], 10, 64)
+	if err != nil {
+		log.Printf("Invalid account ID format: %v", err)
+		utils.RespondWithError(w, http.StatusBadRequest, "Invalid account ID")
+		return
+	}
+
+	// Get existing account from database
+	account, err := models.GetAccountByID(h.DB, accountID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			log.Printf("Account not found: ID=%d", accountID)
+			utils.RespondWithError(w, http.StatusNotFound, "Account not found")
+			return
+		}
+		log.Printf("Error retrieving account %d: %v", accountID, err)
+		utils.RespondWithError(w, http.StatusInternalServerError, "Failed to retrieve account")
+		return
+	}
+
+	// Verify account belongs to authenticated user
+	if account.UserID != userID {
+		log.Printf("Unauthorized close attempt: User %d tried to close account %d belonging to user %d", 
+			userID, accountID, account.UserID)
+		utils.RespondWithError(w, http.StatusForbidden, "Access denied")
+		return
+	}
+
+	// Check if account is already closed
+	if account.Status == models.AccountStatusClosed {
+		log.Printf("Account %d is already closed", accountID)
+		utils.RespondWithError(w, http.StatusBadRequest, "Account is already closed")
+		return
+	}
+
+	// Update account status to closed
+	account.Status = models.AccountStatusClosed
+	account.UpdatedAt = time.Now()
+
+	// Update account in database
+	err = models.UpdateAccount(h.DB, account)
+	if err != nil {
+		log.Printf("Error closing account %d: %v", accountID, err)
+		utils.RespondWithError(w, http.StatusInternalServerError, "Failed to close account")
+		return
+	}
+
+	log.Printf("Account closed: ID=%d, UserID=%d", account.ID, account.UserID)
+	utils.RespondWithJSON(w, http.StatusOK, map[string]string{"message": "Account closed successfully"})
+}
+
+// GetAccountTransactions retrieves all transactions for a specific account
+func (h *AccountHandler) GetAccountTransactions(w http.ResponseWriter, r *http.Request) {
+	// Extract user ID from context (set by auth middleware)
+	userID, ok := r.Context().Value("userID").(int64)
+	if !ok {
+		log.Println("Error: Failed to get userID from context")
+		utils.RespondWithError(w, http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+
+	// Get account ID from URL
+	vars := mux.Vars(r)
+	accountID, err := strconv.ParseInt(vars["id"], 10, 64)
+	if err != nil {
+		log.Printf("Invalid account ID format: %v", err)
+		utils.RespondWithError(w, http.StatusBadRequest, "Invalid account ID")
+		return
+	}
+
+	// Get account from database to verify ownership
+	account, err := models.GetAccountByID(h.DB, accountID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			log.Printf("Account not found: ID=%d", accountID)
+			utils.RespondWithError(w, http.StatusNotFound, "Account not found")
+			return
+		}
+		log.Printf("Error retrieving account %d: %v", accountID, err)
+		utils.RespondWithError(w, http.StatusInternalServerError, "Failed to retrieve account")
+		return
+	}
+
+	// Verify account belongs to authenticated user
+	if account.UserID != userID {
+		log.Printf("Unauthorized access attempt: User %d tried to access transactions for account %d belonging to user %d", 
+			userID, accountID, account.UserID)
+		utils.RespondWithError(w, http.StatusForbidden, "Access denied")
+		return
+	}
+
+	// Parse query parameters for pagination
+	limit := 20 // Default limit
+	offset := 0 // Default offset
+	
+	if limitParam := r.URL.Query().Get("limit"); limitParam != "" {
+		parsedLimit, err := strconv.Atoi(limitParam)
+		if err == nil && parsedLimit > 0 && parsedLimit <= 100 {
+			limit = parsedLimit
+		}
+	}
+	
+	if offsetParam := r.URL.Query().Get("offset"); offsetParam != "" {
+		parsedOffset, err := strconv.Atoi(offsetParam)
+		if err == nil && parsedOffset >= 0 {
+			offset = parsedOffset
+		}
+	}
+
+	// Get transactions from database
+	transactions, err := models.GetTransactionsByAccountID(h.DB, accountID, limit, offset)
+	if err != nil {
+		log.Printf("Error retrieving transactions for account %d: %v", accountID, err)
+		utils.RespondWithError(w, http.StatusInternalServerError, "Failed to retrieve transactions")
+		return
+	}
+
+	log.Printf("Retrieved %d transactions for account %d", len(transactions), accountID)
+	utils.RespondWithJSON(w, http.StatusOK, transactions)
+}
+
+// GetAccountBalance retrieves the current balance for a specific account
+func (h *AccountHandler) GetAccountBalance(w http.ResponseWriter, r *http.Request) {
+	// Extract user ID from context (set by auth middleware)
+	userID, ok := r.Context().Value("userID").(int64)
+	if !ok {
+		log.Println("Error: Failed to get userID from context")
+		utils.RespondWithError(w, http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+
+	// Get account ID from URL
+	vars := mux.Vars(r)
+	accountID, err := strconv.ParseInt(vars["id"], 10, 64)
+	if err != nil {
+		log.Printf("Invalid account ID format: %v", err)
+		utils.RespondWithError(w, http.StatusBadRequest, "Invalid account ID")
+		return
+	}
+
+	// Get account from database
+	account, err := models.GetAccountByID(h.DB, accountID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			log.Printf("Account not found: ID=%d", accountID)
+			utils.RespondWithError(w, http.StatusNotFound, "Account not found")
+			return
+		}
+		log.Printf("Error retrieving account %d: %v", accountID, err)
+		utils.RespondWithError(w, http.StatusInternalServerError, "Failed to retrieve account")
+		return
+	}
+
+	// Verify account belongs to authenticated user
+	if account.UserID != userID {
+		log.Printf("Unauthorized access attempt: User %d tried to access balance for account %d belonging to user %d", 
+			userID, accountID, account.UserID)
+		utils.RespondWithError(w, http.StatusForbidden, "Access denied")
+		return
+	}
+
+	// Return balance information
+	balanceInfo := map[string]interface{}{
+		"account_id":     account.ID,
+		"account_number": account.AccountNumber,
+		"balance":        account.Balance,
+		"currency":       account.Currency,
+		"updated_at":     account.UpdatedAt,
+	}
+
+	log.Printf("Retrieved balance for account: ID=%d, UserID=%d", account.ID, account.UserID)
+	utils.RespondWithJSON(w, http.StatusOK, balanceInfo)
+}
+
+// Helper functions
+
+// isValidAccountType checks if the provided account type is valid
+func isValidAccountType(accountType string) bool {
+	validTypes := []string{
+		string(models.AccountTypeChecking),
+		string(models.AccountTypeSavings),
+	}
+	
+	for _, validType := range validTypes {
+		if accountType == validType {
+			return true
+		}
+	}
+	return false
+}
+
+// maskAccountNumber masks the account number for logging purposes
+func maskAccountNumber(accountNumber string) string {
+	if len(accountNumber) <= 4 {
+		return accountNumber
+	}
+	return accountNumber[len(accountNumber)-4:]
+}

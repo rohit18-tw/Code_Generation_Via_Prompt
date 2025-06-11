@@ -1,0 +1,274 @@
+# LLM Response - code_generation_chunk_03
+# Timestamp: 2025-06-11 10:25:25
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_019
+# ==================================================
+
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
+import 'package:logging/logging.dart';
+
+/// Transaction types supported by the application
+enum TransactionType {
+  deposit,
+  withdrawal,
+  transfer,
+  payment,
+  fee,
+  interest,
+  refund,
+  other
+}
+
+/// Transaction status values
+enum TransactionStatus {
+  pending,
+  completed,
+  failed,
+  cancelled,
+  processing
+}
+
+/// A model class representing a financial transaction in the application.
+///
+/// This class handles transaction data, serialization/deserialization,
+/// and provides validation for transaction properties.
+class Transaction {
+  final String id;
+  final String accountId;
+  final String? destinationAccountId;
+  final double amount;
+  final TransactionType type;
+  final TransactionStatus status;
+  final String description;
+  final String? category;
+  final DateTime date;
+  final DateTime createdAt;
+  final DateTime? updatedAt;
+  final Map<String, dynamic>? metadata;
+
+  static final Logger _logger = Logger('Transaction');
+
+  /// Creates a new Transaction instance.
+  ///
+  /// [id] Unique identifier for the transaction
+  /// [accountId] ID of the account associated with this transaction
+  /// [destinationAccountId] ID of the destination account for transfers (optional)
+  /// [amount] Transaction amount (positive for deposits, negative for withdrawals)
+  /// [type] Type of transaction
+  /// [status] Current status of the transaction
+  /// [description] Human-readable description of the transaction
+  /// [category] Optional category for the transaction
+  /// [date] Date when the transaction occurred
+  /// [createdAt] Date when the transaction was created in the system
+  /// [updatedAt] Date when the transaction was last updated (optional)
+  /// [metadata] Additional data associated with the transaction (optional)
+  Transaction({
+    required this.id,
+    required this.accountId,
+    this.destinationAccountId,
+    required this.amount,
+    required this.type,
+    required this.status,
+    required this.description,
+    this.category,
+    required this.date,
+    required this.createdAt,
+    this.updatedAt,
+    this.metadata,
+  }) {
+    _validateTransaction();
+  }
+
+  /// Validates the transaction data.
+  ///
+  /// Throws [ArgumentError] if any validation fails.
+  void _validateTransaction() {
+    if (id.isEmpty) {
+      _logger.severe('Transaction validation failed: Empty ID');
+      throw ArgumentError('Transaction ID cannot be empty');
+    }
+
+    if (accountId.isEmpty) {
+      _logger.severe('Transaction validation failed: Empty account ID');
+      throw ArgumentError('Account ID cannot be empty');
+    }
+
+    if (description.isEmpty) {
+      _logger.severe('Transaction validation failed: Empty description');
+      throw ArgumentError('Description cannot be empty');
+    }
+
+    if (type == TransactionType.transfer && (destinationAccountId == null || destinationAccountId!.isEmpty)) {
+      _logger.severe('Transaction validation failed: Missing destination account for transfer');
+      throw ArgumentError('Destination account ID is required for transfers');
+    }
+  }
+
+  /// Creates a Transaction from JSON data.
+  factory Transaction.fromJson(Map<String, dynamic> json) {
+    try {
+      return Transaction(
+        id: json['id'] as String,
+        accountId: json['accountId'] as String,
+        destinationAccountId: json['destinationAccountId'] as String?,
+        amount: (json['amount'] is int) 
+            ? (json['amount'] as int).toDouble() 
+            : json['amount'] as double,
+        type: _parseTransactionType(json['type'] as String),
+        status: _parseTransactionStatus(json['status'] as String),
+        description: json['description'] as String,
+        category: json['category'] as String?,
+        date: DateTime.parse(json['date'] as String),
+        createdAt: DateTime.parse(json['createdAt'] as String),
+        updatedAt: json['updatedAt'] != null 
+            ? DateTime.parse(json['updatedAt'] as String) 
+            : null,
+        metadata: json['metadata'] as Map<String, dynamic>?,
+      );
+    } catch (e) {
+      _logger.severe('Failed to parse transaction from JSON: $e');
+      rethrow;
+    }
+  }
+
+  /// Converts the Transaction to a JSON map.
+  Map<String, dynamic> toJson() {
+    final maskedDescription = _maskSensitiveData(description);
+    
+    return {
+      'id': id,
+      'accountId': accountId,
+      'destinationAccountId': destinationAccountId,
+      'amount': amount,
+      'type': type.toString().split('.').last,
+      'status': status.toString().split('.').last,
+      'description': description,
+      'category': category,
+      'date': date.toIso8601String(),
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
+      'metadata': metadata,
+    };
+  }
+
+  /// Creates a copy of this Transaction with the given fields replaced with new values.
+  Transaction copyWith({
+    String? id,
+    String? accountId,
+    String? destinationAccountId,
+    double? amount,
+    TransactionType? type,
+    TransactionStatus? status,
+    String? description,
+    String? category,
+    DateTime? date,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Map<String, dynamic>? metadata,
+  }) {
+    return Transaction(
+      id: id ?? this.id,
+      accountId: accountId ?? this.accountId,
+      destinationAccountId: destinationAccountId ?? this.destinationAccountId,
+      amount: amount ?? this.amount,
+      type: type ?? this.type,
+      status: status ?? this.status,
+      description: description ?? this.description,
+      category: category ?? this.category,
+      date: date ?? this.date,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      metadata: metadata ?? this.metadata,
+    );
+  }
+
+  /// Parses a string into a TransactionType enum value.
+  static TransactionType _parseTransactionType(String typeStr) {
+    try {
+      return TransactionType.values.firstWhere(
+        (e) => e.toString().split('.').last.toLowerCase() == typeStr.toLowerCase(),
+      );
+    } catch (e) {
+      _logger.warning('Unknown transaction type: $typeStr, defaulting to other');
+      return TransactionType.other;
+    }
+  }
+
+  /// Parses a string into a TransactionStatus enum value.
+  static TransactionStatus _parseTransactionStatus(String statusStr) {
+    try {
+      return TransactionStatus.values.firstWhere(
+        (e) => e.toString().split('.').last.toLowerCase() == statusStr.toLowerCase(),
+      );
+    } catch (e) {
+      _logger.warning('Unknown transaction status: $statusStr, defaulting to pending');
+      return TransactionStatus.pending;
+    }
+  }
+
+  /// Masks sensitive data in the transaction description for logging purposes.
+  String _maskSensitiveData(String input) {
+    // Mask potential card numbers
+    final cardNumberRegex = RegExp(r'\b(?:\d{4}[-\s]?){3}\d{4}\b');
+    var masked = input.replaceAllMapped(
+      cardNumberRegex,
+      (match) => '****-****-****-${match.group(0)!.substring(match.group(0)!.length - 4)}',
+    );
+
+    // Mask potential account numbers
+    final accountNumberRegex = RegExp(r'\b\d{8,17}\b');
+    masked = masked.replaceAllMapped(
+      accountNumberRegex,
+      (match) => '****${match.group(0)!.substring(match.group(0)!.length - 4)}',
+    );
+
+    return masked;
+  }
+
+  /// Returns a string representation of the transaction for debugging.
+  @override
+  String toString() {
+    final maskedDescription = _maskSensitiveData(description);
+    return 'Transaction{id: $id, accountId: $accountId, amount: $amount, type: $type, status: $status, description: $maskedDescription, date: $date}';
+  }
+
+  /// Compares two Transaction objects for equality.
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    
+    return other is Transaction &&
+        other.id == id &&
+        other.accountId == accountId &&
+        other.destinationAccountId == destinationAccountId &&
+        other.amount == amount &&
+        other.type == type &&
+        other.status == status &&
+        other.description == description &&
+        other.category == category &&
+        other.date.isAtSameMomentAs(date) &&
+        other.createdAt.isAtSameMomentAs(createdAt) &&
+        (other.updatedAt == null && updatedAt == null || 
+         (other.updatedAt != null && updatedAt != null && 
+          other.updatedAt!.isAtSameMomentAs(updatedAt!))) &&
+        mapEquals(other.metadata, metadata);
+  }
+
+  /// Generates a hash code for this Transaction.
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        accountId.hashCode ^
+        destinationAccountId.hashCode ^
+        amount.hashCode ^
+        type.hashCode ^
+        status.hashCode ^
+        description.hashCode ^
+        category.hashCode ^
+        date.hashCode ^
+        createdAt.hashCode ^
+        updatedAt.hashCode ^
+        (metadata?.hashCode ?? 0);
+  }
+}

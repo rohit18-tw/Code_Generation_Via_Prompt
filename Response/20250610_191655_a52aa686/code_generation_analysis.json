@@ -1,0 +1,15 @@
+{
+  "total_files": 0,
+  "files_by_type": {},
+  "files_by_priority": {
+    "high": [],
+    "medium": [],
+    "low": []
+  },
+  "generation_order": [],
+  "ordered_files": [],
+  "implementation_strategy": "unknown",
+  "validation_rules": [],
+  "file_templates": {},
+  "error": "Could not parse structured plan from response"
+}

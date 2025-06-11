@@ -1,0 +1,244 @@
+# LLM Response - code_generation_chunk_03
+# Timestamp: 2025-06-11 10:24:56
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_018
+# ==================================================
+
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
+import 'package:logging/logging.dart';
+
+/// Account types supported by the application
+enum AccountType {
+  checking,
+  savings,
+  investment,
+  credit,
+  loan
+}
+
+/// A model class representing a bank account in the application.
+///
+/// This class handles account data, serialization/deserialization,
+/// and provides validation for account properties.
+class Account {
+  final String id;
+  final String userId;
+  final String accountNumber;
+  final String name;
+  final AccountType type;
+  final double balance;
+  final String currency;
+  final bool isActive;
+  final DateTime createdAt;
+  final DateTime? updatedAt;
+
+  static final Logger _logger = Logger('Account');
+
+  /// Creates an Account instance with the provided details.
+  ///
+  /// All parameters except [updatedAt] are required.
+  Account({
+    required this.id,
+    required this.userId,
+    required this.accountNumber,
+    required this.name,
+    required this.type,
+    required this.balance,
+    required this.currency,
+    required this.isActive,
+    required this.createdAt,
+    this.updatedAt,
+  }) {
+    validateAccountNumber(accountNumber);
+    validateCurrency(currency);
+    _logger.fine('Account instance created: ${_maskAccountData(toString())}');
+  }
+
+  /// Creates an Account instance from a JSON map.
+  ///
+  /// Throws [FormatException] if the JSON data is invalid.
+  factory Account.fromJson(Map<String, dynamic> json) {
+    try {
+      return Account(
+        id: json['id'] as String,
+        userId: json['userId'] as String,
+        accountNumber: json['accountNumber'] as String,
+        name: json['name'] as String,
+        type: _parseAccountType(json['type'] as String),
+        balance: (json['balance'] is int)
+            ? (json['balance'] as int).toDouble()
+            : json['balance'] as double,
+        currency: json['currency'] as String,
+        isActive: json['isActive'] as bool,
+        createdAt: DateTime.parse(json['createdAt'] as String),
+        updatedAt: json['updatedAt'] != null
+            ? DateTime.parse(json['updatedAt'] as String)
+            : null,
+      );
+    } catch (e) {
+      _logger.severe('Error parsing account from JSON: $e');
+      throw FormatException('Invalid account data format: $e');
+    }
+  }
+
+  /// Creates an Account instance from a JSON string.
+  ///
+  /// Throws [FormatException] if the JSON string is invalid.
+  factory Account.fromJsonString(String jsonString) {
+    try {
+      final Map<String, dynamic> json = jsonDecode(jsonString) as Map<String, dynamic>;
+      return Account.fromJson(json);
+    } catch (e) {
+      _logger.severe('Error parsing account from JSON string: $e');
+      throw FormatException('Invalid account JSON string: $e');
+    }
+  }
+
+  /// Converts the Account instance to a JSON map.
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'userId': userId,
+      'accountNumber': accountNumber,
+      'name': name,
+      'type': type.toString().split('.').last,
+      'balance': balance,
+      'currency': currency,
+      'isActive': isActive,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
+    };
+  }
+
+  /// Converts the Account instance to a JSON string.
+  String toJsonString() {
+    return jsonEncode(toJson());
+  }
+
+  /// Creates a copy of this Account with the given fields replaced with new values.
+  Account copyWith({
+    String? id,
+    String? userId,
+    String? accountNumber,
+    String? name,
+    AccountType? type,
+    double? balance,
+    String? currency,
+    bool? isActive,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return Account(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      accountNumber: accountNumber ?? this.accountNumber,
+      name: name ?? this.name,
+      type: type ?? this.type,
+      balance: balance ?? this.balance,
+      currency: currency ?? this.currency,
+      isActive: isActive ?? this.isActive,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  /// Validates the account number format.
+  ///
+  /// Throws [ArgumentError] if the account number is invalid.
+  static void validateAccountNumber(String accountNumber) {
+    if (accountNumber.isEmpty) {
+      throw ArgumentError('Account number cannot be empty');
+    }
+    
+    // Basic validation - can be expanded based on specific requirements
+    if (accountNumber.length < 5 || accountNumber.length > 20) {
+      throw ArgumentError('Account number must be between 5 and 20 characters');
+    }
+    
+    if (!RegExp(r'^[A-Za-z0-9-]+$').hasMatch(accountNumber)) {
+      throw ArgumentError('Account number can only contain alphanumeric characters and hyphens');
+    }
+  }
+
+  /// Validates the currency code.
+  ///
+  /// Throws [ArgumentError] if the currency code is invalid.
+  static void validateCurrency(String currency) {
+    if (currency.isEmpty) {
+      throw ArgumentError('Currency code cannot be empty');
+    }
+    
+    // ISO 4217 currency codes are 3 letters
+    if (currency.length != 3 || !RegExp(r'^[A-Z]{3}$').hasMatch(currency)) {
+      throw ArgumentError('Currency must be a valid 3-letter ISO currency code');
+    }
+  }
+
+  /// Parses the account type from string.
+  ///
+  /// Throws [ArgumentError] if the account type is invalid.
+  static AccountType _parseAccountType(String typeStr) {
+    try {
+      return AccountType.values.firstWhere(
+        (type) => type.toString().split('.').last.toLowerCase() == typeStr.toLowerCase(),
+      );
+    } catch (e) {
+      throw ArgumentError('Invalid account type: $typeStr');
+    }
+  }
+
+  /// Masks sensitive account data for logging purposes.
+  String _maskAccountData(String data) {
+    // Mask account number
+    String masked = data.replaceAll(
+      RegExp(accountNumber),
+      'XXXX${accountNumber.substring(accountNumber.length - 4)}',
+    );
+    
+    // Mask user ID
+    masked = masked.replaceAll(userId, 'USER_ID_MASKED');
+    
+    return masked;
+  }
+
+  @override
+  String toString() {
+    return 'Account{id: $id, userId: $userId, accountNumber: $accountNumber, '
+        'name: $name, type: $type, balance: $balance, currency: $currency, '
+        'isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    
+    return other is Account &&
+        other.id == id &&
+        other.userId == userId &&
+        other.accountNumber == accountNumber &&
+        other.name == name &&
+        other.type == type &&
+        other.balance == balance &&
+        other.currency == currency &&
+        other.isActive == isActive &&
+        other.createdAt == createdAt &&
+        other.updatedAt == updatedAt;
+  }
+
+  @override
+  int get hashCode {
+    return hashValues(
+      id,
+      userId,
+      accountNumber,
+      name,
+      type,
+      balance,
+      currency,
+      isActive,
+      createdAt,
+      updatedAt,
+    );
+  }
+}

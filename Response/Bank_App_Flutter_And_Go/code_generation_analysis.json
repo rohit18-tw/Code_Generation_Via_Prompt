@@ -1,0 +1,775 @@
+{
+  "total_files": 31,
+  "files_by_type": {
+    "unknown": [
+      {
+        "path": "frontend/pubspec.yaml",
+        "purpose": "Flutter project configuration and dependencies",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "frontend/lib/main.dart",
+        "purpose": "Entry point for the Flutter application",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "frontend/lib/models/user.dart",
+        "purpose": "User model class",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "frontend/lib/models/account.dart",
+        "purpose": "Bank account model class",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "frontend/lib/models/transaction.dart",
+        "purpose": "Transaction model class",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "frontend/lib/services/api_service.dart",
+        "purpose": "Service to handle API calls to the Go backend",
+        "priority": "high",
+        "dependencies": [
+          "frontend/lib/models/user.dart",
+          "frontend/lib/models/account.dart",
+          "frontend/lib/models/transaction.dart"
+        ]
+      },
+      {
+        "path": "frontend/lib/services/auth_service.dart",
+        "purpose": "Service to handle authentication",
+        "priority": "high",
+        "dependencies": [
+          "frontend/lib/services/api_service.dart",
+          "frontend/lib/models/user.dart"
+        ]
+      },
+      {
+        "path": "frontend/lib/screens/login_screen.dart",
+        "purpose": "Login screen UI",
+        "priority": "high",
+        "dependencies": [
+          "frontend/lib/services/auth_service.dart"
+        ]
+      },
+      {
+        "path": "frontend/lib/screens/register_screen.dart",
+        "purpose": "Registration screen UI",
+        "priority": "high",
+        "dependencies": [
+          "frontend/lib/services/auth_service.dart"
+        ]
+      },
+      {
+        "path": "frontend/lib/screens/home_screen.dart",
+        "purpose": "Main dashboard screen",
+        "priority": "high",
+        "dependencies": [
+          "frontend/lib/services/api_service.dart",
+          "frontend/lib/models/account.dart"
+        ]
+      },
+      {
+        "path": "frontend/lib/screens/account_details_screen.dart",
+        "purpose": "Account details and transaction history screen",
+        "priority": "medium",
+        "dependencies": [
+          "frontend/lib/services/api_service.dart",
+          "frontend/lib/models/account.dart",
+          "frontend/lib/models/transaction.dart"
+        ]
+      },
+      {
+        "path": "frontend/lib/screens/transfer_screen.dart",
+        "purpose": "Money transfer screen",
+        "priority": "medium",
+        "dependencies": [
+          "frontend/lib/services/api_service.dart",
+          "frontend/lib/models/account.dart"
+        ]
+      },
+      {
+        "path": "frontend/lib/widgets/account_card.dart",
+        "purpose": "Reusable widget for displaying account information",
+        "priority": "medium",
+        "dependencies": [
+          "frontend/lib/models/account.dart"
+        ]
+      },
+      {
+        "path": "frontend/lib/widgets/transaction_list_item.dart",
+        "purpose": "Reusable widget for displaying transaction information",
+        "priority": "medium",
+        "dependencies": [
+          "frontend/lib/models/transaction.dart"
+        ]
+      },
+      {
+        "path": "frontend/lib/utils/constants.dart",
+        "purpose": "Application constants",
+        "priority": "medium",
+        "dependencies": []
+      },
+      {
+        "path": "backend/go.mod",
+        "purpose": "Go module definition and dependencies",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "backend/main.go",
+        "purpose": "Entry point for the Go backend application",
+        "priority": "high",
+        "dependencies": [
+          "backend/api/router.go",
+          "backend/config/config.go",
+          "backend/db/db.go"
+        ]
+      },
+      {
+        "path": "backend/config/config.go",
+        "purpose": "Configuration management for the backend",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "backend/db/db.go",
+        "purpose": "Database connection and management",
+        "priority": "high",
+        "dependencies": [
+          "backend/config/config.go"
+        ]
+      },
+      {
+        "path": "backend/models/user.go",
+        "purpose": "User model definition",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "backend/models/account.go",
+        "purpose": "Bank account model definition",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "backend/models/transaction.go",
+        "purpose": "Transaction model definition",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "backend/api/router.go",
+        "purpose": "API routes definition",
+        "priority": "high",
+        "dependencies": [
+          "backend/api/handlers/auth_handler.go",
+          "backend/api/handlers/account_handler.go",
+          "backend/api/handlers/transaction_handler.go",
+          "backend/middleware/auth_middleware.go"
+        ]
+      },
+      {
+        "path": "backend/api/handlers/auth_handler.go",
+        "purpose": "Authentication API handlers",
+        "priority": "high",
+        "dependencies": [
+          "backend/models/user.go",
+          "backend/db/db.go",
+          "backend/utils/jwt.go"
+        ]
+      },
+      {
+        "path": "backend/api/handlers/account_handler.go",
+        "purpose": "Account API handlers",
+        "priority": "high",
+        "dependencies": [
+          "backend/models/account.go",
+          "backend/db/db.go"
+        ]
+      },
+      {
+        "path": "backend/api/handlers/transaction_handler.go",
+        "purpose": "Transaction API handlers",
+        "priority": "high",
+        "dependencies": [
+          "backend/models/transaction.go",
+          "backend/models/account.go",
+          "backend/db/db.go"
+        ]
+      },
+      {
+        "path": "backend/middleware/auth_middleware.go",
+        "purpose": "Authentication middleware",
+        "priority": "high",
+        "dependencies": [
+          "backend/utils/jwt.go"
+        ]
+      },
+      {
+        "path": "backend/utils/jwt.go",
+        "purpose": "JWT token generation and validation",
+        "priority": "high",
+        "dependencies": [
+          "backend/models/user.go",
+          "backend/config/config.go"
+        ]
+      },
+      {
+        "path": "backend/utils/password.go",
+        "purpose": "Password hashing and validation",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "docker-compose.yml",
+        "purpose": "Docker configuration for development environment",
+        "priority": "medium",
+        "dependencies": []
+      },
+      {
+        "path": "README.md",
+        "purpose": "Project documentation",
+        "priority": "medium",
+        "dependencies": []
+      }
+    ]
+  },
+  "files_by_priority": {
+    "high": [
+      {
+        "path": "frontend/pubspec.yaml",
+        "purpose": "Flutter project configuration and dependencies",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "frontend/lib/main.dart",
+        "purpose": "Entry point for the Flutter application",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "frontend/lib/models/user.dart",
+        "purpose": "User model class",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "frontend/lib/models/account.dart",
+        "purpose": "Bank account model class",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "frontend/lib/models/transaction.dart",
+        "purpose": "Transaction model class",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "frontend/lib/services/api_service.dart",
+        "purpose": "Service to handle API calls to the Go backend",
+        "priority": "high",
+        "dependencies": [
+          "frontend/lib/models/user.dart",
+          "frontend/lib/models/account.dart",
+          "frontend/lib/models/transaction.dart"
+        ]
+      },
+      {
+        "path": "frontend/lib/services/auth_service.dart",
+        "purpose": "Service to handle authentication",
+        "priority": "high",
+        "dependencies": [
+          "frontend/lib/services/api_service.dart",
+          "frontend/lib/models/user.dart"
+        ]
+      },
+      {
+        "path": "frontend/lib/screens/login_screen.dart",
+        "purpose": "Login screen UI",
+        "priority": "high",
+        "dependencies": [
+          "frontend/lib/services/auth_service.dart"
+        ]
+      },
+      {
+        "path": "frontend/lib/screens/register_screen.dart",
+        "purpose": "Registration screen UI",
+        "priority": "high",
+        "dependencies": [
+          "frontend/lib/services/auth_service.dart"
+        ]
+      },
+      {
+        "path": "frontend/lib/screens/home_screen.dart",
+        "purpose": "Main dashboard screen",
+        "priority": "high",
+        "dependencies": [
+          "frontend/lib/services/api_service.dart",
+          "frontend/lib/models/account.dart"
+        ]
+      },
+      {
+        "path": "backend/go.mod",
+        "purpose": "Go module definition and dependencies",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "backend/main.go",
+        "purpose": "Entry point for the Go backend application",
+        "priority": "high",
+        "dependencies": [
+          "backend/api/router.go",
+          "backend/config/config.go",
+          "backend/db/db.go"
+        ]
+      },
+      {
+        "path": "backend/config/config.go",
+        "purpose": "Configuration management for the backend",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "backend/db/db.go",
+        "purpose": "Database connection and management",
+        "priority": "high",
+        "dependencies": [
+          "backend/config/config.go"
+        ]
+      },
+      {
+        "path": "backend/models/user.go",
+        "purpose": "User model definition",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "backend/models/account.go",
+        "purpose": "Bank account model definition",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "backend/models/transaction.go",
+        "purpose": "Transaction model definition",
+        "priority": "high",
+        "dependencies": []
+      },
+      {
+        "path": "backend/api/router.go",
+        "purpose": "API routes definition",
+        "priority": "high",
+        "dependencies": [
+          "backend/api/handlers/auth_handler.go",
+          "backend/api/handlers/account_handler.go",
+          "backend/api/handlers/transaction_handler.go",
+          "backend/middleware/auth_middleware.go"
+        ]
+      },
+      {
+        "path": "backend/api/handlers/auth_handler.go",
+        "purpose": "Authentication API handlers",
+        "priority": "high",
+        "dependencies": [
+          "backend/models/user.go",
+          "backend/db/db.go",
+          "backend/utils/jwt.go"
+        ]
+      },
+      {
+        "path": "backend/api/handlers/account_handler.go",
+        "purpose": "Account API handlers",
+        "priority": "high",
+        "dependencies": [
+          "backend/models/account.go",
+          "backend/db/db.go"
+        ]
+      },
+      {
+        "path": "backend/api/handlers/transaction_handler.go",
+        "purpose": "Transaction API handlers",
+        "priority": "high",
+        "dependencies": [
+          "backend/models/transaction.go",
+          "backend/models/account.go",
+          "backend/db/db.go"
+        ]
+      },
+      {
+        "path": "backend/middleware/auth_middleware.go",
+        "purpose": "Authentication middleware",
+        "priority": "high",
+        "dependencies": [
+          "backend/utils/jwt.go"
+        ]
+      },
+      {
+        "path": "backend/utils/jwt.go",
+        "purpose": "JWT token generation and validation",
+        "priority": "high",
+        "dependencies": [
+          "backend/models/user.go",
+          "backend/config/config.go"
+        ]
+      },
+      {
+        "path": "backend/utils/password.go",
+        "purpose": "Password hashing and validation",
+        "priority": "high",
+        "dependencies": []
+      }
+    ],
+    "medium": [
+      {
+        "path": "frontend/lib/screens/account_details_screen.dart",
+        "purpose": "Account details and transaction history screen",
+        "priority": "medium",
+        "dependencies": [
+          "frontend/lib/services/api_service.dart",
+          "frontend/lib/models/account.dart",
+          "frontend/lib/models/transaction.dart"
+        ]
+      },
+      {
+        "path": "frontend/lib/screens/transfer_screen.dart",
+        "purpose": "Money transfer screen",
+        "priority": "medium",
+        "dependencies": [
+          "frontend/lib/services/api_service.dart",
+          "frontend/lib/models/account.dart"
+        ]
+      },
+      {
+        "path": "frontend/lib/widgets/account_card.dart",
+        "purpose": "Reusable widget for displaying account information",
+        "priority": "medium",
+        "dependencies": [
+          "frontend/lib/models/account.dart"
+        ]
+      },
+      {
+        "path": "frontend/lib/widgets/transaction_list_item.dart",
+        "purpose": "Reusable widget for displaying transaction information",
+        "priority": "medium",
+        "dependencies": [
+          "frontend/lib/models/transaction.dart"
+        ]
+      },
+      {
+        "path": "frontend/lib/utils/constants.dart",
+        "purpose": "Application constants",
+        "priority": "medium",
+        "dependencies": []
+      },
+      {
+        "path": "docker-compose.yml",
+        "purpose": "Docker configuration for development environment",
+        "priority": "medium",
+        "dependencies": []
+      },
+      {
+        "path": "README.md",
+        "purpose": "Project documentation",
+        "priority": "medium",
+        "dependencies": []
+      }
+    ],
+    "low": []
+  },
+  "generation_order": [
+    "frontend/pubspec.yaml",
+    "backend/go.mod",
+    "backend/config/config.go",
+    "backend/models/user.go",
+    "backend/models/account.go",
+    "backend/models/transaction.go",
+    "backend/utils/password.go",
+    "backend/utils/jwt.go",
+    "backend/db/db.go",
+    "backend/middleware/auth_middleware.go",
+    "backend/api/handlers/auth_handler.go",
+    "backend/api/handlers/account_handler.go",
+    "backend/api/handlers/transaction_handler.go",
+    "backend/api/router.go",
+    "backend/main.go",
+    "frontend/lib/models/user.dart",
+    "frontend/lib/models/account.dart",
+    "frontend/lib/models/transaction.dart",
+    "frontend/lib/utils/constants.dart",
+    "frontend/lib/services/api_service.dart",
+    "frontend/lib/services/auth_service.dart",
+    "frontend/lib/widgets/account_card.dart",
+    "frontend/lib/widgets/transaction_list_item.dart",
+    "frontend/lib/screens/login_screen.dart",
+    "frontend/lib/screens/register_screen.dart",
+    "frontend/lib/screens/home_screen.dart",
+    "frontend/lib/screens/account_details_screen.dart",
+    "frontend/lib/screens/transfer_screen.dart",
+    "frontend/lib/main.dart",
+    "docker-compose.yml",
+    "README.md"
+  ],
+  "ordered_files": [
+    {
+      "path": "frontend/pubspec.yaml",
+      "purpose": "Flutter project configuration and dependencies",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "frontend/lib/main.dart",
+      "purpose": "Entry point for the Flutter application",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "frontend/lib/models/user.dart",
+      "purpose": "User model class",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "frontend/lib/models/account.dart",
+      "purpose": "Bank account model class",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "frontend/lib/models/transaction.dart",
+      "purpose": "Transaction model class",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "frontend/lib/services/api_service.dart",
+      "purpose": "Service to handle API calls to the Go backend",
+      "priority": "high",
+      "dependencies": [
+        "frontend/lib/models/user.dart",
+        "frontend/lib/models/account.dart",
+        "frontend/lib/models/transaction.dart"
+      ]
+    },
+    {
+      "path": "frontend/lib/services/auth_service.dart",
+      "purpose": "Service to handle authentication",
+      "priority": "high",
+      "dependencies": [
+        "frontend/lib/services/api_service.dart",
+        "frontend/lib/models/user.dart"
+      ]
+    },
+    {
+      "path": "frontend/lib/screens/login_screen.dart",
+      "purpose": "Login screen UI",
+      "priority": "high",
+      "dependencies": [
+        "frontend/lib/services/auth_service.dart"
+      ]
+    },
+    {
+      "path": "frontend/lib/screens/register_screen.dart",
+      "purpose": "Registration screen UI",
+      "priority": "high",
+      "dependencies": [
+        "frontend/lib/services/auth_service.dart"
+      ]
+    },
+    {
+      "path": "frontend/lib/screens/home_screen.dart",
+      "purpose": "Main dashboard screen",
+      "priority": "high",
+      "dependencies": [
+        "frontend/lib/services/api_service.dart",
+        "frontend/lib/models/account.dart"
+      ]
+    },
+    {
+      "path": "frontend/lib/screens/account_details_screen.dart",
+      "purpose": "Account details and transaction history screen",
+      "priority": "medium",
+      "dependencies": [
+        "frontend/lib/services/api_service.dart",
+        "frontend/lib/models/account.dart",
+        "frontend/lib/models/transaction.dart"
+      ]
+    },
+    {
+      "path": "frontend/lib/screens/transfer_screen.dart",
+      "purpose": "Money transfer screen",
+      "priority": "medium",
+      "dependencies": [
+        "frontend/lib/services/api_service.dart",
+        "frontend/lib/models/account.dart"
+      ]
+    },
+    {
+      "path": "frontend/lib/widgets/account_card.dart",
+      "purpose": "Reusable widget for displaying account information",
+      "priority": "medium",
+      "dependencies": [
+        "frontend/lib/models/account.dart"
+      ]
+    },
+    {
+      "path": "frontend/lib/widgets/transaction_list_item.dart",
+      "purpose": "Reusable widget for displaying transaction information",
+      "priority": "medium",
+      "dependencies": [
+        "frontend/lib/models/transaction.dart"
+      ]
+    },
+    {
+      "path": "frontend/lib/utils/constants.dart",
+      "purpose": "Application constants",
+      "priority": "medium",
+      "dependencies": []
+    },
+    {
+      "path": "backend/go.mod",
+      "purpose": "Go module definition and dependencies",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "backend/main.go",
+      "purpose": "Entry point for the Go backend application",
+      "priority": "high",
+      "dependencies": [
+        "backend/api/router.go",
+        "backend/config/config.go",
+        "backend/db/db.go"
+      ]
+    },
+    {
+      "path": "backend/config/config.go",
+      "purpose": "Configuration management for the backend",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "backend/db/db.go",
+      "purpose": "Database connection and management",
+      "priority": "high",
+      "dependencies": [
+        "backend/config/config.go"
+      ]
+    },
+    {
+      "path": "backend/models/user.go",
+      "purpose": "User model definition",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "backend/models/account.go",
+      "purpose": "Bank account model definition",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "backend/models/transaction.go",
+      "purpose": "Transaction model definition",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "backend/api/router.go",
+      "purpose": "API routes definition",
+      "priority": "high",
+      "dependencies": [
+        "backend/api/handlers/auth_handler.go",
+        "backend/api/handlers/account_handler.go",
+        "backend/api/handlers/transaction_handler.go",
+        "backend/middleware/auth_middleware.go"
+      ]
+    },
+    {
+      "path": "backend/api/handlers/auth_handler.go",
+      "purpose": "Authentication API handlers",
+      "priority": "high",
+      "dependencies": [
+        "backend/models/user.go",
+        "backend/db/db.go",
+        "backend/utils/jwt.go"
+      ]
+    },
+    {
+      "path": "backend/api/handlers/account_handler.go",
+      "purpose": "Account API handlers",
+      "priority": "high",
+      "dependencies": [
+        "backend/models/account.go",
+        "backend/db/db.go"
+      ]
+    },
+    {
+      "path": "backend/api/handlers/transaction_handler.go",
+      "purpose": "Transaction API handlers",
+      "priority": "high",
+      "dependencies": [
+        "backend/models/transaction.go",
+        "backend/models/account.go",
+        "backend/db/db.go"
+      ]
+    },
+    {
+      "path": "backend/middleware/auth_middleware.go",
+      "purpose": "Authentication middleware",
+      "priority": "high",
+      "dependencies": [
+        "backend/utils/jwt.go"
+      ]
+    },
+    {
+      "path": "backend/utils/jwt.go",
+      "purpose": "JWT token generation and validation",
+      "priority": "high",
+      "dependencies": [
+        "backend/models/user.go",
+        "backend/config/config.go"
+      ]
+    },
+    {
+      "path": "backend/utils/password.go",
+      "purpose": "Password hashing and validation",
+      "priority": "high",
+      "dependencies": []
+    },
+    {
+      "path": "docker-compose.yml",
+      "purpose": "Docker configuration for development environment",
+      "priority": "medium",
+      "dependencies": []
+    },
+    {
+      "path": "README.md",
+      "purpose": "Project documentation",
+      "priority": "medium",
+      "dependencies": []
+    }
+  ],
+  "implementation_strategy": "incremental",
+  "validation_rules": [
+    "All Go files must have proper error handling",
+    "Flutter UI must be responsive",
+    "API endpoints must be properly authenticated",
+    "Database operations must be properly transactional",
+    "Sensitive data must be properly encrypted/hashed"
+  ],
+  "file_templates": {
+    "dart": "// Dart file template\n// Import statements\n\n// Class/function definitions",
+    "go": "// Go file template\npackage packagename\n\n// Import statements\n\n// Type/function definitions"
+  }
+}

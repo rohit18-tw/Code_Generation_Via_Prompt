@@ -1,0 +1,657 @@
+# LLM Response - code_generation_chunk_03
+# Timestamp: 2025-06-11 10:26:46
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_03_021
+# ==================================================
+
+import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../models/user.dart';
+import '../models/account.dart';
+import '../models/transaction.dart';
+
+/// Exception thrown when API requests fail
+class ApiException implements Exception {
+  final String message;
+  final int? statusCode;
+  final String? body;
+
+  ApiException(this.message, {this.statusCode, this.body});
+
+  @override
+  String toString() => 'ApiException: $message (Status: $statusCode)';
+}
+
+/// Interface for API services
+abstract class IApiService {
+  /// Base URL for API requests
+  String get baseUrl;
+
+  /// Authentication token for API requests
+  Future<String?> get authToken;
+
+  /// Registers a new user
+  Future<User> registerUser(String email, String username, String password);
+
+  /// Authenticates a user and returns a token
+  Future<String> login(String email, String password);
+
+  /// Logs out the current user
+  Future<void> logout();
+
+  /// Gets the current user's profile
+  Future<User> getCurrentUser();
+
+  /// Updates the current user's profile
+  Future<User> updateUserProfile(User user);
+
+  /// Gets all accounts for the current user
+  Future<List<Account>> getAccounts();
+
+  /// Gets a specific account by ID
+  Future<Account> getAccount(String accountId);
+
+  /// Creates a new account
+  Future<Account> createAccount(Account account);
+
+  /// Updates an existing account
+  Future<Account> updateAccount(Account account);
+
+  /// Deletes an account
+  Future<void> deleteAccount(String accountId);
+
+  /// Gets transactions for a specific account
+  Future<List<Transaction>> getTransactions(String accountId, {int? limit, int? offset, DateTime? startDate, DateTime? endDate});
+
+  /// Gets a specific transaction by ID
+  Future<Transaction> getTransaction(String transactionId);
+
+  /// Creates a new transaction
+  Future<Transaction> createTransaction(Transaction transaction);
+
+  /// Updates an existing transaction
+  Future<Transaction> updateTransaction(Transaction transaction);
+
+  /// Deletes a transaction
+  Future<void> deleteTransaction(String transactionId);
+}
+
+/// Service to handle API calls to the Go backend
+class ApiService implements IApiService {
+  static final Logger _logger = Logger('ApiService');
+  final http.Client _httpClient;
+  
+  @override
+  final String baseUrl;
+  
+  /// Token storage key in SharedPreferences
+  static const String _tokenKey = 'auth_token';
+
+  /// Creates a new API service with the given base URL
+  ApiService({
+    required this.baseUrl,
+    http.Client? httpClient,
+  }) : _httpClient = httpClient ?? http.Client();
+
+  /// Gets the authentication token from SharedPreferences
+  @override
+  Future<String?> get authToken async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_tokenKey);
+  }
+
+  /// Sets the authentication token in SharedPreferences
+  Future<void> _setAuthToken(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_tokenKey, token);
+  }
+
+  /// Clears the authentication token from SharedPreferences
+  Future<void> _clearAuthToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_tokenKey);
+  }
+
+  /// Creates headers for API requests
+  Future<Map<String, String>> _getHeaders({bool requiresAuth = true}) async {
+    final headers = <String, String>{
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+
+    if (requiresAuth) {
+      final token = await authToken;
+      if (token != null) {
+        headers['Authorization'] = 'Bearer $token';
+      } else {
+        _logger.warning('No auth token available for authenticated request');
+        throw ApiException('Authentication required');
+      }
+    }
+
+    return headers;
+  }
+
+  /// Handles API response and error cases
+  Future<T> _handleResponse<T>({
+    required http.Response response,
+    required T Function(Map<String, dynamic> data) onSuccess,
+    String? context,
+  }) async {
+    final requestContext = context != null ? ' during $context' : '';
+    
+    try {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final jsonData = json.decode(response.body) as Map<String, dynamic>;
+        return onSuccess(jsonData);
+      } else if (response.statusCode == 401) {
+        _logger.warning('Authentication failed$requestContext: ${response.statusCode}');
+        await _clearAuthToken();
+        throw ApiException('Authentication failed', statusCode: response.statusCode, body: response.body);
+      } else {
+        _logger.severe('API error$requestContext: ${response.statusCode} - ${response.body}');
+        throw ApiException(
+          'API request failed with status: ${response.statusCode}',
+          statusCode: response.statusCode,
+          body: response.body,
+        );
+      }
+    } on FormatException catch (e) {
+      _logger.severe('Failed to parse API response$requestContext: $e');
+      throw ApiException('Invalid response format', body: response.body);
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      _logger.severe('Unexpected error$requestContext: $e');
+      throw ApiException('Unexpected error: $e');
+    }
+  }
+
+  /// Safely logs API requests without exposing sensitive data
+  void _logRequest(String method, String endpoint, {Map<String, dynamic>? body}) {
+    final sanitizedBody = body != null ? _sanitizeData(body) : null;
+    _logger.info('$method $endpoint${sanitizedBody != null ? ' with data: $sanitizedBody' : ''}');
+  }
+
+  /// Sanitizes data for logging to remove sensitive information
+  Map<String, dynamic> _sanitizeData(Map<String, dynamic> data) {
+    final result = Map<String, dynamic>.from(data);
+    
+    // Mask sensitive fields
+    final sensitiveFields = ['password', 'token', 'email', 'accountNumber', 'cardNumber'];
+    for (final field in sensitiveFields) {
+      if (result.containsKey(field)) {
+        result[field] = '********';
+      }
+    }
+    
+    return result;
+  }
+
+  @override
+  Future<User> registerUser(String email, String username, String password) async {
+    final endpoint = '$baseUrl/api/users/register';
+    final body = {
+      'email': email,
+      'username': username,
+      'password': password,
+    };
+
+    _logRequest('POST', endpoint, body: body);
+
+    try {
+      final response = await _httpClient.post(
+        Uri.parse(endpoint),
+        headers: await _getHeaders(requiresAuth: false),
+        body: json.encode(body),
+      );
+
+      return await _handleResponse<User>(
+        response: response,
+        context: 'user registration',
+        onSuccess: (data) {
+          if (data.containsKey('token')) {
+            _setAuthToken(data['token'] as String);
+          }
+          return User.fromJson(data['user'] as Map<String, dynamic>);
+        },
+      );
+    } on SocketException catch (e) {
+      _logger.severe('Network error during user registration: $e');
+      throw ApiException('Network error: Unable to connect to the server');
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      _logger.severe('Error during user registration: $e');
+      throw ApiException('Failed to register user: $e');
+    }
+  }
+
+  @override
+  Future<String> login(String email, String password) async {
+    final endpoint = '$baseUrl/api/auth/login';
+    final body = {
+      'email': email,
+      'password': password,
+    };
+
+    _logRequest('POST', endpoint, body: body);
+
+    try {
+      final response = await _httpClient.post(
+        Uri.parse(endpoint),
+        headers: await _getHeaders(requiresAuth: false),
+        body: json.encode(body),
+      );
+
+      return await _handleResponse<String>(
+        response: response,
+        context: 'user login',
+        onSuccess: (data) {
+          final token = data['token'] as String;
+          _setAuthToken(token);
+          return token;
+        },
+      );
+    } on SocketException catch (e) {
+      _logger.severe('Network error during login: $e');
+      throw ApiException('Network error: Unable to connect to the server');
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      _logger.severe('Error during login: $e');
+      throw ApiException('Failed to login: $e');
+    }
+  }
+
+  @override
+  Future<void> logout() async {
+    final endpoint = '$baseUrl/api/auth/logout';
+    
+    _logRequest('POST', endpoint);
+
+    try {
+      final response = await _httpClient.post(
+        Uri.parse(endpoint),
+        headers: await _getHeaders(),
+      );
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        await _clearAuthToken();
+      } else {
+        _logger.warning('Logout failed with status: ${response.statusCode}');
+        // Still clear the token locally even if the server request fails
+        await _clearAuthToken();
+      }
+    } catch (e) {
+      _logger.warning('Error during logout: $e');
+      // Still clear the token locally even if there's an exception
+      await _clearAuthToken();
+    }
+  }
+
+  @override
+  Future<User> getCurrentUser() async {
+    final endpoint = '$baseUrl/api/users/me';
+    
+    _logRequest('GET', endpoint);
+
+    try {
+      final response = await _httpClient.get(
+        Uri.parse(endpoint),
+        headers: await _getHeaders(),
+      );
+
+      return await _handleResponse<User>(
+        response: response,
+        context: 'get current user',
+        onSuccess: (data) => User.fromJson(data['user'] as Map<String, dynamic>),
+      );
+    } on SocketException catch (e) {
+      _logger.severe('Network error while getting current user: $e');
+      throw ApiException('Network error: Unable to connect to the server');
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      _logger.severe('Error while getting current user: $e');
+      throw ApiException('Failed to get current user: $e');
+    }
+  }
+
+  @override
+  Future<User> updateUserProfile(User user) async {
+    final endpoint = '$baseUrl/api/users/${user.id}';
+    final body = user.toJson();
+
+    _logRequest('PUT', endpoint, body: body);
+
+    try {
+      final response = await _httpClient.put(
+        Uri.parse(endpoint),
+        headers: await _getHeaders(),
+        body: json.encode(body),
+      );
+
+      return await _handleResponse<User>(
+        response: response,
+        context: 'update user profile',
+        onSuccess: (data) => User.fromJson(data['user'] as Map<String, dynamic>),
+      );
+    } on SocketException catch (e) {
+      _logger.severe('Network error while updating user profile: $e');
+      throw ApiException('Network error: Unable to connect to the server');
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      _logger.severe('Error while updating user profile: $e');
+      throw ApiException('Failed to update user profile: $e');
+    }
+  }
+
+  @override
+  Future<List<Account>> getAccounts() async {
+    final endpoint = '$baseUrl/api/accounts';
+    
+    _logRequest('GET', endpoint);
+
+    try {
+      final response = await _httpClient.get(
+        Uri.parse(endpoint),
+        headers: await _getHeaders(),
+      );
+
+      return await _handleResponse<List<Account>>(
+        response: response,
+        context: 'get accounts',
+        onSuccess: (data) {
+          final accountsJson = data['accounts'] as List<dynamic>;
+          return accountsJson
+              .map((json) => Account.fromJson(json as Map<String, dynamic>))
+              .toList();
+        },
+      );
+    } on SocketException catch (e) {
+      _logger.severe('Network error while getting accounts: $e');
+      throw ApiException('Network error: Unable to connect to the server');
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      _logger.severe('Error while getting accounts: $e');
+      throw ApiException('Failed to get accounts: $e');
+    }
+  }
+
+  @override
+  Future<Account> getAccount(String accountId) async {
+    final endpoint = '$baseUrl/api/accounts/$accountId';
+    
+    _logRequest('GET', endpoint);
+
+    try {
+      final response = await _httpClient.get(
+        Uri.parse(endpoint),
+        headers: await _getHeaders(),
+      );
+
+      return await _handleResponse<Account>(
+        response: response,
+        context: 'get account',
+        onSuccess: (data) => Account.fromJson(data['account'] as Map<String, dynamic>),
+      );
+    } on SocketException catch (e) {
+      _logger.severe('Network error while getting account: $e');
+      throw ApiException('Network error: Unable to connect to the server');
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      _logger.severe('Error while getting account: $e');
+      throw ApiException('Failed to get account: $e');
+    }
+  }
+
+  @override
+  Future<Account> createAccount(Account account) async {
+    final endpoint = '$baseUrl/api/accounts';
+    final body = account.toJson();
+
+    _logRequest('POST', endpoint, body: body);
+
+    try {
+      final response = await _httpClient.post(
+        Uri.parse(endpoint),
+        headers: await _getHeaders(),
+        body: json.encode(body),
+      );
+
+      return await _handleResponse<Account>(
+        response: response,
+        context: 'create account',
+        onSuccess: (data) => Account.fromJson(data['account'] as Map<String, dynamic>),
+      );
+    } on SocketException catch (e) {
+      _logger.severe('Network error while creating account: $e');
+      throw ApiException('Network error: Unable to connect to the server');
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      _logger.severe('Error while creating account: $e');
+      throw ApiException('Failed to create account: $e');
+    }
+  }
+
+  @override
+  Future<Account> updateAccount(Account account) async {
+    final endpoint = '$baseUrl/api/accounts/${account.id}';
+    final body = account.toJson();
+
+    _logRequest('PUT', endpoint, body: body);
+
+    try {
+      final response = await _httpClient.put(
+        Uri.parse(endpoint),
+        headers: await _getHeaders(),
+        body: json.encode(body),
+      );
+
+      return await _handleResponse<Account>(
+        response: response,
+        context: 'update account',
+        onSuccess: (data) => Account.fromJson(data['account'] as Map<String, dynamic>),
+      );
+    } on SocketException catch (e) {
+      _logger.severe('Network error while updating account: $e');
+      throw ApiException('Network error: Unable to connect to the server');
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      _logger.severe('Error while updating account: $e');
+      throw ApiException('Failed to update account: $e');
+    }
+  }
+
+  @override
+  Future<void> deleteAccount(String accountId) async {
+    final endpoint = '$baseUrl/api/accounts/$accountId';
+    
+    _logRequest('DELETE', endpoint);
+
+    try {
+      final response = await _httpClient.delete(
+        Uri.parse(endpoint),
+        headers: await _getHeaders(),
+      );
+
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        _logger.severe('Failed to delete account: ${response.statusCode} - ${response.body}');
+        throw ApiException(
+          'Failed to delete account',
+          statusCode: response.statusCode,
+          body: response.body,
+        );
+      }
+    } on SocketException catch (e) {
+      _logger.severe('Network error while deleting account: $e');
+      throw ApiException('Network error: Unable to connect to the server');
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      _logger.severe('Error while deleting account: $e');
+      throw ApiException('Failed to delete account: $e');
+    }
+  }
+
+  @override
+  Future<List<Transaction>> getTransactions(
+    String accountId, {
+    int? limit,
+    int? offset,
+    DateTime? startDate,
+    DateTime? endDate,
+  }) async {
+    final queryParams = <String, String>{};
+    if (limit != null) queryParams['limit'] = limit.toString();
+    if (offset != null) queryParams['offset'] = offset.toString();
+    if (startDate != null) queryParams['startDate'] = startDate.toIso8601String();
+    if (endDate != null) queryParams['endDate'] = endDate.toIso8601String();
+
+    final uri = Uri.parse('$baseUrl/api/accounts/$accountId/transactions')
+        .replace(queryParameters: queryParams);
+    
+    _logRequest('GET', uri.toString());
+
+    try {
+      final response = await _httpClient.get(
+        uri,
+        headers: await _getHeaders(),
+      );
+
+      return await _handleResponse<List<Transaction>>(
+        response: response,
+        context: 'get transactions',
+        onSuccess: (data) {
+          final transactionsJson = data['transactions'] as List<dynamic>;
+          return transactionsJson
+              .map((json) => Transaction.fromJson(json as Map<String, dynamic>))
+              .toList();
+        },
+      );
+    } on SocketException catch (e) {
+      _logger.severe('Network error while getting transactions: $e');
+      throw ApiException('Network error: Unable to connect to the server');
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      _logger.severe('Error while getting transactions: $e');
+      throw ApiException('Failed to get transactions: $e');
+    }
+  }
+
+  @override
+  Future<Transaction> getTransaction(String transactionId) async {
+    final endpoint = '$baseUrl/api/transactions/$transactionId';
+    
+    _logRequest('GET', endpoint);
+
+    try {
+      final response = await _httpClient.get(
+        Uri.parse(endpoint),
+        headers: await _getHeaders(),
+      );
+
+      return await _handleResponse<Transaction>(
+        response: response,
+        context: 'get transaction',
+        onSuccess: (data) => Transaction.fromJson(data['transaction'] as Map<String, dynamic>),
+      );
+    } on SocketException catch (e) {
+      _logger.severe('Network error while getting transaction: $e');
+      throw ApiException('Network error: Unable to connect to the server');
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      _logger.severe('Error while getting transaction: $e');
+      throw ApiException('Failed to get transaction: $e');
+    }
+  }
+
+  @override
+  Future<Transaction> createTransaction(Transaction transaction) async {
+    final endpoint = '$baseUrl/api/transactions';
+    final body = transaction.toJson();
+
+    _logRequest('POST', endpoint, body: body);
+
+    try {
+      final response = await _httpClient.post(
+        Uri.parse(endpoint),
+        headers: await _getHeaders(),
+        body: json.encode(body),
+      );
+
+      return await _handleResponse<Transaction>(
+        response: response,
+        context: 'create transaction',
+        onSuccess: (data) => Transaction.fromJson(data['transaction'] as Map<String, dynamic>),
+      );
+    } on SocketException catch (e) {
+      _logger.severe('Network error while creating transaction: $e');
+      throw ApiException('Network error: Unable to connect to the server');
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      _logger.severe('Error while creating transaction: $e');
+      throw ApiException('Failed to create transaction: $e');
+    }
+  }
+
+  @override
+  Future<Transaction> updateTransaction(Transaction transaction) async {
+    final endpoint = '$baseUrl/api/transactions/${transaction.id}';
+    final body = transaction.toJson();
+
+    _logRequest('PUT', endpoint, body: body);
+
+    try {
+      final response = await _httpClient.put(
+        Uri.parse(endpoint),
+        headers: await _getHeaders(),
+        body: json.encode(body),
+      );
+
+      return await _handleResponse<Transaction>(
+        response: response,
+        context: 'update transaction',
+        onSuccess: (data) => Transaction.fromJson(data['transaction'] as Map<String, dynamic>),
+      );
+    } on SocketException catch (e) {
+      _logger.severe('Network error while updating transaction: $e');
+      throw ApiException('Network error: Unable to connect to the server');
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      _logger.severe('Error while updating transaction: $e');
+      throw ApiException('Failed to update transaction: $e');
+    }
+  }
+
+  @override
+  Future<void> deleteTransaction(String transactionId) async {
+    final endpoint = '$baseUrl/api/transactions/$transactionId';
+    
+    _logRequest('DELETE', endpoint);
+
+    try {
+      final response = await _httpClient.delete(
+        Uri.parse(endpoint),
+        headers: await _getHeaders(),
+      );
+
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        _logger.severe('Failed to delete transaction: ${response.statusCode} - ${response.body}');
+        throw ApiException(
+          'Failed to delete transaction',
+          statusCode: response.statusCode,
+          body: response.body,
+        );
+      }
+    } on SocketException catch (e) {
+      _logger.severe('Network error while deleting transaction: $e');
+      throw ApiException('Network error: Unable to connect to the server');
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      _logger.severe('Error while deleting transaction: $e');
+      throw ApiException('Failed to delete transaction: $e');
+    }
+  }
+}

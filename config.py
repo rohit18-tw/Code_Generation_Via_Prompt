@@ -16,7 +16,7 @@ class Config:
 
     # Model Configuration
     DEFAULT_MODEL: str = os.getenv("DEFAULT_MODEL", "claude-3-5-sonnet-20241022")
-    MAX_TOKENS: int = 16000  # Increased to 16000 for enhanced planning structure
+    MAX_TOKENS: int = 24000  # Increased to 20000 for large project plans
     TEMPERATURE: float = 0.1
 
 
@@ -33,8 +33,7 @@ class Config:
     # Code Generation Configuration
     ENABLE_CODE_GENERATION = True
     CODE_OUTPUT_DIR = os.getenv("CODE_OUTPUT_DIR", "./generated_code")
-    MAX_FILES_PER_CHUNK = int(os.getenv("MAX_FILES_PER_CHUNK", "6"))
-    CHUNK_TOKEN_LIMIT = int(os.getenv("CHUNK_TOKEN_LIMIT", "12000"))
+    MAX_FILES_PER_CHUNK = int(os.getenv("MAX_FILES_PER_CHUNK", "8"))  # Increased since no token limits
 
 
 
@@ -66,8 +65,6 @@ class Config:
         if cls.ENABLE_CODE_GENERATION:
             if cls.MAX_FILES_PER_CHUNK < 1 or cls.MAX_FILES_PER_CHUNK > 20:
                 raise ValueError("MAX_FILES_PER_CHUNK must be between 1 and 20")
-            if cls.CHUNK_TOKEN_LIMIT < 1000 or cls.CHUNK_TOKEN_LIMIT > cls.MAX_TOKENS:
-                raise ValueError(f"CHUNK_TOKEN_LIMIT must be between 1000 and {cls.MAX_TOKENS}")
 
         return True
 

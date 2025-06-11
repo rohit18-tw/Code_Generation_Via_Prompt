@@ -1,0 +1,238 @@
+# LLM Response - code_generation_chunk_01
+# Timestamp: 2025-06-11 10:19:48
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_01_008
+# ==================================================
+
+package utils
+
+import (
+	"crypto/rand"
+	"crypto/subtle"
+	"encoding/base64"
+	"errors"
+	"fmt"
+	"log"
+	"strings"
+
+	"golang.org/x/crypto/argon2"
+)
+
+// PasswordConfig holds the parameters for the Argon2id password hashing algorithm
+type PasswordConfig struct {
+	Memory      uint32
+	Iterations  uint32
+	Parallelism uint8
+	SaltLength  uint32
+	KeyLength   uint32
+}
+
+// DefaultPasswordConfig returns a default configuration for the Argon2id algorithm
+func DefaultPasswordConfig() *PasswordConfig {
+	return &PasswordConfig{
+		Memory:      64 * 1024, // 64MB
+		Iterations:  3,
+		Parallelism: 2,
+		SaltLength:  16,
+		KeyLength:   32,
+	}
+}
+
+// HashPassword generates a hash of the provided password using the Argon2id algorithm
+func HashPassword(password string, config *PasswordConfig) (string, error) {
+	if password == "" {
+		log.Println("Error: Empty password provided for hashing")
+		return "", errors.New("password cannot be empty")
+	}
+
+	if config == nil {
+		log.Println("Using default password configuration")
+		config = DefaultPasswordConfig()
+	}
+
+	// Generate a random salt
+	salt := make([]byte, config.SaltLength)
+	if _, err := rand.Read(salt); err != nil {
+		log.Printf("Error generating salt: %v", err)
+		return "", fmt.Errorf("error generating salt: %w", err)
+	}
+
+	// Hash the password using Argon2id
+	hash := argon2.IDKey(
+		[]byte(password),
+		salt,
+		config.Iterations,
+		config.Memory,
+		config.Parallelism,
+		config.KeyLength,
+	)
+
+	// Encode the salt and hash as base64
+	b64Salt := base64.RawStdEncoding.EncodeToString(salt)
+	b64Hash := base64.RawStdEncoding.EncodeToString(hash)
+
+	// Format the hash string
+	encodedHash := fmt.Sprintf(
+		"$argon2id$v=%d$m=%d,t=%d,p=%d$%s$%s",
+		argon2.Version,
+		config.Memory,
+		config.Iterations,
+		config.Parallelism,
+		b64Salt,
+		b64Hash,
+	)
+
+	log.Println("Password hashed successfully")
+	return encodedHash, nil
+}
+
+// VerifyPassword checks if the provided password matches the stored hash
+func VerifyPassword(password, encodedHash string) (bool, error) {
+	if password == "" || encodedHash == "" {
+		log.Println("Error: Empty password or hash provided for verification")
+		return false, errors.New("password and hash cannot be empty")
+	}
+
+	// Parse the hash string
+	vals := strings.Split(encodedHash, "$")
+	if len(vals) != 6 {
+		log.Println("Error: Invalid hash format")
+		return false, errors.New("invalid hash format")
+	}
+
+	var version int
+	_, err := fmt.Sscanf(vals[2], "v=%d", &version)
+	if err != nil {
+		log.Printf("Error parsing hash version: %v", err)
+		return false, fmt.Errorf("invalid hash version: %w", err)
+	}
+
+	if version != argon2.Version {
+		log.Printf("Error: Incompatible argon2id version: %d", version)
+		return false, fmt.Errorf("incompatible argon2id version: %d", version)
+	}
+
+	// Parse the parameters
+	var memory, iterations uint32
+	var parallelism uint8
+	_, err = fmt.Sscanf(vals[3], "m=%d,t=%d,p=%d", &memory, &iterations, &parallelism)
+	if err != nil {
+		log.Printf("Error parsing hash parameters: %v", err)
+		return false, fmt.Errorf("invalid hash parameters: %w", err)
+	}
+
+	// Decode the salt and hash
+	salt, err := base64.RawStdEncoding.DecodeString(vals[4])
+	if err != nil {
+		log.Printf("Error decoding salt: %v", err)
+		return false, fmt.Errorf("invalid salt encoding: %w", err)
+	}
+
+	decodedHash, err := base64.RawStdEncoding.DecodeString(vals[5])
+	if err != nil {
+		log.Printf("Error decoding hash: %v", err)
+		return false, fmt.Errorf("invalid hash encoding: %w", err)
+	}
+
+	// Compute the hash of the provided password
+	computedHash := argon2.IDKey(
+		[]byte(password),
+		salt,
+		iterations,
+		memory,
+		parallelism,
+		uint32(len(decodedHash)),
+	)
+
+	// Compare the computed hash with the stored hash
+	match := subtle.ConstantTimeCompare(decodedHash, computedHash) == 1
+	if match {
+		log.Println("Password verification successful")
+	} else {
+		log.Println("Password verification failed")
+	}
+
+	return match, nil
+}
+
+// GenerateRandomPassword generates a random password of the specified length
+func GenerateRandomPassword(length int) (string, error) {
+	if length < 8 {
+		log.Println("Error: Password length too short")
+		return "", errors.New("password length must be at least 8 characters")
+	}
+
+	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+[]{}|;:,.<>?"
+	charsetLength := len(charset)
+
+	// Generate random bytes
+	randomBytes := make([]byte, length)
+	_, err := rand.Read(randomBytes)
+	if err != nil {
+		log.Printf("Error generating random bytes: %v", err)
+		return "", fmt.Errorf("error generating random bytes: %w", err)
+	}
+
+	// Convert random bytes to password characters
+	password := make([]byte, length)
+	for i, b := range randomBytes {
+		password[i] = charset[int(b)%charsetLength]
+	}
+
+	log.Println("Random password generated successfully")
+	return string(password), nil
+}
+
+// IsPasswordStrong checks if a password meets strength requirements
+func IsPasswordStrong(password string) (bool, string) {
+	if len(password) < 8 {
+		msg := "Password must be at least 8 characters long"
+		log.Println("Password strength check failed: " + msg)
+		return false, msg
+	}
+
+	hasUpper := false
+	hasLower := false
+	hasDigit := false
+	hasSpecial := false
+
+	for _, char := range password {
+		switch {
+		case 'A' <= char && char <= 'Z':
+			hasUpper = true
+		case 'a' <= char && char <= 'z':
+			hasLower = true
+		case '0' <= char && char <= '9':
+			hasDigit = true
+		case strings.ContainsRune("!@#$%^&*()-_=+[]{}|;:,.<>?", char):
+			hasSpecial = true
+		}
+	}
+
+	if !hasUpper {
+		msg := "Password must contain at least one uppercase letter"
+		log.Println("Password strength check failed: " + msg)
+		return false, msg
+	}
+
+	if !hasLower {
+		msg := "Password must contain at least one lowercase letter"
+		log.Println("Password strength check failed: " + msg)
+		return false, msg
+	}
+
+	if !hasDigit {
+		msg := "Password must contain at least one digit"
+		log.Println("Password strength check failed: " + msg)
+		return false, msg
+	}
+
+	if !hasSpecial {
+		msg := "Password must contain at least one special character"
+		log.Println("Password strength check failed: " + msg)
+		return false, msg
+	}
+
+	log.Println("Password strength check passed")
+	return true, ""
+}

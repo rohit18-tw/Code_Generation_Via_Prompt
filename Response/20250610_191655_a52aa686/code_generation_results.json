@@ -1,0 +1,13 @@
+{
+  "success": false,
+  "total_files": 0,
+  "successful_files": 0,
+  "failed_files": 0,
+  "success_rate": 0,
+  "total_tokens_used": 0,
+  "chunks_generated": 0,
+  "errors": [],
+  "generated_files": [],
+  "output_directory": "generated_code",
+  "chunk_results": []
+}

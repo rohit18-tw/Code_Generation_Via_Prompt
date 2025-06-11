@@ -1,0 +1,243 @@
+# LLM Response - code_generation_chunk_02
+# Timestamp: 2025-06-11 10:20:32
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_02_010
+# ==================================================
+
+package db
+
+import (
+	"database/sql"
+	"errors"
+	"fmt"
+	"log"
+	"sync"
+	"time"
+
+	"github.com/go-sql-driver/mysql"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
+
+	"backend/config"
+)
+
+// DB errors
+var (
+	ErrDBNotInitialized = errors.New("database not initialized")
+	ErrNoRowsAffected   = errors.New("no rows affected")
+	ErrInvalidConfig    = errors.New("invalid database configuration")
+)
+
+// DBManager handles database connections and operations
+type DBManager struct {
+	db         *sqlx.DB
+	config     *config.DatabaseConfig
+	mu         sync.RWMutex
+	isConnected bool
+}
+
+// NewDBManager creates a new database manager instance
+func NewDBManager(cfg *config.DatabaseConfig) (*DBManager, error) {
+	if cfg == nil {
+		return nil, ErrInvalidConfig
+	}
+
+	return &DBManager{
+		config: cfg,
+	}, nil
+}
+
+// Connect establishes a connection to the database
+func (m *DBManager) Connect() error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	if m.isConnected {
+		return nil
+	}
+
+	// Configure connection parameters
+	mysqlConfig := mysql.Config{
+		User:                 m.config.Username,
+		Passwd:               m.config.Password,
+		Net:                  "tcp",
+		Addr:                 fmt.Sprintf("%s:%d", m.config.Host, m.config.Port),
+		DBName:               m.config.Database,
+		AllowNativePasswords: true,
+		ParseTime:            true,
+		Loc:                  time.UTC,
+		Timeout:              time.Second * 10,
+		ReadTimeout:          time.Second * 30,
+		WriteTimeout:         time.Second * 30,
+	}
+
+	// Create the connection string
+	connStr := mysqlConfig.FormatDSN()
+
+	// Connect to the database
+	db, err := sqlx.Connect("mysql", connStr)
+	if err != nil {
+		return fmt.Errorf("failed to connect to database: %w", err)
+	}
+
+	// Configure connection pool
+	db.SetMaxOpenConns(m.config.MaxOpenConns)
+	db.SetMaxIdleConns(m.config.MaxIdleConns)
+	db.SetConnMaxLifetime(time.Duration(m.config.ConnMaxLifetimeMinutes) * time.Minute)
+
+	// Test the connection
+	if err := db.Ping(); err != nil {
+		return fmt.Errorf("failed to ping database: %w", err)
+	}
+
+	m.db = db
+	m.isConnected = true
+	log.Printf("Successfully connected to database %s at %s:%d", m.config.Database, m.config.Host, m.config.Port)
+	return nil
+}
+
+// Disconnect closes the database connection
+func (m *DBManager) Disconnect() error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	if m.db == nil {
+		return nil
+	}
+
+	err := m.db.Close()
+	if err != nil {
+		return fmt.Errorf("error closing database connection: %w", err)
+	}
+
+	m.db = nil
+	m.isConnected = false
+	log.Println("Database connection closed")
+	return nil
+}
+
+// IsConnected returns the connection status
+func (m *DBManager) IsConnected() bool {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
+	return m.isConnected
+}
+
+// GetDB returns the database connection
+func (m *DBManager) GetDB() (*sqlx.DB, error) {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
+
+	if m.db == nil {
+		return nil, ErrDBNotInitialized
+	}
+
+	// Check if connection is still alive
+	if err := m.db.Ping(); err != nil {
+		m.mu.RUnlock() // Unlock before attempting to reconnect
+		log.Println("Database connection lost, attempting to reconnect...")
+		
+		// Need to acquire write lock for reconnection
+		m.mu.Lock()
+		defer m.mu.Lock()
+		
+		m.isConnected = false
+		if err := m.Connect(); err != nil {
+			return nil, fmt.Errorf("failed to reconnect to database: %w", err)
+		}
+	}
+
+	return m.db, nil
+}
+
+// ExecuteTransaction executes a function within a transaction
+func (m *DBManager) ExecuteTransaction(fn func(*sqlx.Tx) error) error {
+	db, err := m.GetDB()
+	if err != nil {
+		return err
+	}
+
+	tx, err := db.Beginx()
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %w", err)
+	}
+
+	// Execute the function within the transaction
+	if err := fn(tx); err != nil {
+		// Attempt to rollback on error
+		if rbErr := tx.Rollback(); rbErr != nil {
+			return fmt.Errorf("error in transaction: %v, rollback failed: %w", err, rbErr)
+		}
+		return err
+	}
+
+	// Commit the transaction
+	if err := tx.Commit(); err != nil {
+		return fmt.Errorf("failed to commit transaction: %w", err)
+	}
+
+	return nil
+}
+
+// CheckRowsAffected checks if any rows were affected by the query
+func (m *DBManager) CheckRowsAffected(result sql.Result) error {
+	if result == nil {
+		return errors.New("nil result")
+	}
+	
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("error checking rows affected: %w", err)
+	}
+	
+	if rowsAffected == 0 {
+		return ErrNoRowsAffected
+	}
+	
+	return nil
+}
+
+// Ping checks if the database connection is alive
+func (m *DBManager) Ping() error {
+	db, err := m.GetDB()
+	if err != nil {
+		return err
+	}
+	
+	return db.Ping()
+}
+
+// MigrateDB performs database migrations
+func (m *DBManager) MigrateDB() error {
+	db, err := m.GetDB()
+	if err != nil {
+		return err
+	}
+	
+	// Create tables if they don't exist
+	migrations := []string{
+		// Users table
+		`CREATE TABLE IF NOT EXISTS users (
+			id INT AUTO_INCREMENT PRIMARY KEY,
+			username VARCHAR(50) NOT NULL UNIQUE,
+			email VARCHAR(100) NOT NULL UNIQUE,
+			password_hash VARCHAR(255) NOT NULL,
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+			INDEX idx_username (username),
+			INDEX idx_email (email)
+		)`,
+		
+		// Add more table creation statements as needed
+	}
+	
+	for _, migration := range migrations {
+		_, err := db.Exec(migration)
+		if err != nil {
+			return fmt.Errorf("migration failed: %w", err)
+		}
+	}
+	
+	log.Println("Database migrations completed successfully")
+	return nil
+}

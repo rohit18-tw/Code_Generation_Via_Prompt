@@ -1,0 +1,628 @@
+# LLM Response - code_generation_chunk_04
+# Timestamp: 2025-06-11 10:31:10
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_04_027
+# ==================================================
+
+import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../models/account.dart';
+import '../models/transaction.dart';
+import '../models/user.dart';
+import '../services/api_service.dart';
+import '../widgets/loading_indicator.dart';
+import 'account_detail_screen.dart';
+import 'profile_screen.dart';
+import 'transaction_history_screen.dart';
+import 'transfer_screen.dart';
+
+/// The main dashboard screen of the application.
+/// 
+/// Displays user accounts, recent transactions, and provides
+/// navigation to other parts of the application.
+class HomeScreen extends StatefulWidget {
+  static const String routeName = '/home';
+
+  const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  static final Logger _logger = Logger('HomeScreen');
+  
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = 
+      GlobalKey<RefreshIndicatorState>();
+  
+  bool _isLoading = true;
+  List<Account> _accounts = [];
+  List<Transaction> _recentTransactions = [];
+  User? _currentUser;
+  String _errorMessage = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  /// Loads all necessary data for the home screen
+  Future<void> _loadData() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = '';
+    });
+
+    try {
+      await _loadUserData();
+      await Future.wait([
+        _loadAccounts(),
+        _loadRecentTransactions(),
+      ]);
+      _logger.info('Home screen data loaded successfully');
+    } catch (e) {
+      _logger.severe('Error loading home screen data: $e');
+      setState(() {
+        _errorMessage = 'Failed to load data. Please try again.';
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  /// Loads the current user's data
+  Future<void> _loadUserData() async {
+    try {
+      final apiService = Provider.of<ApiService>(context, listen: false);
+      final user = await apiService.getCurrentUser();
+      setState(() {
+        _currentUser = user;
+      });
+      _logger.info('User data loaded for user ID: ${_maskPii(user.id)}');
+    } catch (e) {
+      _logger.warning('Failed to load user data: $e');
+      rethrow;
+    }
+  }
+
+  /// Loads the user's accounts
+  Future<void> _loadAccounts() async {
+    try {
+      final apiService = Provider.of<ApiService>(context, listen: false);
+      final accounts = await apiService.getAccounts();
+      setState(() {
+        _accounts = accounts;
+      });
+      _logger.info('Loaded ${accounts.length} accounts');
+    } catch (e) {
+      _logger.warning('Failed to load accounts: $e');
+      rethrow;
+    }
+  }
+
+  /// Loads recent transactions
+  Future<void> _loadRecentTransactions() async {
+    try {
+      final apiService = Provider.of<ApiService>(context, listen: false);
+      // Limit to 5 most recent transactions
+      final transactions = await apiService.getRecentTransactions(limit: 5);
+      setState(() {
+        _recentTransactions = transactions;
+      });
+      _logger.info('Loaded ${transactions.length} recent transactions');
+    } catch (e) {
+      _logger.warning('Failed to load recent transactions: $e');
+      rethrow;
+    }
+  }
+
+  /// Masks PII data for logging
+  String _maskPii(String data) {
+    if (data.length <= 4) return '*' * data.length;
+    return '*' * (data.length - 4) + data.substring(data.length - 4);
+  }
+
+  /// Handles user logout
+  Future<void> _handleLogout() async {
+    try {
+      _logger.info('User logout initiated');
+      final apiService = Provider.of<ApiService>(context, listen: false);
+      await apiService.logout();
+      
+      // Clear local storage
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+      
+      if (!mounted) return;
+      
+      // Navigate to login screen and clear navigation history
+      Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+      _logger.info('User logged out successfully');
+    } catch (e) {
+      _logger.severe('Error during logout: $e');
+      if (!mounted) return;
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to logout. Please try again.')),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Dashboard'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () {
+              Navigator.pushNamed(context, ProfileScreen.routeName);
+            },
+            tooltip: 'Profile',
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: _handleLogout,
+            tooltip: 'Logout',
+          ),
+        ],
+      ),
+      body: _isLoading
+          ? const LoadingIndicator()
+          : _errorMessage.isNotEmpty
+              ? _buildErrorView()
+              : RefreshIndicator(
+                  key: _refreshIndicatorKey,
+                  onRefresh: _loadData,
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildWelcomeSection(),
+                        const SizedBox(height: 24),
+                        _buildAccountsSection(),
+                        const SizedBox(height: 24),
+                        _buildRecentTransactionsSection(),
+                        const SizedBox(height: 24),
+                        _buildQuickActionsSection(),
+                      ],
+                    ),
+                  ),
+                ),
+    );
+  }
+
+  /// Builds the error view when data loading fails
+  Widget _buildErrorView() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.error_outline,
+            size: 60,
+            color: Colors.red,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            _errorMessage,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 16),
+          ),
+          const SizedBox(height: 24),
+          ElevatedButton(
+            onPressed: _loadData,
+            child: const Text('Retry'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Builds the welcome section with user greeting
+  Widget _buildWelcomeSection() {
+    final greeting = _getGreeting();
+    final name = _currentUser?.firstName ?? 'User';
+    
+    return Card(
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '$greeting, $name',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Welcome to your financial dashboard',
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Returns appropriate greeting based on time of day
+  String _getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) {
+      return 'Good morning';
+    } else if (hour < 17) {
+      return 'Good afternoon';
+    } else {
+      return 'Good evening';
+    }
+  }
+
+  /// Builds the accounts section
+  Widget _buildAccountsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Your Accounts',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            TextButton(
+              onPressed: () {
+                // Navigate to all accounts view
+              },
+              child: const Text('See All'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        _accounts.isEmpty
+            ? _buildEmptyAccountsView()
+            : ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: _accounts.length,
+                itemBuilder: (context, index) {
+                  return _buildAccountCard(_accounts[index]);
+                },
+              ),
+      ],
+    );
+  }
+
+  /// Builds a card for an empty accounts list
+  Widget _buildEmptyAccountsView() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            const Icon(
+              Icons.account_balance_wallet_outlined,
+              size: 48,
+              color: Colors.grey,
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'No accounts found',
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 8),
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to add account screen
+              },
+              child: const Text('Add Account'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Builds a card for a single account
+  Widget _buildAccountCard(Account account) {
+    final accountTypeIcon = _getAccountTypeIcon(account.type);
+    final formattedBalance = '\$${account.balance.toStringAsFixed(2)}';
+    
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: InkWell(
+        onTap: () {
+          Navigator.pushNamed(
+            context,
+            AccountDetailScreen.routeName,
+            arguments: account,
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  accountTypeIcon,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      account.name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      _getAccountTypeString(account.type),
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Text(
+                formattedBalance,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Returns the appropriate icon for an account type
+  IconData _getAccountTypeIcon(AccountType type) {
+    switch (type) {
+      case AccountType.checking:
+        return Icons.account_balance;
+      case AccountType.savings:
+        return Icons.savings;
+      case AccountType.investment:
+        return Icons.trending_up;
+      default:
+        return Icons.account_balance_wallet;
+    }
+  }
+
+  /// Returns a human-readable string for an account type
+  String _getAccountTypeString(AccountType type) {
+    switch (type) {
+      case AccountType.checking:
+        return 'Checking Account';
+      case AccountType.savings:
+        return 'Savings Account';
+      case AccountType.investment:
+        return 'Investment Account';
+      default:
+        return 'Account';
+    }
+  }
+
+  /// Builds the recent transactions section
+  Widget _buildRecentTransactionsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Recent Transactions',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamed(context, TransactionHistoryScreen.routeName);
+              },
+              child: const Text('See All'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        _recentTransactions.isEmpty
+            ? _buildEmptyTransactionsView()
+            : ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: _recentTransactions.length,
+                itemBuilder: (context, index) {
+                  return _buildTransactionItem(_recentTransactions[index]);
+                },
+              ),
+      ],
+    );
+  }
+
+  /// Builds a view for when there are no transactions
+  Widget _buildEmptyTransactionsView() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            const Icon(
+              Icons.receipt_long,
+              size: 48,
+              color: Colors.grey,
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'No recent transactions',
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 8),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, TransferScreen.routeName);
+              },
+              child: const Text('Make a Transfer'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Builds a list item for a single transaction
+  Widget _buildTransactionItem(Transaction transaction) {
+    final isDebit = transaction.amount < 0;
+    final formattedAmount = isDebit
+        ? '-\$${transaction.amount.abs().toStringAsFixed(2)}'
+        : '+\$${transaction.amount.toStringAsFixed(2)}';
+    final amountColor = isDebit ? Colors.red : Colors.green;
+    
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: ListTile(
+        leading: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: (isDebit ? Colors.red : Colors.green).withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(
+            isDebit ? Icons.arrow_upward : Icons.arrow_downward,
+            color: isDebit ? Colors.red : Colors.green,
+          ),
+        ),
+        title: Text(
+          transaction.description,
+          style: const TextStyle(fontWeight: FontWeight.w500),
+        ),
+        subtitle: Text(
+          _formatTransactionDate(transaction.date),
+          style: TextStyle(color: Colors.grey[600]),
+        ),
+        trailing: Text(
+          formattedAmount,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: amountColor,
+            fontSize: 16,
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Formats a transaction date for display
+  String _formatTransactionDate(DateTime date) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+    final transactionDate = DateTime(date.year, date.month, date.day);
+    
+    if (transactionDate == today) {
+      return 'Today, ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
+    } else if (transactionDate == yesterday) {
+      return 'Yesterday, ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
+    } else {
+      return '${date.day}/${date.month}/${date.year}';
+    }
+  }
+
+  /// Builds the quick actions section
+  Widget _buildQuickActionsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Quick Actions',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 16),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _buildQuickActionItem(
+              icon: Icons.swap_horiz,
+              label: 'Transfer',
+              onTap: () {
+                Navigator.pushNamed(context, TransferScreen.routeName);
+              },
+            ),
+            _buildQuickActionItem(
+              icon: Icons.receipt_long,
+              label: 'Transactions',
+              onTap: () {
+                Navigator.pushNamed(context, TransactionHistoryScreen.routeName);
+              },
+            ),
+            _buildQuickActionItem(
+              icon: Icons.person,
+              label: 'Profile',
+              onTap: () {
+                Navigator.pushNamed(context, ProfileScreen.routeName);
+              },
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  /// Builds a single quick action button
+  Widget _buildQuickActionItem({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        width: 100,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          color: Theme.of(context).primaryColor.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              color: Theme.of(context).primaryColor,
+              size: 32,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: TextStyle(
+                color: Theme.of(context).primaryColor,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

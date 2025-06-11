@@ -1,0 +1,270 @@
+# LLM Response - code_generation_chunk_01
+# Timestamp: 2025-06-11 10:17:31
+# Model: claude-3-7-sonnet-20250219
+# Interaction ID: code_generation_chunk_01_004
+# ==================================================
+
+package config
+
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+	"path/filepath"
+	"sync"
+	"time"
+)
+
+// Config represents the application configuration
+type Config struct {
+	Server   ServerConfig   `json:"server"`
+	Database DatabaseConfig `json:"database"`
+	Auth     AuthConfig     `json:"auth"`
+	Logging  LoggingConfig  `json:"logging"`
+	Cache    CacheConfig    `json:"cache"`
+}
+
+// ServerConfig holds server-related configuration
+type ServerConfig struct {
+	Host            string        `json:"host"`
+	Port            int           `json:"port"`
+	ReadTimeout     time.Duration `json:"readTimeout"`
+	WriteTimeout    time.Duration `json:"writeTimeout"`
+	ShutdownTimeout time.Duration `json:"shutdownTimeout"`
+	MaxHeaderBytes  int           `json:"maxHeaderBytes"`
+}
+
+// DatabaseConfig holds database-related configuration
+type DatabaseConfig struct {
+	Driver          string        `json:"driver"`
+	Host            string        `json:"host"`
+	Port            int           `json:"port"`
+	Name            string        `json:"name"`
+	User            string        `json:"user"`
+	Password        string        `json:"password"`
+	MaxOpenConns    int           `json:"maxOpenConns"`
+	MaxIdleConns    int           `json:"maxIdleConns"`
+	ConnMaxLifetime time.Duration `json:"connMaxLifetime"`
+}
+
+// AuthConfig holds authentication-related configuration
+type AuthConfig struct {
+	JWTSecret            string        `json:"jwtSecret"`
+	JWTExpirationMinutes time.Duration `json:"jwtExpirationMinutes"`
+	RefreshTokenDuration time.Duration `json:"refreshTokenDuration"`
+	PasswordHashCost     int           `json:"passwordHashCost"`
+}
+
+// LoggingConfig holds logging-related configuration
+type LoggingConfig struct {
+	Level      string `json:"level"`
+	FilePath   string `json:"filePath"`
+	MaxSize    int    `json:"maxSize"`    // megabytes
+	MaxBackups int    `json:"maxBackups"` // number of backups
+	MaxAge     int    `json:"maxAge"`     // days
+	Compress   bool   `json:"compress"`
+}
+
+// CacheConfig holds caching-related configuration
+type CacheConfig struct {
+	Type     string        `json:"type"`
+	Address  string        `json:"address"`
+	Password string        `json:"password"`
+	DB       int           `json:"db"`
+	TTL      time.Duration `json:"ttl"`
+}
+
+var (
+	instance *Config
+	once     sync.Once
+	mu       sync.RWMutex
+)
+
+// LoadConfig loads configuration from the specified file path
+func LoadConfig(configPath string) (*Config, error) {
+	once.Do(func() {
+		var err error
+		instance, err = loadConfigFromFile(configPath)
+		if err != nil {
+			panic(fmt.Sprintf("Failed to load configuration: %v", err))
+		}
+	})
+
+	return instance, nil
+}
+
+// GetConfig returns the current configuration instance
+func GetConfig() *Config {
+	mu.RLock()
+	defer mu.RUnlock()
+	
+	if instance == nil {
+		panic("Configuration not loaded. Call LoadConfig first.")
+	}
+	
+	return instance
+}
+
+// UpdateConfig updates the current configuration
+func UpdateConfig(newConfig *Config) {
+	mu.Lock()
+	defer mu.Unlock()
+	
+	instance = newConfig
+}
+
+// loadConfigFromFile reads and parses the configuration file
+func loadConfigFromFile(configPath string) (*Config, error) {
+	// Ensure the config file exists
+	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		return nil, fmt.Errorf("configuration file does not exist: %s", configPath)
+	}
+
+	// Create directory if it doesn't exist
+	configDir := filepath.Dir(configPath)
+	if err := os.MkdirAll(configDir, 0755); err != nil {
+		return nil, fmt.Errorf("failed to create config directory: %v", err)
+	}
+
+	// Read the config file
+	data, err := os.ReadFile(configPath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read config file: %v", err)
+	}
+
+	// Parse the config
+	var config Config
+	if err := json.Unmarshal(data, &config); err != nil {
+		return nil, fmt.Errorf("failed to parse config file: %v", err)
+	}
+
+	// Validate the config
+	if err := validateConfig(&config); err != nil {
+		return nil, fmt.Errorf("invalid configuration: %v", err)
+	}
+
+	return &config, nil
+}
+
+// SaveConfig saves the current configuration to the specified file
+func SaveConfig(configPath string, config *Config) error {
+	// Create directory if it doesn't exist
+	configDir := filepath.Dir(configPath)
+	if err := os.MkdirAll(configDir, 0755); err != nil {
+		return fmt.Errorf("failed to create config directory: %v", err)
+	}
+
+	// Marshal the config to JSON
+	data, err := json.MarshalIndent(config, "", "  ")
+	if err != nil {
+		return fmt.Errorf("failed to marshal config: %v", err)
+	}
+
+	// Write the config to file
+	if err := os.WriteFile(configPath, data, 0644); err != nil {
+		return fmt.Errorf("failed to write config file: %v", err)
+	}
+
+	return nil
+}
+
+// validateConfig performs validation on the configuration
+func validateConfig(config *Config) error {
+	// Validate server config
+	if config.Server.Port <= 0 || config.Server.Port > 65535 {
+		return fmt.Errorf("invalid server port: %d", config.Server.Port)
+	}
+
+	// Validate database config
+	if config.Database.Driver == "" {
+		return fmt.Errorf("database driver cannot be empty")
+	}
+	if config.Database.Port <= 0 || config.Database.Port > 65535 {
+		return fmt.Errorf("invalid database port: %d", config.Database.Port)
+	}
+
+	// Validate auth config
+	if config.Auth.JWTSecret == "" {
+		return fmt.Errorf("JWT secret cannot be empty")
+	}
+	if config.Auth.JWTExpirationMinutes <= 0 {
+		return fmt.Errorf("JWT expiration must be positive")
+	}
+
+	// Validate logging config
+	switch config.Logging.Level {
+	case "debug", "info", "warn", "error", "fatal":
+		// Valid log levels
+	default:
+		return fmt.Errorf("invalid log level: %s", config.Logging.Level)
+	}
+
+	return nil
+}
+
+// DefaultConfig returns a default configuration
+func DefaultConfig() *Config {
+	return &Config{
+		Server: ServerConfig{
+			Host:            "localhost",
+			Port:            8080,
+			ReadTimeout:     15 * time.Second,
+			WriteTimeout:    15 * time.Second,
+			ShutdownTimeout: 30 * time.Second,
+			MaxHeaderBytes:  1 << 20, // 1 MB
+		},
+		Database: DatabaseConfig{
+			Driver:          "postgres",
+			Host:            "localhost",
+			Port:            5432,
+			Name:            "app_db",
+			User:            "postgres",
+			Password:        "postgres",
+			MaxOpenConns:    25,
+			MaxIdleConns:    25,
+			ConnMaxLifetime: 5 * time.Minute,
+		},
+		Auth: AuthConfig{
+			JWTSecret:            "your-secret-key",
+			JWTExpirationMinutes: 60,
+			RefreshTokenDuration: 7 * 24 * time.Hour, // 7 days
+			PasswordHashCost:     10,
+		},
+		Logging: LoggingConfig{
+			Level:      "info",
+			FilePath:   "logs/app.log",
+			MaxSize:    100,
+			MaxBackups: 3,
+			MaxAge:     28,
+			Compress:   true,
+		},
+		Cache: CacheConfig{
+			Type:     "redis",
+			Address:  "localhost:6379",
+			Password: "",
+			DB:       0,
+			TTL:      15 * time.Minute,
+		},
+	}
+}
+
+// GetConnectionString returns a formatted database connection string
+func (c *DatabaseConfig) GetConnectionString() string {
+	switch c.Driver {
+	case "postgres":
+		return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+			c.Host, c.Port, c.User, c.Password, c.Name)
+	case "mysql":
+		return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true",
+			c.User, c.Password, c.Host, c.Port, c.Name)
+	case "sqlite3":
+		return c.Name
+	default:
+		return ""
+	}
+}
+
+// GetServerAddress returns the formatted server address
+func (c *ServerConfig) GetServerAddress() string {
+	return fmt.Sprintf("%s:%d", c.Host, c.Port)
+}
